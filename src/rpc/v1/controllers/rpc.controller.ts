@@ -1,27 +1,39 @@
-import { Body, Controller, Logger, Post, UseFilters } from "@nestjs/common";
+import { Body, Controller, HttpCode, Post, UseFilters } from "@nestjs/common";
+import * as v from "valibot";
 
-import { RpcRequestDto } from "../dtos/rpc-request.dto";
 import { RpcExceptionsFilter } from "../libs/rpc-exception.filter";
+import { RpcSchema } from "../schema/rpc.schema";
+import { GetPaymasterAndDataService } from "../services/get-paymaster-and-data.service";
 import { SendUserOperationService } from "../services/send-user-operation.service";
-import { JsonRpcResponse } from "../types/rpc-response.type";
 import { makeSuccessResponse } from "../utils/rpc-response.util";
 
 @Controller("rpc/v1")
 @UseFilters(RpcExceptionsFilter)
 export class RpcController {
-  @Post("/")
-  async handler<T = any>(@Body() rpcRequestDto: RpcRequestDto): Promise<JsonRpcResponse<T>> {
-    const { method, id } = rpcRequestDto;
+  constructor(
+    private readonly sendUserOperation: SendUserOperationService,
+    private readonly getPaymasterAndDataService: GetPaymasterAndDataService
+  ) {}
 
-    Logger.debug(rpcRequestDto);
+  @Post()
+  @HttpCode(200)
+  async handler(@Body() body: unknown) {
+    const req = v.parse(RpcSchema, body);
+    const { id, method } = req;
+
+    let result: unknown;
 
     switch (method) {
       case "eth_sendUserOperation": {
-        const sendUserOperation = new SendUserOperationService();
-
-        const result = await sendUserOperation.send();
-        return makeSuccessResponse(id, result as T);
+        result = await this.sendUserOperation.send();
+        break;
+      }
+      case "pm_preparePaymasterAndData": {
+        result = await this.getPaymasterAndDataService.get();
+        break;
       }
     }
+
+    return makeSuccessResponse<typeof result>(id, result);
   }
 }

@@ -11,7 +11,7 @@ export class TestController {
     this.testService = new TestService();
   }
 
-  @Get("/")
+  @Get()
   async get(): Promise<string> {
     const result = await this.testService.get();
     return result;

@@ -13,5 +13,3 @@ export type JsonRpcErrorResponse = {
   };
   id: number | null;
 };
-
-export type JsonRpcResponse<T = any> = JsonRpcSuccessResponse<T> | JsonRpcErrorResponse;
