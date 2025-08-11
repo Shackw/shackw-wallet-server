@@ -1,10 +1,10 @@
 import { Provider } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { Chain, Hex, PublicClient, createPublicClient, http } from "viem";
+import { Chain, Hex, PublicClient, createPublicClient, defineChain, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
-import { PaymasterKind } from "../models/userOperation";
-import { PAYMASTER_REGISTRY, SIGNER_REGISTRY, VIEM_CHAIN, VIEM_PUBLIC_CLIENT } from "../tokens";
+import { PAYMASTER_REGISTRY, SIGNER_REGISTRY, VIEM_CHAIN, VIEM_PUBLIC_CLIENT } from "../common/di.tokens";
+import { PaymasterKind } from "../types/userOperation.types";
 
 export interface PaymasterInfo {
   address: Hex;
@@ -22,12 +22,12 @@ export const registriesProviders: Provider[] = [
   {
     provide: VIEM_CHAIN,
     useFactory: (cfg: ConfigService) =>
-      ({
+      defineChain({
         id: cfg.get<number>("CHAIN_ID", { infer: true }) as number,
         name: cfg.get<string>("CHAIN_NAME", { infer: true }) as string,
         nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
         rpcUrls: { default: { http: [cfg.get<string>("RPC_PROVIDER", { infer: true }) as string] } }
-      }) satisfies Chain,
+      }),
     inject: [ConfigService]
   },
   {
@@ -36,15 +36,15 @@ export const registriesProviders: Provider[] = [
       createPublicClient({
         chain,
         transport: http(chain.rpcUrls.default.http[0])
-      }) as unknown as PublicClient,
+      }) satisfies PublicClient,
     inject: [VIEM_CHAIN]
   },
   {
     provide: PAYMASTER_REGISTRY,
     useFactory: (cfg: ConfigService): PaymasterRegistry => {
       const map: Record<PaymasterKind, PaymasterInfo> = {
-        JPYS: {
-          address: cfg.get<string>("JPYS_PAYMASTER_ADDRESS", { infer: true }) as Hex
+        JPYC: {
+          address: cfg.get<string>("JPYC_PAYMASTER_ADDRESS", { infer: true }) as Hex
         },
         USDC: {
           address: cfg.get<string>("USDC_PAYMASTER_ADDRESS", { infer: true }) as Hex
@@ -66,7 +66,7 @@ export const registriesProviders: Provider[] = [
     provide: SIGNER_REGISTRY,
     useFactory: (cfg: ConfigService): SignerRegistry => {
       const accounts = {
-        JPYS: privateKeyToAccount(cfg.get<string>("JPYC_SIGNER_PK", { infer: true }) as Hex),
+        JPYC: privateKeyToAccount(cfg.get<string>("JPYC_SIGNER_PK", { infer: true }) as Hex),
         USDC: privateKeyToAccount(cfg.get<string>("USDC_SIGNER_PK", { infer: true }) as Hex),
         EURC: privateKeyToAccount(cfg.get<string>("EURC_SIGNER_PK", { infer: true }) as Hex)
       } as const;

@@ -27,7 +27,7 @@ export const JsonrpcBaseSchema = {
   id: v.pipe(v.number(), v.integer())
 };
 
-export const PaymasterKindSchema = v.union([v.literal("JPYS"), v.literal("USDC"), v.literal("EURC")]);
+export const PaymasterKindSchema = v.union([v.literal("JPYC"), v.literal("USDC"), v.literal("EURC")]);
 
 export const UserOperationBaseSchema = {
   sender: addr,
@@ -59,7 +59,7 @@ export const CommonParamsSchema = {
   paymasterKind: PaymasterKindSchema
 };
 
-export const SendUserOperationPramSchema = v.object({
+export const SendUserOperationParamSchema = v.object({
   ...CommonParamsSchema,
   userOperation: v.object({
     ...UserOperationBaseSchema,
@@ -77,7 +77,7 @@ export const RpcSchema = v.variant("method", [
   v.object({
     ...JsonrpcBaseSchema,
     method: v.literal("eth_sendUserOperation"),
-    params: v.tuple([SendUserOperationPramSchema])
+    params: v.tuple([SendUserOperationParamSchema])
   }),
   v.object({
     ...JsonrpcBaseSchema,

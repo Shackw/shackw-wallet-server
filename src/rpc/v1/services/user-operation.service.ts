@@ -1,16 +1,16 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { concatHex, encodeAbiParameters, keccak256 } from "viem";
 
-import {
-  PreparePaymasterAndDataInput,
-  PreparePaymasterAndDataModel,
-  SendUserOperationInput,
-  SendUserOperationModel
-} from "../models/userOperation";
+import { ENTRY_POINT_REPOSITORY, PAYMASTER_REGISTRY, PAYMASTER_REPOSITORY, SIGNER_REGISTRY } from "../common/di.tokens";
 import { PaymasterRegistry, SignerRegistry } from "../providers/registries.provider";
 import { IEntryPointRepository } from "../repositories/entryPoint.repository";
 import { IPaymasterRepository } from "../repositories/paymaster.repository";
-import { ENTRY_POINT_REPOSITORY, PAYMASTER_REGISTRY, PAYMASTER_REPOSITORY, SIGNER_REGISTRY } from "../tokens";
+import {
+  PreparePaymasterAndDataInput,
+  PreparePaymasterAndDataResponse,
+  SendUserOperationInput,
+  SendUserOperationResponse
+} from "../types/userOperation.types";
 
 @Injectable()
 export class UserOperationService {
@@ -28,8 +28,8 @@ export class UserOperationService {
     private readonly paymasterRepository: IPaymasterRepository
   ) {}
 
-  async prepare(inputs: PreparePaymasterAndDataInput[]): Promise<PreparePaymasterAndDataModel> {
-    const { userOperation, paymasterKind, amount } = inputs[0];
+  async prepare(input: PreparePaymasterAndDataInput): Promise<PreparePaymasterAndDataResponse> {
+    const { userOperation, paymasterKind, amount } = input;
 
     // Get the trusted signer for this paymaster kind
     const signer = this.signerRegistry.get(paymasterKind);
@@ -78,8 +78,8 @@ export class UserOperationService {
     };
   }
 
-  async send(inputs: SendUserOperationInput[]): Promise<SendUserOperationModel> {
-    console.log(inputs);
+  async send(input: SendUserOperationInput): Promise<SendUserOperationResponse> {
+    console.log(input);
     await new Promise(resolve => setTimeout(resolve, 2000));
     return {
       requestId: "0x000",

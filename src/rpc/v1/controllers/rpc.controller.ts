@@ -1,10 +1,10 @@
 import { Body, Controller, HttpCode, Post, UseFilters } from "@nestjs/common";
 import * as v from "valibot";
 
-import { RpcExceptionsFilter } from "../libs/rpc-exception.filter";
+import { RpcExceptionsFilter } from "../../../common/filters/rpc-exception.filter";
+import { makeSuccessResponse } from "../../../common/jsonrpc/response";
 import { RpcSchema } from "../schema/rpc.schema";
 import { UserOperationService } from "../services/user-operation.service";
-import { makeSuccessResponse } from "../utils/rpc.util";
 
 @Controller("rpc/v1")
 @UseFilters(RpcExceptionsFilter)

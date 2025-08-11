@@ -7,18 +7,18 @@ import { Response } from "express";
 import { ValiError } from "valibot";
 import * as v from "valibot";
 
-import { RpcSchema } from "../schema/rpc.schema";
-import { RpcErrorCode } from "../types/rpc.type";
-import { makeErrorResponse } from "../utils/rpc.util";
-
+import { RpcSchema } from "../../rpc/v1/schema/rpc.schema";
 import {
   RpcInsufficientFundsException,
   RpcInternalErrorException,
+  RpcInvalidRequestException,
   RpcParseError,
   RpcServerErrorException,
   RpcTimeoutException,
   RpcUnauthorizedException
-} from "./rpc-custom-exceptions";
+} from "../jsonrpc/exceptions";
+import { makeErrorResponse } from "../jsonrpc/response";
+import { RpcErrorCode } from "../jsonrpc/types";
 
 @Catch()
 export class RpcExceptionsFilter implements ExceptionFilter {
@@ -35,23 +35,19 @@ export class RpcExceptionsFilter implements ExceptionFilter {
     let data: any = undefined;
 
     if (exception instanceof RpcParseError) {
-      ({ message, data } = exception);
-      code = RpcErrorCode.PARSE_ERROR;
+      ({ message, data, code } = exception);
+    } else if (exception instanceof RpcInvalidRequestException) {
+      ({ message, data, code } = exception);
     } else if (exception instanceof RpcInternalErrorException) {
-      ({ message, data } = exception);
-      code = RpcErrorCode.INTERNAL_ERROR;
+      ({ message, data, code } = exception);
     } else if (exception instanceof RpcServerErrorException) {
-      ({ message, data } = exception);
-      code = RpcErrorCode.SERVER_ERROR;
+      ({ message, data, code } = exception);
     } else if (exception instanceof RpcUnauthorizedException) {
-      ({ message, data } = exception);
-      code = RpcErrorCode.UNAUTHORIZED;
+      ({ message, data, code } = exception);
     } else if (exception instanceof RpcInsufficientFundsException) {
-      ({ message, data } = exception);
-      code = RpcErrorCode.INSUFFICIENT_FUNDS;
+      ({ message, data, code } = exception);
     } else if (exception instanceof RpcTimeoutException) {
-      ({ message, data } = exception);
-      code = RpcErrorCode.TIMEOUT;
+      ({ message, data, code } = exception);
     } else if (exception instanceof ThrottlerException) {
       code = RpcErrorCode.RATE_LIMIT_EXCEEDED;
       message = "Rate limit exceeded";

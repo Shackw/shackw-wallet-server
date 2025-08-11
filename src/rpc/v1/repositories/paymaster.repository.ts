@@ -1,11 +1,11 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { PublicClient } from "viem";
 
-import { PaymasterAbi } from "../constants/abis/paymasterAbi";
-import { RpcInternalErrorException } from "../libs/rpc-custom-exceptions";
-import { PaymasterKind } from "../models/userOperation";
+import { PaymasterAbi } from "../../../common/abis/paymasterAbi";
+import { RpcInternalErrorException } from "../../../common/jsonrpc/exceptions";
+import { PAYMASTER_REGISTRY, VIEM_PUBLIC_CLIENT } from "../common/di.tokens";
 import { PaymasterRegistry } from "../providers/registries.provider";
-import { PAYMASTER_REGISTRY, VIEM_PUBLIC_CLIENT } from "../tokens";
+import { PaymasterKind } from "../types/userOperation.types";
 
 export interface IPaymasterRepository {
   getTransferFee(kind: PaymasterKind, amount: bigint): Promise<bigint>;

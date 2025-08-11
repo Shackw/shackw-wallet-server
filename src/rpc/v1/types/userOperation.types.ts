@@ -4,7 +4,7 @@ import { Hex } from "viem";
 import {
   PaymasterKindSchema,
   PreparePaymasterAndDataPramSchema,
-  SendUserOperationPramSchema,
+  SendUserOperationParamSchema,
   UserOperationBaseObjectSchema
 } from "../schema/rpc.schema";
 
@@ -14,7 +14,7 @@ export type UserOperationModel = v.InferOutput<typeof UserOperationBaseObjectSch
 
 export type PreparePaymasterAndDataInput = v.InferOutput<typeof PreparePaymasterAndDataPramSchema>;
 
-export type PreparePaymasterAndDataModel = {
+export type PreparePaymasterAndDataResponse = {
   paymasterAndData: Hex;
   signature: Hex;
   validAfter: number;
@@ -22,6 +22,6 @@ export type PreparePaymasterAndDataModel = {
   quotedFee: bigint;
 };
 
-export type SendUserOperationInput = v.InferOutput<typeof SendUserOperationPramSchema>;
+export type SendUserOperationInput = v.InferOutput<typeof SendUserOperationParamSchema>;
 
-export type SendUserOperationModel = { userOpHash: Hex; requestId?: Hex };
+export type SendUserOperationResponse = { userOpHash: Hex; requestId?: Hex };

@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { ThrottlerModule } from "@nestjs/throttler";
 import { ApiModule } from "api/api.module";
-import { EnvSchema } from "env.schema";
+import { EnvSchema } from "common/config/env.schema";
 import { RpcModule } from "rpc/rpc.module";
 import * as v from "valibot";
 

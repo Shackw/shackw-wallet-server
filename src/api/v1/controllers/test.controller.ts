@@ -1,6 +1,6 @@
 import { Controller, Get, UseFilters } from "@nestjs/common";
 
-import { HttpExceptionsFilter } from "../libs/http-exception.filter";
+import { HttpExceptionsFilter } from "../../../common/filters/http-exception.filter";
 import { TestService } from "../services/test.service";
 
 @Controller("api/v1/test")

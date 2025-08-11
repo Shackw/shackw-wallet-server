@@ -2,10 +2,10 @@ import { Injectable, Inject } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Hex, PublicClient } from "viem";
 
-import { EntryPointAbi } from "../constants/abis/entryPointAbi";
-import { RpcInternalErrorException } from "../libs/rpc-custom-exceptions";
-import { UserOperationModel } from "../models/userOperation";
-import { VIEM_PUBLIC_CLIENT } from "../tokens";
+import { EntryPointAbi } from "../../../common/abis/entryPointAbi";
+import { RpcInternalErrorException } from "../../../common/jsonrpc/exceptions";
+import { VIEM_PUBLIC_CLIENT } from "../common/di.tokens";
+import { UserOperationModel } from "../types/userOperation.types";
 
 export interface IEntryPointRepository {
   getUserOpHash(userOp: UserOperationModel): Promise<Hex>;
