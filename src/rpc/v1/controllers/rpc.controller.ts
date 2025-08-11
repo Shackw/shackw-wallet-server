@@ -3,36 +3,30 @@ import * as v from "valibot";
 
 import { RpcExceptionsFilter } from "../libs/rpc-exception.filter";
 import { RpcSchema } from "../schema/rpc.schema";
-import { GetPaymasterAndDataService } from "../services/get-paymaster-and-data.service";
-import { SendUserOperationService } from "../services/send-user-operation.service";
-import { makeSuccessResponse } from "../utils/rpc-response.util";
+import { UserOperationService } from "../services/user-operation.service";
+import { makeSuccessResponse } from "../utils/rpc.util";
 
 @Controller("rpc/v1")
 @UseFilters(RpcExceptionsFilter)
 export class RpcController {
-  constructor(
-    private readonly sendUserOperation: SendUserOperationService,
-    private readonly getPaymasterAndDataService: GetPaymasterAndDataService
-  ) {}
+  constructor(private readonly userOperationService: UserOperationService) {}
 
   @Post()
   @HttpCode(200)
   async handler(@Body() body: unknown) {
     const req = v.parse(RpcSchema, body);
-    const { id, method } = req;
+    const { id, method, params } = req;
 
-    let result: unknown;
-
-    switch (method) {
-      case "eth_sendUserOperation": {
-        result = await this.sendUserOperation.send();
-        break;
+    const result = await (async () => {
+      switch (method) {
+        case "eth_sendUserOperation": {
+          return await this.userOperationService.send(params);
+        }
+        case "pm_preparePaymasterAndData": {
+          return await this.userOperationService.prepare(params);
+        }
       }
-      case "pm_preparePaymasterAndData": {
-        result = await this.getPaymasterAndDataService.get();
-        break;
-      }
-    }
+    })();
 
     return makeSuccessResponse<typeof result>(id, result);
   }

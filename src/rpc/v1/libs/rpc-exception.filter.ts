@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { ExceptionFilter, Catch, ArgumentsHost, PayloadTooLargeException } from "@nestjs/common";
+import { ExceptionFilter, Catch, ArgumentsHost, PayloadTooLargeException, Logger } from "@nestjs/common";
 import { ThrottlerException } from "@nestjs/throttler";
 import { Response } from "express";
 import { ValiError } from "valibot";
 import * as v from "valibot";
 
 import { RpcSchema } from "../schema/rpc.schema";
-import { RpcErrorCode } from "../types/rpc-error-code.enum";
-import { makeErrorResponse } from "../utils/rpc-response.util";
+import { RpcErrorCode } from "../types/rpc.type";
+import { makeErrorResponse } from "../utils/rpc.util";
 
 import {
   RpcInsufficientFundsException,
@@ -29,10 +29,10 @@ export class RpcExceptionsFilter implements ExceptionFilter {
 
     const reqBody: any = req.body;
 
-    const id: number | null = reqBody.id ?? null;
+    const id: number | null = reqBody?.id ?? null;
     let code = RpcErrorCode.INTERNAL_ERROR;
     let message = "Internal RPC Error";
-    let data = undefined;
+    let data: any = undefined;
 
     if (exception instanceof RpcParseError) {
       ({ message, data } = exception);
@@ -62,8 +62,27 @@ export class RpcExceptionsFilter implements ExceptionFilter {
       const issues = v.flatten<typeof RpcSchema>(exception.issues);
       const isMethodError = Object.keys(issues.nested ?? {}).includes("method");
       code = isMethodError ? RpcErrorCode.METHOD_NOT_FOUND : RpcErrorCode.INVALID_PARAMS;
-      message = isMethodError ? "Method not found" : `Invalid params: ${(issues.root ?? []).join(", ")}`;
+      message = isMethodError ? "Method not found" : "Invalid params";
+      data = issues.nested;
     }
+
+    Logger.error(
+      {
+        code,
+        message,
+        exception: {
+          name: (exception as any)?.name,
+          message: (exception as any)?.message,
+          stack: (exception as any)?.stack
+        },
+        rpc: {
+          id,
+          method: reqBody?.method,
+          params: reqBody?.params
+        }
+      },
+      "RpcExceptionsFilter"
+    );
 
     res.status(200).json(makeErrorResponse(id, code, message, data));
   }

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { RpcErrorCode } from "../types/rpc-error-code.enum";
-import { JsonRpcSuccessResponse, JsonRpcErrorResponse } from "../types/rpc-response.type";
+import { JsonRpcSuccessResponse, JsonRpcErrorResponse, RpcErrorCode } from "../types/rpc.type";
 
 export function makeSuccessResponse<T>(id: number, result: T): JsonRpcSuccessResponse<T> {
   return {

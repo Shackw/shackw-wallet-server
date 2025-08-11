@@ -1,14 +1,27 @@
-import { RpcRequest } from "../schema/rpc.schema";
+import * as v from "valibot";
+import { Hex } from "viem";
 
-export type PrepareUserOperationInput = Extract<RpcRequest, { method: "pm_preparePaymasterAndData" }>["params"]["0"];
+import {
+  PaymasterKindSchema,
+  PreparePaymasterAndDataPramSchema,
+  SendUserOperationPramSchema,
+  UserOperationBaseObjectSchema
+} from "../schema/rpc.schema";
 
-export type PrepareUserOperationModel = {
-  paymasterAndData: `0x${string}`;
-  signature: `0x${string}`;
+export type PaymasterKind = v.InferOutput<typeof PaymasterKindSchema>;
+
+export type UserOperationModel = v.InferOutput<typeof UserOperationBaseObjectSchema>;
+
+export type PreparePaymasterAndDataInput = v.InferOutput<typeof PreparePaymasterAndDataPramSchema>;
+
+export type PreparePaymasterAndDataModel = {
+  paymasterAndData: Hex;
+  signature: Hex;
   validAfter: number;
   validUntil: number;
+  quotedFee: bigint;
 };
 
-export type SendUserOperationInput = Extract<RpcRequest, { method: "eth_sendUserOperation" }>["params"]["0"];
+export type SendUserOperationInput = v.InferOutput<typeof SendUserOperationPramSchema>;
 
-export type SendUserOperationModel = { userOpHash: `0x${string}`; requestId?: `0x${string}` };
+export type SendUserOperationModel = { userOpHash: Hex; requestId?: Hex };

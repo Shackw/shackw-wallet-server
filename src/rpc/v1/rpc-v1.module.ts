@@ -1,33 +1,14 @@
 import { Module } from "@nestjs/common";
-import { Chain, createPublicClient, http, PublicClient } from "viem";
 
 import { RpcController } from "./controllers/rpc.controller";
+import { registriesProviders } from "./providers/registries.provider";
+import { repositoriesProviders } from "./providers/repositories.provider";
 import { UserOperationService } from "./services/user-operation.service";
-import { VIEM_PUBLIC_CLIENT, VIEM_CHAIN } from "./tokens";
+import { tokenSymbols } from "./tokens";
 
 @Module({
   controllers: [RpcController],
-  providers: [
-    {
-      provide: VIEM_CHAIN,
-      useFactory: () => ({
-        id: Number(process.env.CHAIN_ID),
-        name: process.env.CHAIN_NAME ?? "custom",
-        nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-        rpcUrls: { default: { http: [process.env.RPC_URL as string] } }
-      })
-    },
-    {
-      provide: VIEM_PUBLIC_CLIENT,
-      useFactory: (chain: Chain): PublicClient =>
-        createPublicClient({
-          chain,
-          transport: http(chain.rpcUrls.default.http[0])
-        }),
-      inject: [VIEM_CHAIN]
-    },
-    UserOperationService
-  ],
-  exports: [VIEM_PUBLIC_CLIENT, VIEM_CHAIN]
+  providers: [...registriesProviders, ...repositoriesProviders, UserOperationService],
+  exports: [...tokenSymbols]
 })
 export class RpcV1Module {}
