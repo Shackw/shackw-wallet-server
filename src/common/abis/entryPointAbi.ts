@@ -1,4 +1,4 @@
-export const EntryPointAbi = [
+export const ENTRY_POINT_ABI = [
   {
     type: "function",
     name: "getUserOpHash",

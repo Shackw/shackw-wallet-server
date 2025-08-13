@@ -20,10 +20,10 @@ export class RpcController {
     const result = await (async () => {
       switch (method) {
         case "eth_sendUserOperation": {
-          return await this.userOperationService.send(params);
+          return await this.userOperationService.send(params[0]);
         }
         case "pm_preparePaymasterAndData": {
-          return await this.userOperationService.prepare(params);
+          return await this.userOperationService.prepare(params[0]);
         }
       }
     })();

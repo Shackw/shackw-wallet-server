@@ -1,4 +1,4 @@
-export const PaymasterAbi = [
+export const PAYMASTER_ABI = [
   {
     type: "function",
     name: "getTransferFee",

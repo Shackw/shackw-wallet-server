@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { PublicClient } from "viem";
 
-import { PaymasterAbi } from "../../../common/abis/paymasterAbi";
+import { PAYMASTER_ABI } from "../../../common/abis/paymasterAbi";
 import { RpcInternalErrorException } from "../../../common/jsonrpc/exceptions";
 import { PAYMASTER_REGISTRY, VIEM_PUBLIC_CLIENT } from "../common/di.tokens";
 import { PaymasterRegistry } from "../providers/registries.provider";
@@ -27,7 +27,7 @@ export class ViemPaymasterRepository implements IPaymasterRepository {
     try {
       const fee = await this.client.readContract({
         address: address,
-        abi: PaymasterAbi,
+        abi: PAYMASTER_ABI,
         functionName: "getTransferFee",
         args: [amount]
       });

@@ -2,7 +2,7 @@ import { Injectable, Inject } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Hex, PublicClient } from "viem";
 
-import { EntryPointAbi } from "../../../common/abis/entryPointAbi";
+import { ENTRY_POINT_ABI } from "../../../common/abis/entryPointAbi";
 import { RpcInternalErrorException } from "../../../common/jsonrpc/exceptions";
 import { VIEM_PUBLIC_CLIENT } from "../common/di.tokens";
 import { UserOperationModel } from "../types/userOperation.types";
@@ -26,7 +26,7 @@ export class ViemEntryPointRepository implements IEntryPointRepository {
     try {
       const hash = await this.client.readContract({
         address: this.entryPoint,
-        abi: EntryPointAbi,
+        abi: ENTRY_POINT_ABI,
         functionName: "getUserOpHash",
         args: [userOp]
       });
