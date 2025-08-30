@@ -7,7 +7,6 @@ export type BuildEnv = EnvModel["NODE_ENV"];
 
 export const ENV: EnvModel = v.parse(EnvSchema, {
   NODE_ENV: process.env.NODE_ENV,
-  RPC_PROVIDER: process.env.RPC_PROVIDER,
   SPONSOR_PK: process.env.SPONSOR_PK,
   JPYC_TOKEN_ADDRESS: process.env.JPYC_TOKEN_ADDRESS,
   USDC_TOKEN_ADDRESS: process.env.USDC_TOKEN_ADDRESS,
@@ -15,7 +14,7 @@ export const ENV: EnvModel = v.parse(EnvSchema, {
   FEE_BPS: process.env.FEE_BPS,
   JPYC_FEE_CAP_UNITS: process.env.JPYC_FEE_CAP_UNITS,
   USDC_FEE_CAP_UNITS: process.env.USDC_FEE_CAP_UNITS,
-  EURC_FEE_CAP_UNIT: process.env.EURC_FEE_CAP_UNITS
+  EURC_FEE_CAP_UNITS: process.env.EURC_FEE_CAP_UNITS
 });
 
 export const { NODE_ENV } = ENV;

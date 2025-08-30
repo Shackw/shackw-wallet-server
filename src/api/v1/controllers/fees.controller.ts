@@ -6,12 +6,12 @@ import { ValibotPipe } from "@/shared/pipes/valibot.pipe";
 import { EstimateFeeDto, EstimateFeeDtoSchema } from "../dtos/fees.dto";
 import { FeesService } from "../services/fees.service";
 
-@Controller("api/v1/fees")
+@Controller("api/v1")
 @UseFilters(HttpExceptionsFilter)
 export class FeesController {
   constructor(private feesService: FeesService) {}
 
-  @Post("\\:estimate")
+  @Post("fees\\:estimate")
   @UsePipes(new ValibotPipe(EstimateFeeDtoSchema))
   async estimate(@Body() dto: EstimateFeeDto) {
     const fee = await this.feesService.estimateFee(dto);

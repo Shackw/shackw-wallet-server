@@ -1,6 +1,6 @@
 import { Address } from "viem";
 
-import { Token } from "@/registries/token.registry";
+import { Currency, Token } from "@/registries/token.registry";
 
 export type FeeModel = {
   token: {
@@ -21,7 +21,7 @@ export type FeeModel = {
     bps: number;
     cap: {
       minUnit: bigint;
-      currency: Token;
+      currency: Currency;
     };
   };
 };

@@ -15,6 +15,7 @@ export type TokenMeta = {
   address: Address;
   decimals: number;
   baseUnit: bigint;
+  minTransferAmountUnits: bigint;
   contract: GetContractReturnType;
 };
 
@@ -24,7 +25,8 @@ export const TOKEN_REGISTRY = {
     currency: "JPY",
     address: ENV.JPYC_TOKEN_ADDRESS,
     decimals: 18,
-    baseUnit: 1_000_000_000_000_000_000n,
+    baseUnit: 10n ** 18n,
+    minTransferAmountUnits: 100n * 10n ** 18n,
     contract: getContract({ abi: erc20Abi, address: ENV.JPYC_TOKEN_ADDRESS, client: VIEM_PUBLIC_CLIENT })
   },
   USDC: {
@@ -32,7 +34,8 @@ export const TOKEN_REGISTRY = {
     currency: "USD",
     address: ENV.USDC_TOKEN_ADDRESS,
     decimals: 6,
-    baseUnit: 1_000_000n,
+    baseUnit: 10n ** 6n,
+    minTransferAmountUnits: 10n ** 6n,
     contract: getContract({ abi: erc20Abi, address: ENV.USDC_TOKEN_ADDRESS, client: VIEM_PUBLIC_CLIENT })
   },
   EURC: {
@@ -40,7 +43,8 @@ export const TOKEN_REGISTRY = {
     currency: "EUR",
     address: ENV.EURC_TOKEN_ADDRESS,
     decimals: 6,
-    baseUnit: 1_000_000n,
+    baseUnit: 10n ** 6n,
+    minTransferAmountUnits: 10n ** 6n,
     contract: getContract({ abi: erc20Abi, address: ENV.EURC_TOKEN_ADDRESS, client: VIEM_PUBLIC_CLIENT })
   }
 } as const satisfies Record<Token, TokenMeta>;

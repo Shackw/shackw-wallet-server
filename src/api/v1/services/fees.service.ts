@@ -1,9 +1,8 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 
 import { FEE_REGISTORY } from "@/registries/fee.registry";
 import { TOKEN_REGISTRY } from "@/registries/token.registry";
-import { calcFeeByBps } from "@/utils/fee.util";
-import { toDisimals } from "@/utils/token-units.util";
+import { toDecimals, toMinUnits } from "@/utils/token-units.util";
 
 import { EstimateFeeDto } from "../dtos/fees.dto";
 import { FeeModel } from "../models/fee.model";
@@ -20,40 +19,51 @@ export class FeesService {
     const { amountMinUnits, token, feeToken } = input;
 
     const bps = FEE_REGISTORY[token.symbol].bps;
-    const maxFee = FEE_REGISTORY[feeToken.symbol].cap;
+    const maxFeeDecimals = FEE_REGISTORY[feeToken.symbol].capUnits;
 
-    const payload: FetchExchangePayload = {
-      base: TOKEN_REGISTRY[token.symbol].currency,
-      symbol: TOKEN_REGISTRY[feeToken.symbol].currency
-    };
-    const rate = await this.exchangeGateway.fetch(payload);
-
-    const feeByBps = calcFeeByBps(amountMinUnits, bps) * BigInt(rate);
-
-    const applyFee = maxFee > feeByBps ? feeByBps : maxFee;
-
-    return {
-      token: {
-        symbol: token.symbol,
-        address: TOKEN_REGISTRY[token.symbol].address,
-        decimals: TOKEN_REGISTRY[token.symbol].decimals
-      },
-      feeToken: {
-        symbol: feeToken.symbol,
-        address: TOKEN_REGISTRY[feeToken.symbol].address,
-        decimals: TOKEN_REGISTRY[feeToken.symbol].decimals
-      },
-      feeMinUnits: applyFee,
-      feeDecimals: toDisimals(applyFee, feeToken.symbol),
-      policy: {
-        method: "bps_with_cap",
-        version: "v1",
-        bps,
-        cap: {
-          minUnit: maxFee,
-          currency: feeToken.symbol
-        }
+    const rate = await (async () => {
+      if (token.symbol !== feeToken.symbol) {
+        const payload: FetchExchangePayload = {
+          base: TOKEN_REGISTRY[token.symbol].currency,
+          symbol: TOKEN_REGISTRY[feeToken.symbol].currency
+        };
+        return await this.exchangeGateway.fetch(payload);
       }
-    };
+      return 1;
+    })();
+
+    try {
+      const amountDecimals = toDecimals(amountMinUnits, token.symbol);
+      const feeDecimalsByBps = amountDecimals * rate * (1 / bps);
+
+      const feeDecimals = maxFeeDecimals > feeDecimalsByBps ? feeDecimalsByBps : maxFeeDecimals;
+
+      return {
+        token: {
+          symbol: token.symbol,
+          address: TOKEN_REGISTRY[token.symbol].address,
+          decimals: TOKEN_REGISTRY[token.symbol].decimals
+        },
+        feeToken: {
+          symbol: feeToken.symbol,
+          address: TOKEN_REGISTRY[feeToken.symbol].address,
+          decimals: TOKEN_REGISTRY[feeToken.symbol].decimals
+        },
+        feeMinUnits: toMinUnits(feeDecimals, feeToken.symbol),
+        feeDecimals,
+        policy: {
+          method: "bps_with_cap",
+          version: "v1",
+          bps,
+          cap: {
+            minUnit: toMinUnits(maxFeeDecimals, feeToken.symbol),
+            currency: TOKEN_REGISTRY[feeToken.symbol].currency
+          }
+        }
+      };
+    } catch (error) {
+      Logger.error(error);
+      throw new InternalServerErrorException("Failed to compute the fee.");
+    }
   }
 }

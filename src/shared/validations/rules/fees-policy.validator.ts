@@ -1,6 +1,6 @@
 import * as v from "valibot";
 
-import { TOKENS } from "@/configs/token.config";
+import { TOKENS } from "@/registries/token.registry";
 
 import { strToBigintValidator } from "./str-to-bigint.validator";
 

@@ -10,18 +10,30 @@ export const EnvSchema = v.object({
   EURC_TOKEN_ADDRESS: v.pipe(v.string(), addressValidator()),
   FEE_BPS: v.pipe(
     v.string(),
-    v.transform(s => Number(s))
+    v.transform(s => Number(s)),
+    v.number(),
+    v.minValue(0),
+    v.maxValue(1000)
   ),
   JPYC_FEE_CAP_UNITS: v.pipe(
     v.string(),
-    v.transform(s => Number(s))
+    v.transform(s => Number(s)),
+    v.number(),
+    v.minValue(0),
+    v.maxValue(500)
   ),
   USDC_FEE_CAP_UNITS: v.pipe(
     v.string(),
-    v.transform(s => Number(s))
+    v.transform(s => Number(s)),
+    v.number(),
+    v.minValue(0),
+    v.maxValue(5)
   ),
   EURC_FEE_CAP_UNITS: v.pipe(
     v.string(),
-    v.transform(s => Number(s))
+    v.transform(s => Number(s)),
+    v.number(),
+    v.minValue(0),
+    v.maxValue(4.5)
   )
 });
