@@ -15,6 +15,8 @@ export class FeesService {
     @Inject(EXCHANGE_GATEWAY)
     private readonly exchangeGateway: IExchangeGateway
   ) {}
+
+  // TODO 為替取得時、キャッシュを適応する
   async estimateFee(input: EstimateFeeDto): Promise<FeeModel> {
     const { amountMinUnits, token, feeToken } = input;
 
@@ -62,7 +64,7 @@ export class FeesService {
         }
       };
     } catch (error) {
-      Logger.error(error);
+      Logger.error("FeesService.estimateFee", error);
       throw new InternalServerErrorException("Failed to compute the fee.");
     }
   }

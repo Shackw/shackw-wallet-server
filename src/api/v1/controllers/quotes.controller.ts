@@ -1,9 +1,20 @@
-import { Controller, UseFilters, UsePipes } from "@nestjs/common";
+import { Body, Controller, Post, UseFilters, UsePipes } from "@nestjs/common";
 
 import { HttpExceptionsFilter } from "@/shared/filters/http-exception.filter";
 import { ValibotPipe } from "@/shared/pipes/valibot.pipe";
 
-@Controller("api/v1/quotes")
-@UsePipes(ValibotPipe)
+import { CreateQuoteDto, CreateQuoteDtoSchema } from "../dtos/quotes.dto";
+import { QuotesService } from "../services/quotes.service";
+
+@Controller("api/v1")
 @UseFilters(HttpExceptionsFilter)
-export class QuotesController {}
+export class QuotesController {
+  constructor(private quotesService: QuotesService) {}
+
+  @Post("quotes")
+  @UsePipes(new ValibotPipe(CreateQuoteDtoSchema))
+  async estimate(@Body() dto: CreateQuoteDto) {
+    const quote = await this.quotesService.createQuote(dto);
+    return quote;
+  }
+}

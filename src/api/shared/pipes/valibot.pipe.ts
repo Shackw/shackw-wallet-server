@@ -11,7 +11,7 @@ export class ValibotPipe<S extends v.BaseSchema<unknown, unknown, v.BaseIssue<un
     const r = v.safeParse(this.schema, value);
     if (r.success) return r.output;
 
-    const messages = r.issues.map(i => `${i.message}`.trim());
+    const messages = r.issues.map(i => `${i.message}`.trim().replace(/"([A-Za-z0-9_.[\]-]+)"/g, "$1"));
     throw new BadRequestException(messages);
   }
 }

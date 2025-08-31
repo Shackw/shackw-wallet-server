@@ -2,17 +2,20 @@ import * as v from "valibot";
 
 import { TOKEN_REGISTRY } from "@/registries/token.registry";
 import { toDecimals } from "@/utils/token-units.util";
+import { addressValidator } from "@/validations/rules/address.validator";
 import { chainIdValidator } from "@/validations/rules/chain-id.validator";
 import { tokenValidator } from "@/validations/rules/token.validator";
 import { unsignedBigintFromStringValidator } from "@/validations/rules/unsigned-bigint-from-string.validator";
 
-export const EstimateFeeDtoSchema = v.pipe(
+export const CreateQuoteDtoSchema = v.pipe(
   v.object(
     {
       chainId: chainIdValidator(),
-      amountMinUnits: unsignedBigintFromStringValidator("amountMinUnits"),
+      sender: addressValidator("sender"),
+      recipient: addressValidator("recipient"),
       token: tokenValidator("token"),
-      feeToken: tokenValidator("feeToken")
+      feeToken: tokenValidator("feeToken"),
+      amountMinUnits: unsignedBigintFromStringValidator("amountMinUnits")
     },
     issue => `${issue.expected} is required`
   ),
@@ -33,4 +36,4 @@ export const EstimateFeeDtoSchema = v.pipe(
     ["amountMinUnits"]
   )
 );
-export type EstimateFeeDto = v.InferOutput<typeof EstimateFeeDtoSchema>;
+export type CreateQuoteDto = v.InferOutput<typeof CreateQuoteDtoSchema>;

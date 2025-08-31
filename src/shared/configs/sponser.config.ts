@@ -4,9 +4,7 @@ import { privateKeyToAccount } from "viem/accounts";
 import { DEFAULT_CHAIN } from "./chain.config";
 import { ENV } from "./env.config";
 
-export const { SPONSOR_PK } = ENV;
-
-export const SPONSOR_ACCOUNT = privateKeyToAccount(SPONSOR_PK);
+export const SPONSOR_ACCOUNT = privateKeyToAccount(ENV.SPONSOR_PK);
 
 export const SPONSOR_CLIENT: WalletClient<Transport, Chain, Account> = createWalletClient({
   account: SPONSOR_ACCOUNT,

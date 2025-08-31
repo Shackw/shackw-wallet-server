@@ -1,0 +1,141 @@
+import { BadRequestException, ForbiddenException, Injectable, Logger } from "@nestjs/common";
+import { getContract } from "viem";
+import { verifyAuthorization } from "viem/utils";
+
+import { ENV } from "@/configs/env.config";
+import { SPONSOR_CLIENT } from "@/configs/sponser.config";
+import { VIEM_PUBLIC_CLIENT } from "@/configs/viem.config";
+import { DELEGATE_ABI } from "@/evm/abis/delegate.abi";
+import { QuoteToken } from "@/evm/types/quote-token.type";
+import { erc20TransferCall, hashExecutionIntent } from "@/evm/utils/evm-intent.util";
+import { decodeQuoteToken } from "@/evm/utils/quote-token.util";
+import { ADDRESS_TO_TOKEN, TOKEN_REGISTRY } from "@/registries/token.registry";
+
+import { TransferTokenDto } from "../dtos/token.dto";
+
+@Injectable()
+export class TokenService {
+  async transferToken(input: TransferTokenDto): Promise<unknown> {
+    const { quoteToken, authorization } = input;
+
+    try {
+      // 1) Verify & decode quoteToken (HMAC integrity)
+      let decodedToken: QuoteToken;
+      try {
+        decodedToken = decodeQuoteToken(quoteToken, ENV.QUOTE_TOKEN_SECRET);
+      } catch {
+        throw new BadRequestException("Invalid quoteToken.");
+      }
+
+      const {
+        v,
+        chainId,
+        sender,
+        recipient,
+        token,
+        feeToken,
+        amountMinUnits,
+        feeMinUnits,
+        delegate,
+        sponsor,
+        expiresAt,
+        nonce32,
+        callHash
+      } = decodedToken;
+
+      // 2) Basic validation: version and expiration (with small leeway)
+      if (v !== 1) throw new BadRequestException("Unsupported quoteToken version.");
+
+      const nowSec = BigInt(Math.floor(Date.now() / 1000));
+      if (nowSec > expiresAt + 15n) throw new ForbiddenException("Quote has expired.");
+
+      // 2b) Environment consistency
+      if (delegate !== ENV.DELEGATE_ADDRESS) throw new BadRequestException("Delegate mismatch.");
+      if (sponsor !== ENV.SPONSOR_ADDRESS) throw new BadRequestException("Sponsor mismatch.");
+
+      // 3) Rebuild calls and recompute callHash to ensure integrity
+      const transferAmountCallData = erc20TransferCall({
+        token,
+        to: recipient,
+        amountMinUnits
+      });
+      const transferFeeCallData = erc20TransferCall({
+        token: feeToken,
+        to: sponsor,
+        amountMinUnits: feeMinUnits
+      });
+      const expectedCallHash = hashExecutionIntent({
+        chainId,
+        sender,
+        delegate,
+        sponsor,
+        calls: [transferAmountCallData, transferFeeCallData],
+        expiresAtSec: expiresAt,
+        nonce32
+      });
+      if (callHash !== expectedCallHash) throw new BadRequestException("Call hash mismatch.");
+
+      // 4) Replay protection: ensure callHash not used on sender EOA code
+      const delegateAtSender = getContract({
+        abi: DELEGATE_ABI,
+        address: sender,
+        client: VIEM_PUBLIC_CLIENT
+      });
+      const used = await delegateAtSender.read.used([callHash]);
+      if (used) throw new BadRequestException("Call hash already used.");
+
+      // 5) Verify EIP-7702 authorization for the sender EOA
+      const validAuth = await verifyAuthorization({ address: sender, authorization });
+      if (!validAuth) throw new ForbiddenException("Invalid 7702 authorization.");
+
+      // 6) Sender balance checks for token and feeToken
+      const tokenSym = ADDRESS_TO_TOKEN[token.toLowerCase()];
+      if (!tokenSym) throw new BadRequestException("Unknown token address");
+
+      const feeTokenSym = ADDRESS_TO_TOKEN[feeToken.toLowerCase()];
+      if (!feeTokenSym) throw new BadRequestException("Unknown feeToken address");
+
+      const erc20Contract = TOKEN_REGISTRY[tokenSym].contract;
+      const balToken = await erc20Contract.read.balanceOf([sender]);
+
+      if (tokenSym === feeTokenSym) {
+        const required = amountMinUnits + feeMinUnits;
+        if (balToken < required)
+          throw new BadRequestException(
+            `Insufficient ${tokenSym} balance: required ${required} minimal units (amount ${amountMinUnits} + fee ${feeMinUnits}), but sender has ${balToken}.`
+          );
+      } else {
+        const erc20ContractWithFee = TOKEN_REGISTRY[feeTokenSym].contract;
+        const balFeeToken = await erc20ContractWithFee.read.balanceOf([sender]);
+
+        if (balToken < amountMinUnits)
+          throw new BadRequestException(
+            `Insufficient ${tokenSym} balance: required ${amountMinUnits} minimal units, but sender has ${balToken}.`
+          );
+        if (balFeeToken < feeMinUnits)
+          throw new BadRequestException(
+            `Insufficient ${feeTokenSym} balance for fee: required ${feeMinUnits} minimal units, but sender has ${balFeeToken}.`
+          );
+      }
+
+      // 7) Simulate and send execute() to the sender EOA (EIP-7702)
+      const { request } = await VIEM_PUBLIC_CLIENT.simulateContract({
+        abi: DELEGATE_ABI,
+        address: sender,
+        functionName: "execute",
+        args: [[transferAmountCallData, transferFeeCallData], true, expectedCallHash],
+        account: ENV.SPONSOR_ADDRESS,
+        authorizationList: [authorization],
+        value: 0n
+      });
+
+      const txHash = await SPONSOR_CLIENT.writeContract(request);
+      const receipt = await VIEM_PUBLIC_CLIENT.waitForTransactionReceipt({ hash: txHash });
+
+      return { txHash, receipt };
+    } catch (error) {
+      Logger.error("TokenService.transferToken", error);
+      throw error;
+    }
+  }
+}
