@@ -12,6 +12,6 @@ export type QuoteToken = {
   delegate: Address;
   sponsor: Address;
   expiresAt: bigint;
-  nonce32: Hex;
+  nonce: bigint;
   callHash: Hex;
 };

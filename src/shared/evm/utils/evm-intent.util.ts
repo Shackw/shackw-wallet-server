@@ -17,14 +17,6 @@ export function erc20TransferCall(params: { token: Address; to: Address; amountM
 }
 
 export function hashExecutionIntent(i: ExecutionIntent): Hex {
-  const encoded = encodeAbiParameters(INTENT_TYPES, [
-    BigInt(i.chainId),
-    i.sender,
-    i.delegate,
-    i.sponsor,
-    i.calls,
-    i.expiresAtSec,
-    i.nonce32
-  ]);
+  const encoded = encodeAbiParameters(INTENT_TYPES, [BigInt(i.chainId), i.sender, i.calls, i.expiresAtSec, i.nonce]);
   return keccak256(encoded);
 }

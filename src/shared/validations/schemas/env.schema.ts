@@ -7,6 +7,7 @@ export const EnvSchema = v.object({
   SPONSOR_ADDRESS: addressValidator("SPONSOR_ADDRESS"),
   SPONSOR_PK: hex32Validator("SPONSOR_PK"),
   DELEGATE_ADDRESS: addressValidator("DELEGATE_ADDRESS"),
+  REGISTRY_ADDRESS: addressValidator("REGISTRY_ADDRESS"),
   QUOTE_TOKEN_SECRET: hex32Validator("QUOTE_TOKEN_SECRET"),
   JPYC_TOKEN_ADDRESS: addressValidator("JPYC_TOKEN_ADDRESS"),
   USDC_TOKEN_ADDRESS: addressValidator("USDC_TOKEN_ADDRESS"),

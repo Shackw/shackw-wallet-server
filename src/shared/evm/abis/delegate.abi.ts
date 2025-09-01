@@ -1,147 +1,88 @@
 export const DELEGATE_ABI = [
-  // ------------ Constructor ------------
   {
-    inputs: [
-      { internalType: "address", name: "_sponsor", type: "address" },
-      { internalType: "address", name: "initialOwner", type: "address" }
-    ],
+    type: "constructor",
     stateMutability: "nonpayable",
-    type: "constructor"
-  },
-
-  // ------------- Errors ---------------
-  { inputs: [], name: "BadMsgValue", type: "error" },
-  {
-    inputs: [
-      { internalType: "uint256", name: "index", type: "uint256" },
-      { internalType: "address", name: "to", type: "address" }
-    ],
-    name: "EthTransferFailed",
-    type: "error"
-  },
-  { inputs: [], name: "OnlySponsor", type: "error" },
-  {
-    inputs: [{ internalType: "bytes32", name: "callHash", type: "bytes32" }],
-    name: "AlreadyUsed",
-    type: "error"
-  },
-  { inputs: [], name: "SponsorZeroAddress", type: "error" },
-  {
-    inputs: [
-      { internalType: "address", name: "current", type: "address" },
-      { internalType: "address", name: "candidate", type: "address" }
-    ],
-    name: "SponsorUnchanged",
-    type: "error"
-  },
-
-  // ------------- Events ---------------
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, internalType: "uint256", name: "index", type: "uint256" },
-      { indexed: true, internalType: "address", name: "to", type: "address" },
-      { indexed: false, internalType: "uint256", name: "value", type: "uint256" },
-      { indexed: false, internalType: "bool", name: "success", type: "bool" },
-      { indexed: false, internalType: "bytes", name: "returnData", type: "bytes" }
-    ],
-    name: "CallResult",
-    type: "event"
-  },
-  {
-    anonymous: false,
-    inputs: [{ indexed: true, internalType: "bytes32", name: "callHash", type: "bytes32" }],
-    name: "CallHashConsumed",
-    type: "event"
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, internalType: "address", name: "previousSponsor", type: "address" },
-      { indexed: true, internalType: "address", name: "newSponsor", type: "address" }
-    ],
-    name: "SponsorUpdated",
-    type: "event"
-  },
-  // Ownable
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, internalType: "address", name: "previousOwner", type: "address" },
-      { indexed: true, internalType: "address", name: "newOwner", type: "address" }
-    ],
-    name: "OwnershipTransferred",
-    type: "event"
-  },
-
-  // ------------ Read funcs ------------
-  {
-    inputs: [],
-    name: "sponsor",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
-    name: "used",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
-    stateMutability: "view",
-    type: "function"
-  },
-  // Ownable
-  {
-    inputs: [],
-    name: "owner",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
-    stateMutability: "view",
-    type: "function"
-  },
-
-  // ----------- Write funcs ------------
-  {
     inputs: [
       {
+        internalType: "address",
+        name: "registry_",
+        type: "address"
+      }
+    ]
+  },
+  {
+    type: "function",
+    stateMutability: "view",
+    name: "registry",
+    inputs: [],
+    outputs: [
+      {
+        internalType: "contract IRegistry",
+        name: "",
+        type: "address"
+      }
+    ]
+  },
+  {
+    type: "function",
+    stateMutability: "payable",
+    name: "execute",
+    inputs: [
+      {
+        internalType: "struct HinomaruDelegate.Call[]",
+        name: "calls",
+        type: "tuple[]",
         components: [
           { internalType: "address", name: "to", type: "address" },
           { internalType: "uint256", name: "value", type: "uint256" },
           { internalType: "bytes", name: "data", type: "bytes" }
-        ],
-        internalType: "struct HinomaruDelegation.Call[]",
-        name: "calls",
-        type: "tuple[]"
+        ]
       },
-      { internalType: "bool", name: "revertOnFail", type: "bool" },
+      { internalType: "uint256", name: "nonce", type: "uint256" },
+      { internalType: "uint256", name: "expiresAtSec", type: "uint256" },
       { internalType: "bytes32", name: "callHash", type: "bytes32" }
     ],
-    name: "execute",
-    outputs: [{ internalType: "bytes[]", name: "results", type: "bytes[]" }],
-    stateMutability: "payable",
-    type: "function"
+    outputs: []
   },
   {
-    inputs: [{ internalType: "address", name: "newSponsor", type: "address" }],
-    name: "setSponsor",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  // Ownable
-  {
-    inputs: [],
-    name: "renounceOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function"
+    type: "event",
+    anonymous: false,
+    name: "Executed",
+    inputs: [
+      { indexed: true, internalType: "bytes32", name: "callHash", type: "bytes32" },
+      { indexed: true, internalType: "address", name: "sponsor", type: "address" },
+      { indexed: true, internalType: "address", name: "eoa", type: "address" }
+    ]
   },
   {
-    inputs: [{ internalType: "address", name: "newOwner", type: "address" }],
-    name: "transferOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function"
+    type: "error",
+    name: "OnlySponsor",
+    inputs: []
   },
-
-  // ------------- Receive --------------
-  { stateMutability: "payable", type: "receive" }
+  {
+    type: "error",
+    name: "BadMsgValue",
+    inputs: []
+  },
+  {
+    type: "error",
+    name: "InvalidCallHash",
+    inputs: [
+      { internalType: "bytes32", name: "expected", type: "bytes32" },
+      { internalType: "bytes32", name: "got", type: "bytes32" }
+    ]
+  },
+  {
+    type: "error",
+    name: "SubcallFailed",
+    inputs: [
+      { internalType: "uint256", name: "index", type: "uint256" },
+      { internalType: "address", name: "to", type: "address" },
+      { internalType: "bytes", name: "revertData", type: "bytes" }
+    ]
+  },
+  {
+    type: "receive",
+    stateMutability: "payable"
+  }
 ] as const;

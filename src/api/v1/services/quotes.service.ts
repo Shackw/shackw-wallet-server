@@ -1,10 +1,10 @@
-import { randomBytes } from "crypto";
-
 import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { add } from "date-fns";
-import { Hex } from "viem";
+import { getContract } from "viem";
 
 import { ENV } from "@/configs/env.config";
+import { VIEM_PUBLIC_CLIENT } from "@/configs/viem.config";
+import { REGISTRY_ABI } from "@/evm/abis/registry.abi";
 import { erc20TransferCall, hashExecutionIntent } from "@/evm/utils/evm-intent.util";
 import { encodeQuoteToken } from "@/evm/utils/quote-token.util";
 import { TOKEN_REGISTRY } from "@/registries/token.registry";
@@ -22,11 +22,15 @@ export class QuotesService {
   async createQuote(input: CreateQuoteDto): Promise<QuoteModel> {
     const { chainId, sender, recipient, token, feeToken, amountMinUnits } = input;
 
+    const registryContract = getContract({
+      abi: REGISTRY_ABI,
+      address: ENV.REGISTRY_ADDRESS,
+      client: VIEM_PUBLIC_CLIENT
+    });
+
     const now = new Date();
     const expiresAt = add(now, { minutes: 2 });
     const expiresAtSec = BigInt(Math.floor(expiresAt.getTime() / 1000));
-
-    const nonce32 = ("0x" + randomBytes(32).toString("hex")) as Hex;
 
     const { feeMinUnits, policy } = await this.feesService.estimateFee({
       chainId,
@@ -47,14 +51,14 @@ export class QuotesService {
         amountMinUnits: feeMinUnits
       });
 
+      const nonce = await registryContract.read.nextNonce([sender]);
+
       const callHash = hashExecutionIntent({
         chainId,
         sender,
-        delegate: ENV.DELEGATE_ADDRESS,
-        sponsor: ENV.SPONSOR_ADDRESS,
         calls: [transferAmountCallData, transferFeeCallData],
         expiresAtSec,
-        nonce32
+        nonce
       });
 
       const quoteToken = encodeQuoteToken(
@@ -71,7 +75,7 @@ export class QuotesService {
           sponsor: ENV.SPONSOR_ADDRESS,
           expiresAt: expiresAtSec,
           callHash,
-          nonce32
+          nonce
         },
         ENV.QUOTE_TOKEN_SECRET
       );

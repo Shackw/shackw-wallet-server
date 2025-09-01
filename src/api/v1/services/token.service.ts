@@ -6,6 +6,7 @@ import { ENV } from "@/configs/env.config";
 import { SPONSOR_CLIENT } from "@/configs/sponser.config";
 import { VIEM_PUBLIC_CLIENT } from "@/configs/viem.config";
 import { DELEGATE_ABI } from "@/evm/abis/delegate.abi";
+import { REGISTRY_ABI } from "@/evm/abis/registry.abi";
 import { QuoteToken } from "@/evm/types/quote-token.type";
 import { erc20TransferCall, hashExecutionIntent } from "@/evm/utils/evm-intent.util";
 import { decodeQuoteToken } from "@/evm/utils/quote-token.util";
@@ -18,6 +19,11 @@ export class TokenService {
   async transferToken(input: TransferTokenDto): Promise<unknown> {
     const { quoteToken, authorization } = input;
 
+    const registryContract = getContract({
+      abi: REGISTRY_ABI,
+      address: ENV.REGISTRY_ADDRESS,
+      client: VIEM_PUBLIC_CLIENT
+    });
     try {
       // 1) Verify & decode quoteToken (HMAC integrity)
       let decodedToken: QuoteToken;
@@ -39,19 +45,21 @@ export class TokenService {
         delegate,
         sponsor,
         expiresAt,
-        nonce32,
+        nonce,
         callHash
       } = decodedToken;
 
-      // 2) Basic validation: version and expiration (with small leeway)
-      if (v !== 1) throw new BadRequestException("Unsupported quoteToken version.");
+      // 2) Basic validation: version & expiration
+      if (v !== 1) throw new BadRequestException("Unsupported quoteToken version: v must be 1.");
 
       const nowSec = BigInt(Math.floor(Date.now() / 1000));
-      if (nowSec > expiresAt + 15n) throw new ForbiddenException("Quote has expired.");
+      if (nowSec > expiresAt + 15n) throw new ForbiddenException("Quote expired (15s grace).");
 
       // 2b) Environment consistency
-      if (delegate !== ENV.DELEGATE_ADDRESS) throw new BadRequestException("Delegate mismatch.");
-      if (sponsor !== ENV.SPONSOR_ADDRESS) throw new BadRequestException("Sponsor mismatch.");
+      if (delegate !== ENV.DELEGATE_ADDRESS)
+        throw new BadRequestException(`Delegate mismatch: expected ${ENV.DELEGATE_ADDRESS}, got ${delegate}.`);
+      if (sponsor !== ENV.SPONSOR_ADDRESS)
+        throw new BadRequestException(`Sponsor mismatch: expected ${ENV.SPONSOR_ADDRESS}, got ${sponsor}.`);
 
       // 3) Rebuild calls and recompute callHash to ensure integrity
       const transferAmountCallData = erc20TransferCall({
@@ -67,22 +75,19 @@ export class TokenService {
       const expectedCallHash = hashExecutionIntent({
         chainId,
         sender,
-        delegate,
-        sponsor,
         calls: [transferAmountCallData, transferFeeCallData],
         expiresAtSec: expiresAt,
-        nonce32
+        nonce
       });
-      if (callHash !== expectedCallHash) throw new BadRequestException("Call hash mismatch.");
+      if (callHash !== expectedCallHash)
+        throw new BadRequestException("Call hash mismatch: quoteToken payload does not match.");
 
-      // 4) Replay protection: ensure callHash not used on sender EOA code
-      const delegateAtSender = getContract({
-        abi: DELEGATE_ABI,
-        address: sender,
-        client: VIEM_PUBLIC_CLIENT
-      });
-      const used = await delegateAtSender.read.used([callHash]);
-      if (used) throw new BadRequestException("Call hash already used.");
+      // 4) Replay protection: ensure nonce is fresh
+      const expectedNonce = await registryContract.read.nextNonce([sender]);
+      if (nonce !== expectedNonce)
+        throw new BadRequestException(
+          `Stale nonce: quoteToken.nonce=${nonce.toString()} does not match registry.nextNonce=${expectedNonce.toString()} for ${sender}.`
+        );
 
       // 5) Verify EIP-7702 authorization for the sender EOA
       const validAuth = await verifyAuthorization({ address: sender, authorization });
@@ -90,10 +95,10 @@ export class TokenService {
 
       // 6) Sender balance checks for token and feeToken
       const tokenSym = ADDRESS_TO_TOKEN[token.toLowerCase()];
-      if (!tokenSym) throw new BadRequestException("Unknown token address");
+      if (!tokenSym) throw new BadRequestException(`Unknown token address: ${token}`);
 
       const feeTokenSym = ADDRESS_TO_TOKEN[feeToken.toLowerCase()];
-      if (!feeTokenSym) throw new BadRequestException("Unknown feeToken address");
+      if (!feeTokenSym) throw new BadRequestException(`Unknown feeToken address: ${feeToken}`);
 
       const erc20Contract = TOKEN_REGISTRY[tokenSym].contract;
       const balToken = await erc20Contract.read.balanceOf([sender]);
@@ -123,12 +128,11 @@ export class TokenService {
         abi: DELEGATE_ABI,
         address: sender,
         functionName: "execute",
-        args: [[transferAmountCallData, transferFeeCallData], true, expectedCallHash],
+        args: [[transferAmountCallData, transferFeeCallData], expectedNonce, expiresAt, expectedCallHash],
         account: ENV.SPONSOR_ADDRESS,
         authorizationList: [authorization],
         value: 0n
       });
-
       const txHash = await SPONSOR_CLIENT.writeContract(request);
       const receipt = await VIEM_PUBLIC_CLIENT.waitForTransactionReceipt({ hash: txHash });
 

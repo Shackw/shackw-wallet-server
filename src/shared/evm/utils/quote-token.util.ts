@@ -23,7 +23,7 @@ export function encodeQuoteToken(p: QuoteToken, secret: Hex): string {
     p.delegate,
     p.sponsor,
     p.expiresAt,
-    p.nonce32,
+    p.nonce,
     p.callHash
   ]);
 
@@ -58,7 +58,7 @@ export function decodeQuoteToken(quoteToken: string, secret: Hex): QuoteToken {
     Address,
     Address,
     bigint,
-    Hex,
+    bigint,
     Hex
   ];
 
@@ -74,7 +74,7 @@ export function decodeQuoteToken(quoteToken: string, secret: Hex): QuoteToken {
     delegate,
     sponsor,
     expiresAt,
-    nonce32,
+    nonce,
     callHash
   ] = decoded;
 
@@ -90,7 +90,7 @@ export function decodeQuoteToken(quoteToken: string, secret: Hex): QuoteToken {
     delegate,
     sponsor,
     expiresAt,
-    nonce32,
+    nonce,
     callHash
   };
 }

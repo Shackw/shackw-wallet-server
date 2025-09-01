@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from "@nestjs/common";
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Logger } from "@nestjs/common";
 
 import type { Response } from "express";
 
@@ -28,6 +28,12 @@ export class HttpExceptionsFilter implements ExceptionFilter {
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
     const errors = this.normalizeErrors(exception);
+
+    Logger.log({
+      statusCode: status,
+      errors,
+      timestamp: new Date().toISOString()
+    });
 
     res.status(status).json({
       statusCode: status,

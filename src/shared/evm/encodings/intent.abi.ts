@@ -10,10 +10,8 @@ export const CALL_TUPLE = {
 
 export const INTENT_TYPES = [
   { name: "chainId", type: "uint256" },
-  { name: "sender", type: "address" },
-  { name: "delegate", type: "address" },
   { name: "sponsor", type: "address" },
   CALL_TUPLE,
   { name: "expiresAt", type: "uint64" },
-  { name: "nonce32", type: "bytes32" }
+  { name: "nonce32", type: "uint256" }
 ] as const;
