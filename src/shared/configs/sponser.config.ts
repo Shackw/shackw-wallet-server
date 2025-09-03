@@ -9,5 +9,5 @@ export const SPONSOR_ACCOUNT = privateKeyToAccount(ENV.SPONSOR_PK);
 export const SPONSOR_CLIENT: WalletClient<Transport, Chain, Account> = createWalletClient({
   account: SPONSOR_ACCOUNT,
   chain: DEFAULT_CHAIN,
-  transport: http()
+  transport: http("https://sepolia.base.org")
 });

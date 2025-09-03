@@ -13,8 +13,8 @@ export class QuotesController {
 
   @Post("quotes")
   @UsePipes(new ValibotPipe(CreateQuoteDtoSchema))
-  async estimate(@Body() dto: CreateQuoteDto) {
-    const quote = await this.quotesService.createQuote(dto);
+  async estimate(@Body() body: CreateQuoteDto) {
+    const quote = await this.quotesService.createQuote(body);
     return quote;
   }
 }

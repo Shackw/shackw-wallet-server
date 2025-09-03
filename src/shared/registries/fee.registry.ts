@@ -1,5 +1,5 @@
 import { ENV } from "@/configs/env.config";
-import { toMinUnits } from "@/utils/token-units.util";
+import { toMinUnits } from "@/helpers/token-units.helper";
 
 import { Token } from "./token.registry";
 

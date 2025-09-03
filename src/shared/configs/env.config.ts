@@ -1,8 +1,6 @@
 import * as v from "valibot";
 
-import { EnvSchema } from "../validations/schemas/env.schema";
-
-export type Env = v.InferOutput<typeof EnvSchema>;
+import { Env, EnvSchema } from "../validations/schemas/env.schema";
 
 export const ENV: Env = v.parse(EnvSchema, {
   NODE_ENV: process.env.NODE_ENV,

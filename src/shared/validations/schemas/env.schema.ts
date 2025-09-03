@@ -41,3 +41,4 @@ export const EnvSchema = v.object({
     v.maxValue(4.5)
   )
 });
+export type Env = v.InferOutput<typeof EnvSchema>;

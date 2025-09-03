@@ -7,8 +7,8 @@ import { VIEM_PUBLIC_CLIENT } from "@/configs/viem.config";
 import { REGISTRY_ABI } from "@/evm/abis/registry.abi";
 import { erc20TransferCall, hashExecutionIntent } from "@/evm/utils/evm-intent.util";
 import { encodeQuoteToken } from "@/evm/utils/quote-token.util";
+import { toDecimals } from "@/helpers/token-units.helper";
 import { TOKEN_REGISTRY } from "@/registries/token.registry";
-import { toDecimals } from "@/utils/token-units.util";
 
 import { CreateQuoteDto } from "../dtos/quotes.dto";
 import { QuoteModel } from "../models/quote.model";
@@ -19,8 +19,8 @@ import { FeesService } from "./fees.service";
 export class QuotesService {
   constructor(private readonly feesService: FeesService) {}
 
-  async createQuote(input: CreateQuoteDto): Promise<QuoteModel> {
-    const { chainId, sender, recipient, token, feeToken, amountMinUnits } = input;
+  async createQuote(dto: CreateQuoteDto): Promise<QuoteModel> {
+    const { chainId, sender, recipient, token, feeToken, amountMinUnits } = dto;
 
     const registryContract = getContract({
       abi: REGISTRY_ABI,

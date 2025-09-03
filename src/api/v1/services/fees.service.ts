@@ -1,8 +1,8 @@
 import { Inject, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 
+import { toDecimals, toMinUnits } from "@/helpers/token-units.helper";
 import { FEE_REGISTORY } from "@/registries/fee.registry";
 import { TOKEN_REGISTRY } from "@/registries/token.registry";
-import { toDecimals, toMinUnits } from "@/utils/token-units.util";
 
 import { EstimateFeeDto } from "../dtos/fees.dto";
 import { FeeModel } from "../models/fee.model";
@@ -16,9 +16,8 @@ export class FeesService {
     private readonly exchangeGateway: IExchangeGateway
   ) {}
 
-  // TODO 為替取得時、キャッシュを適応する
-  async estimateFee(input: EstimateFeeDto): Promise<FeeModel> {
-    const { amountMinUnits, token, feeToken } = input;
+  async estimateFee(dto: EstimateFeeDto): Promise<FeeModel> {
+    const { amountMinUnits, token, feeToken } = dto;
 
     const bps = FEE_REGISTORY[token.symbol].bps;
     const maxFeeDecimals = FEE_REGISTORY[feeToken.symbol].capUnits;

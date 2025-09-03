@@ -13,8 +13,8 @@ export class TokensController {
 
   @Post("tokens\\:transfer")
   @UsePipes(new ValibotPipe(TransferTokenDtoSchema))
-  async estimate(@Body() dto: TransferTokenDto) {
-    const result = await this.tokenService.transferToken(dto);
+  async estimate(@Body() body: TransferTokenDto) {
+    const result = await this.tokenService.transferToken(body);
     return result;
   }
 }

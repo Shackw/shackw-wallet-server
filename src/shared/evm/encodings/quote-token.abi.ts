@@ -10,6 +10,6 @@ export const QUOTE_TOKEN_TYPES = [
   { name: "delegate", type: "address" },
   { name: "sponsor", type: "address" },
   { name: "expiresAt", type: "uint64" },
-  { name: "nonce32", type: "bytes32" },
+  { name: "nonce", type: "uint256" },
   { name: "callHash", type: "bytes32" }
 ] as const;

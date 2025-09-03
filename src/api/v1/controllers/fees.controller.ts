@@ -13,8 +13,8 @@ export class FeesController {
 
   @Post("fees\\:estimate")
   @UsePipes(new ValibotPipe(EstimateFeeDtoSchema))
-  async estimate(@Body() dto: EstimateFeeDto) {
-    const fee = await this.feesService.estimateFee(dto);
+  async estimate(@Body() body: EstimateFeeDto) {
+    const fee = await this.feesService.estimateFee(body);
     return fee;
   }
 }

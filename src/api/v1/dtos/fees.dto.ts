@@ -1,7 +1,7 @@
 import * as v from "valibot";
 
+import { toDecimals } from "@/helpers/token-units.helper";
 import { TOKEN_REGISTRY } from "@/registries/token.registry";
-import { toDecimals } from "@/utils/token-units.util";
 import { chainIdValidator } from "@/validations/rules/chain-id.validator";
 import { tokenValidator } from "@/validations/rules/token.validator";
 import { unsignedBigintFromStringValidator } from "@/validations/rules/unsigned-bigint-from-string.validator";
