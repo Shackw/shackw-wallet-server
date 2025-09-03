@@ -1,4 +1,4 @@
-import { Inject, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import { Inject, Injectable, InternalServerErrorException } from "@nestjs/common";
 
 import { toDecimals, toMinUnits } from "@/helpers/token-units.helper";
 import { FEE_REGISTORY } from "@/registries/fee.registry";
@@ -62,9 +62,8 @@ export class FeesService {
           }
         }
       };
-    } catch (error) {
-      Logger.error("FeesService.estimateFee", error);
-      throw new InternalServerErrorException("Failed to compute the fee.");
+    } catch (e) {
+      throw new InternalServerErrorException("Failed to compute the fee.", { cause: e });
     }
   }
 }

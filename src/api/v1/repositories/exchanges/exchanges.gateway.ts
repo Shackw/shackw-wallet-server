@@ -1,4 +1,4 @@
-import { BadGatewayException, Injectable, Logger } from "@nestjs/common";
+import { BadGatewayException, Injectable } from "@nestjs/common";
 import * as v from "valibot";
 
 import { restClient } from "@/clients/restClient";
@@ -20,11 +20,8 @@ export class HttpExchangeGateway implements IExchangeGateway {
       if (rate === undefined) throw new Error(`No exchange rate available.`);
 
       return rate;
-    } catch (error) {
-      Logger.error(error);
-
-      const reason = error instanceof Error ? error.message : String(error);
-      throw new BadGatewayException(`Failed to fetch exchange rate for ${base}/${symbol}: ${reason}`);
+    } catch (e) {
+      throw new BadGatewayException(`Failed to fetch exchange rate for ${base}/${symbol}`, { cause: e });
     }
   }
 }

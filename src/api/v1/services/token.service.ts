@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, Logger } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/common";
 import { getContract } from "viem";
 import { verifyAuthorization } from "viem/utils";
 
@@ -31,8 +31,8 @@ export class TokenService {
     let decodedToken: QuoteToken;
     try {
       decodedToken = decodeQuoteToken(quoteToken, ENV.QUOTE_TOKEN_SECRET);
-    } catch {
-      throw new BadRequestException("Invalid quoteToken.");
+    } catch (e) {
+      throw new BadRequestException("Invalid quoteToken.", { cause: e });
     }
 
     const {
@@ -139,15 +139,13 @@ export class TokenService {
     await VIEM_PUBLIC_CLIENT.simulateContract({
       ...DELEGATE_EXECUTE_TX,
       account: ENV.SPONSOR_ADDRESS
-    }).catch(error => {
-      Logger.error(error);
-      throw new BadRequestException("Simulation failed.");
+    }).catch(e => {
+      throw new BadRequestException("Simulation failed.", { cause: e });
     });
 
     // 7b) Send transaction; obtain txHash.
-    const txHash = await SPONSOR_CLIENT.writeContract(DELEGATE_EXECUTE_TX).catch(error => {
-      Logger.error(error);
-      throw new BadRequestException("Transaction send failed.");
+    const txHash = await SPONSOR_CLIENT.writeContract(DELEGATE_EXECUTE_TX).catch(e => {
+      throw new BadRequestException("Transaction send failed.", { cause: e });
     });
 
     // 7c) Fire-and-forget settlement worker.

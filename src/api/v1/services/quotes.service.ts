@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { add } from "date-fns";
 import { getContract } from "viem";
 
@@ -110,9 +110,8 @@ export class QuotesService {
         policy,
         serverTime: new Date()
       };
-    } catch (error) {
-      Logger.log("QuotesService.createQuote", error);
-      throw new InternalServerErrorException("Failed to create the quote.");
+    } catch (e) {
+      throw new InternalServerErrorException("Failed to create the quote.", { cause: e });
     }
   }
 }

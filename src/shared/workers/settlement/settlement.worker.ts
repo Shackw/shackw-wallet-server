@@ -30,7 +30,7 @@ export const startSettlementWebhookJob = (input: StartSettlementWebhookJobInput)
             timeoutMs: 3000
           });
         } catch (e) {
-          Logger.log(e);
+          Logger.warn(e, "SettlementWebhookJob");
         }
 
         // confirmed (K=2)
@@ -53,7 +53,7 @@ export const startSettlementWebhookJob = (input: StartSettlementWebhookJobInput)
             timeoutMs: 3000
           });
         } catch (e) {
-          Logger.log(e);
+          Logger.warn(e, "SettlementWebhookJob");
         }
       } catch (error: any) {
         // failed
@@ -75,7 +75,7 @@ export const startSettlementWebhookJob = (input: StartSettlementWebhookJobInput)
             timeoutMs: 3000
           });
         } catch (e) {
-          Logger.log(e);
+          Logger.warn(e, "SettlementWebhookJob");
         }
       }
     })();
