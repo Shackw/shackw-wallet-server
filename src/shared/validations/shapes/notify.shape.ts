@@ -26,7 +26,10 @@ export const notifyWebhookShape = v.object(
 );
 export type NotifyWebhook = v.InferOutput<typeof notifyWebhookShape>;
 
-export const notifyShape = v.object({
-  webhook: notifyWebhookShape
-});
+export const notifyShape = v.object(
+  {
+    webhook: notifyWebhookShape
+  },
+  "notify must be an object. Required fields: webhook"
+);
 export type Notify = v.InferOutput<typeof notifyShape>;
