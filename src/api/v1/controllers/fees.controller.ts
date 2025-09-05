@@ -4,6 +4,7 @@ import { HttpExceptionsFilter } from "@/shared/filters/http-exception.filter";
 import { ValibotPipe } from "@/shared/pipes/valibot.pipe";
 
 import { EstimateFeeDto, EstimateFeeDtoSchema } from "../dtos/fees.dto";
+import { FeeModel } from "../models/fee.model";
 import { FeesService } from "../services/fees.service";
 
 @Controller("api/v1")
@@ -13,8 +14,8 @@ export class FeesController {
 
   @Post("fees\\:estimate")
   @UsePipes(new ValibotPipe(EstimateFeeDtoSchema))
-  async estimate(@Body() body: EstimateFeeDto) {
-    const fee = await this.feesService.estimateFee(body);
-    return fee;
+  async estimate(@Body() body: EstimateFeeDto): Promise<FeeModel> {
+    const result = await this.feesService.estimateFee(body);
+    return result;
   }
 }

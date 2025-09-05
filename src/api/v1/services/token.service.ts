@@ -14,11 +14,11 @@ import { ADDRESS_TO_TOKEN, TOKEN_REGISTRY } from "@/registries/token.registry";
 import { startSettlementWebhookJob } from "@/workers/settlement/settlement.worker";
 
 import { TransferTokenDto } from "../dtos/token.dto";
-import { TransferTokenResponseModel } from "../models/token.model";
+import { TransferTokenModel } from "../models/token.model";
 
 @Injectable()
 export class TokenService {
-  async transferToken(dto: TransferTokenDto): Promise<TransferTokenResponseModel> {
+  async transferToken(dto: TransferTokenDto): Promise<TransferTokenModel> {
     const { quoteToken, authorization, notify } = dto;
 
     const registryContract = getContract({

@@ -1,6 +1,8 @@
 import { base, baseSepolia, type Chain } from "viem/chains";
 
-import { ENV, Env } from "./env.config";
+import type { Env } from "@/validations/schemas/env.schema";
+
+import { ENV } from "./env.config";
 
 export const BUILD_ENV_TO_DEFAULT_CHAIN: Record<Env["NODE_ENV"], Chain> = {
   dev: baseSepolia,

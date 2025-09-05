@@ -7,18 +7,19 @@ import { chainIdValidator } from "@/validations/rules/chain-id.validator";
 import { tokenValidator } from "@/validations/rules/token.validator";
 import { unsignedBigintFromStringValidator } from "@/validations/rules/unsigned-bigint-from-string.validator";
 
+const quoteDtoCommonShape = {
+  chainId: chainIdValidator("chainId"),
+  sender: addressValidator("sender"),
+  recipient: addressValidator("recipient"),
+  token: tokenValidator("token"),
+  feeToken: tokenValidator("feeToken"),
+  amountMinUnits: unsignedBigintFromStringValidator("amountMinUnits")
+};
+const QuoteDtoCommonSchema = v.object(quoteDtoCommonShape, issue => `${issue.expected} is required`);
+export type QuoteDtoCommon = v.InferOutput<typeof QuoteDtoCommonSchema>;
+
 export const CreateQuoteDtoSchema = v.pipe(
-  v.object(
-    {
-      chainId: chainIdValidator(),
-      sender: addressValidator("sender"),
-      recipient: addressValidator("recipient"),
-      token: tokenValidator("token"),
-      feeToken: tokenValidator("feeToken"),
-      amountMinUnits: unsignedBigintFromStringValidator("amountMinUnits")
-    },
-    issue => `${issue.expected} is required`
-  ),
+  QuoteDtoCommonSchema,
   v.forward(
     v.check(
       dto => dto.amountMinUnits >= TOKEN_REGISTRY[dto.token.symbol].minTransferAmountUnits,

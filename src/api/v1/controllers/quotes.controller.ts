@@ -4,6 +4,7 @@ import { HttpExceptionsFilter } from "@/shared/filters/http-exception.filter";
 import { ValibotPipe } from "@/shared/pipes/valibot.pipe";
 
 import { CreateQuoteDto, CreateQuoteDtoSchema } from "../dtos/quotes.dto";
+import { QuoteModel } from "../models/quote.model";
 import { QuotesService } from "../services/quotes.service";
 
 @Controller("api/v1")
@@ -13,8 +14,8 @@ export class QuotesController {
 
   @Post("quotes")
   @UsePipes(new ValibotPipe(CreateQuoteDtoSchema))
-  async estimate(@Body() body: CreateQuoteDto) {
-    const quote = await this.quotesService.createQuote(body);
-    return quote;
+  async estimate(@Body() body: CreateQuoteDto): Promise<QuoteModel> {
+    const result = await this.quotesService.createQuote(body);
+    return result;
   }
 }
