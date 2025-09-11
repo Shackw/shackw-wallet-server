@@ -1,0 +1,12 @@
+.git
+.gitignore
+
+Dockerfile
+.dockerignore
+
+.yarn
+dist
+node_modules
+
+.env.*
+README.md
