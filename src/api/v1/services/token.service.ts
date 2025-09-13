@@ -11,6 +11,7 @@ import { QuoteToken } from "@/evm/types/quote-token.type";
 import { erc20TransferCall, hashExecutionIntent } from "@/evm/utils/evm-intent.util";
 import { decodeQuoteToken } from "@/evm/utils/quote-token.util";
 import { ADDRESS_TO_TOKEN, TOKEN_REGISTRY } from "@/registries/token.registry";
+import { BadRequestWithCodeException } from "@/shared/exceptions/bad-request-with-code.exception";
 import { startSettlementWebhookJob } from "@/workers/settlement/settlement.worker";
 
 import { TransferTokenDto } from "../dtos/token.dto";
@@ -96,11 +97,21 @@ export class TokenService {
     if (!validAuth) throw new ForbiddenException("Invalid 7702 authorization.");
 
     // 6) Sender balance checks for token and feeToken
-    const tokenSym = ADDRESS_TO_TOKEN[token.toLowerCase()];
-    if (!tokenSym) throw new BadRequestException(`Unknown token address: ${token}`);
+    const tokenSym = (() => {
+      try {
+        return ADDRESS_TO_TOKEN[token.toLowerCase()];
+      } catch {
+        throw new BadRequestException(`Unknown token address: ${token}`);
+      }
+    })();
 
-    const feeTokenSym = ADDRESS_TO_TOKEN[feeToken.toLowerCase()];
-    if (!feeTokenSym) throw new BadRequestException(`Unknown feeToken address: ${feeToken}`);
+    const feeTokenSym = (() => {
+      try {
+        return ADDRESS_TO_TOKEN[feeToken.toLowerCase()];
+      } catch {
+        throw new BadRequestException(`Unknown feeToken address: ${feeToken}`);
+      }
+    })();
 
     const erc20Contract = TOKEN_REGISTRY[tokenSym].contract;
     const balToken = await erc20Contract.read.balanceOf([sender]);
@@ -108,7 +119,8 @@ export class TokenService {
     if (tokenSym === feeTokenSym) {
       const required = amountMinUnits + feeMinUnits;
       if (balToken < required)
-        throw new BadRequestException(
+        throw new BadRequestWithCodeException(
+          "InsufficientCombinedBalance",
           `Insufficient ${tokenSym} balance: required ${required} minimal units (amount ${amountMinUnits} + fee ${feeMinUnits}), but sender has ${balToken}.`
         );
     } else {
@@ -116,11 +128,13 @@ export class TokenService {
       const balFeeToken = await erc20ContractWithFee.read.balanceOf([sender]);
 
       if (balToken < amountMinUnits)
-        throw new BadRequestException(
+        throw new BadRequestWithCodeException(
+          "InsufficientSendBalance",
           `Insufficient ${tokenSym} balance: required ${amountMinUnits} minimal units, but sender has ${balToken}.`
         );
       if (balFeeToken < feeMinUnits)
-        throw new BadRequestException(
+        throw new BadRequestWithCodeException(
+          "InsufficientFeeBalance",
           `Insufficient ${feeTokenSym} balance for fee: required ${feeMinUnits} minimal units, but sender has ${balFeeToken}.`
         );
     }

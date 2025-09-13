@@ -9,6 +9,7 @@ import { erc20TransferCall, hashExecutionIntent } from "@/evm/utils/evm-intent.u
 import { encodeQuoteToken } from "@/evm/utils/quote-token.util";
 import { toDecimals } from "@/helpers/token-units.helper";
 import { TOKEN_REGISTRY } from "@/registries/token.registry";
+import { BadRequestWithCodeException } from "@/shared/exceptions/bad-request-with-code.exception";
 
 import { CreateQuoteDto, QuoteDtoCommon } from "../dtos/quotes.dto";
 import { QuoteModel } from "../models/quote.model";
@@ -32,6 +33,33 @@ export class QuotesService {
       token,
       feeToken
     });
+
+    // Sender balance checks for token and feeToken
+    const erc20Contract = TOKEN_REGISTRY[token.symbol].contract;
+    const balToken = await erc20Contract.read.balanceOf([sender]);
+
+    if (token.symbol === feeToken.symbol) {
+      const required = amountMinUnits + feeMinUnits;
+      if (balToken < required)
+        throw new BadRequestWithCodeException(
+          "InsufficientCombinedBalance",
+          `Insufficient ${token.symbol} balance: required ${required} minimal units (amount ${amountMinUnits} + fee ${feeMinUnits}), but sender has ${balToken}.`
+        );
+    } else {
+      const erc20ContractWithFee = TOKEN_REGISTRY[feeToken.symbol].contract;
+      const balFeeToken = await erc20ContractWithFee.read.balanceOf([sender]);
+
+      if (balToken < amountMinUnits)
+        throw new BadRequestWithCodeException(
+          "InsufficientSendBalance",
+          `Insufficient ${token.symbol} balance: required ${amountMinUnits} minimal units, but sender has ${balToken}.`
+        );
+      if (balFeeToken < feeMinUnits)
+        throw new BadRequestWithCodeException(
+          "InsufficientFeeBalance",
+          `Insufficient ${feeToken.symbol} balance for fee: required ${feeMinUnits} minimal units, but sender has ${balFeeToken}.`
+        );
+    }
 
     try {
       const nonce = await this.getNextNonce(sender);
