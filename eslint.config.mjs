@@ -7,36 +7,38 @@ import unusedImports from "eslint-plugin-unused-imports";
 
 export default tseslint.config(
   {
-    ignores: ["eslint.config.mjs"]
+    ignores: ["dist", "node_modules", "eslint.config.mjs"]
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   eslintPluginPrettierRecommended,
   {
     languageOptions: {
-      globals: {
-        ...globals.node,
-        ...globals.jest
-      },
+      globals: { ...globals.node, ...globals.jest },
       sourceType: "commonjs",
       parserOptions: {
-        projectService: true,
+        project: ["./tsconfig.eslint.json"],
         tsconfigRootDir: import.meta.dirname
       }
-    }
-  },
-  {
+    },
     plugins: {
       import: pluginImport,
       "unused-imports": unusedImports
-    }
-  },
-  {
+    },
+    settings: {
+      "import/resolver": {
+        typescript: {
+          project: ["./tsconfig.eslint.json"]
+        }
+      }
+    },
     rules: {
       "@typescript-eslint/no-unsafe-call": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-floating-promises": "warn",
       "@typescript-eslint/no-unsafe-argument": "warn",
+      "@typescript-eslint/switch-exhaustiveness-check": "error",
+
       "unused-imports/no-unused-imports": "error",
       "unused-imports/no-unused-vars": [
         "warn",
@@ -47,22 +49,15 @@ export default tseslint.config(
           argsIgnorePattern: "^_"
         }
       ],
+
       "import/order": [
         "warn",
         {
           groups: ["builtin", "external", "internal", "parent", "sibling", "index", "object", "type"],
-          pathGroups: [
-            {
-              pattern: "@/**",
-              group: "internal"
-            }
-          ],
+          pathGroups: [{ pattern: "@/**", group: "internal" }],
           pathGroupsExcludedImportTypes: ["builtin"],
           "newlines-between": "always",
-          alphabetize: {
-            order: "asc",
-            caseInsensitive: true
-          }
+          alphabetize: { order: "asc", caseInsensitive: true }
         }
       ]
     }
