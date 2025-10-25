@@ -1,11 +1,13 @@
 import * as v from "valibot";
 
+import { chainValidator } from "@/validations/rules/chain.validator";
 import { authorizationWithVShape, authorizationWithVShapeYParityShape } from "@/validations/shapes/authorization.shape";
 import { notifyShape } from "@/validations/shapes/notify.shape";
 import { quoteTokenShape } from "@/validations/shapes/quote-token.shape";
 
 export const TransferTokenDtoSchema = v.object(
   {
+    chain: chainValidator(),
     quoteToken: quoteTokenShape,
     authorization: v.union(
       [authorizationWithVShape, authorizationWithVShapeYParityShape],

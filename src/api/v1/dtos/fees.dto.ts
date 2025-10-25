@@ -2,14 +2,14 @@ import * as v from "valibot";
 
 import { toDecimals } from "@/helpers/token-units.helper";
 import { TOKEN_REGISTRY } from "@/registries/token.registry";
-import { chainIdValidator } from "@/validations/rules/chain-id.validator";
+import { chainValidator } from "@/validations/rules/chain.validator";
 import { tokenValidator } from "@/validations/rules/token.validator";
 import { unsignedBigintFromStringValidator } from "@/validations/rules/unsigned-bigint-from-string.validator";
 
 export const EstimateFeeDtoSchema = v.pipe(
   v.object(
     {
-      chainId: chainIdValidator(),
+      chain: chainValidator(),
       amountMinUnits: unsignedBigintFromStringValidator("amountMinUnits"),
       token: tokenValidator("token"),
       feeToken: tokenValidator("feeToken")

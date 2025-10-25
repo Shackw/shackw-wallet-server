@@ -3,14 +3,18 @@ import { getContract } from "viem";
 import { verifyAuthorization } from "viem/utils";
 
 import { ENV } from "@/configs/env.config";
-import { SPONSOR_CLIENT } from "@/configs/sponser.config";
-import { VIEM_PUBLIC_CLIENT } from "@/configs/viem.config";
 import { DELEGATE_ABI } from "@/evm/abis/delegate.abi";
 import { REGISTRY_ABI } from "@/evm/abis/registry.abi";
 import { QuoteToken } from "@/evm/types/quote-token.type";
 import { erc20TransferCall, hashExecutionIntent } from "@/evm/utils/evm-intent.util";
 import { decodeQuoteToken } from "@/evm/utils/quote-token.util";
+import {
+  DELEGATE_CONTRACT_ADDRESS_REGISTORY,
+  REGISTRY_CONTRACT_ADDRESS_REGISTORY
+} from "@/registries/invoker.registry";
+import { SPONSOR_CLIENTS } from "@/registries/sponser.registry";
 import { ADDRESS_TO_TOKEN, TOKEN_REGISTRY } from "@/registries/token.registry";
+import { VIEM_PUBLIC_CLIENTS } from "@/registries/viem.registry";
 import { BadRequestWithCodeException } from "@/shared/exceptions/bad-request-with-code.exception";
 import { startSettlementWebhookJob } from "@/workers/settlement/settlement.worker";
 
@@ -20,12 +24,12 @@ import { TransferTokenModel } from "../models/token.model";
 @Injectable()
 export class TokenService {
   async transferToken(dto: TransferTokenDto): Promise<TransferTokenModel> {
-    const { quoteToken, authorization, notify } = dto;
+    const { chain, quoteToken, authorization, notify } = dto;
 
     const registryContract = getContract({
       abi: REGISTRY_ABI,
-      address: ENV.REGISTRY_ADDRESS,
-      client: VIEM_PUBLIC_CLIENT
+      address: REGISTRY_CONTRACT_ADDRESS_REGISTORY[chain],
+      client: VIEM_PUBLIC_CLIENTS[chain]
     });
 
     // 1) Verify & decode quoteToken (HMAC integrity)
@@ -59,8 +63,9 @@ export class TokenService {
     if (nowSec > expiresAt + 15n) throw new ForbiddenException("Quote expired (15s grace).");
 
     // 2b) Environment consistency
-    if (delegate !== ENV.DELEGATE_ADDRESS)
-      throw new BadRequestException(`Delegate mismatch: expected ${ENV.DELEGATE_ADDRESS}, got ${delegate}.`);
+    const delegateAddress = DELEGATE_CONTRACT_ADDRESS_REGISTORY[chain];
+    if (delegate !== delegateAddress)
+      throw new BadRequestException(`Delegate mismatch: expected ${delegateAddress}, got ${delegate}.`);
     if (sponsor !== ENV.SPONSOR_ADDRESS)
       throw new BadRequestException(`Sponsor mismatch: expected ${ENV.SPONSOR_ADDRESS}, got ${sponsor}.`);
 
@@ -113,7 +118,7 @@ export class TokenService {
       }
     })();
 
-    const erc20Contract = TOKEN_REGISTRY[tokenSym].contract;
+    const erc20Contract = TOKEN_REGISTRY[tokenSym].contract[chain];
     const balToken = await erc20Contract.read.balanceOf([sender]);
 
     if (tokenSym === feeTokenSym) {
@@ -124,7 +129,7 @@ export class TokenService {
           `Insufficient ${tokenSym} balance: required ${required} minimal units (amount ${amountMinUnits} + fee ${feeMinUnits}), but sender has ${balToken}.`
         );
     } else {
-      const erc20ContractWithFee = TOKEN_REGISTRY[feeTokenSym].contract;
+      const erc20ContractWithFee = TOKEN_REGISTRY[feeTokenSym].contract[chain];
       const balFeeToken = await erc20ContractWithFee.read.balanceOf([sender]);
 
       if (balToken < amountMinUnits)
@@ -150,20 +155,22 @@ export class TokenService {
     } as const;
 
     // 7a) Simulate with sponsor; throw 400 on failure.
-    await VIEM_PUBLIC_CLIENT.simulateContract({
-      ...DELEGATE_EXECUTE_TX,
-      account: ENV.SPONSOR_ADDRESS
-    }).catch(e => {
-      throw new BadRequestException("Simulation failed.", { cause: e });
-    });
+    await VIEM_PUBLIC_CLIENTS[chain]
+      .simulateContract({
+        ...DELEGATE_EXECUTE_TX,
+        account: ENV.SPONSOR_ADDRESS
+      })
+      .catch(e => {
+        throw new BadRequestException("Simulation failed.", { cause: e });
+      });
 
     // 7b) Send transaction; obtain txHash.
-    const txHash = await SPONSOR_CLIENT.writeContract(DELEGATE_EXECUTE_TX).catch(e => {
+    const txHash = await SPONSOR_CLIENTS[chain].writeContract(DELEGATE_EXECUTE_TX).catch(e => {
       throw new BadRequestException("Transaction send failed.", { cause: e });
     });
 
     // 7c) Fire-and-forget settlement worker.
-    if (notify?.webhook) startSettlementWebhookJob({ txHash, chainId, webhook: notify.webhook });
+    if (notify?.webhook) startSettlementWebhookJob({ chain, txHash, webhook: notify.webhook });
 
     // 7d) Return immediately with submission info (confirmation handled by worker).
     return { status: "submitted", txHash, notify };

@@ -1,7 +1,7 @@
 import * as v from "valibot";
 
-import { addressValidator, hex32Validator } from "@/validations/rules/address.validator";
-import { chainIdValidator } from "@/validations/rules/chain-id.validator";
+import { addressValidator, hex64Validator } from "@/validations/rules/address.validator";
+import { chainIdValidator } from "@/validations/rules/chain.validator";
 import { unsignedBigintFromStringValidator } from "@/validations/rules/unsigned-bigint-from-string.validator";
 
 const authorizationCommonShape = {
@@ -12,8 +12,8 @@ const authorizationCommonShape = {
     v.integer("nonce must be an integer."),
     v.minValue(0, "nonce must be >= 0.")
   ),
-  r: hex32Validator("authorization.r"),
-  s: hex32Validator("authorization.r")
+  r: hex64Validator("authorization.r"),
+  s: hex64Validator("authorization.r")
 };
 
 export const authorizationWithVShape = v.object(
