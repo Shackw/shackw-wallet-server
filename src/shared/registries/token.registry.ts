@@ -1,7 +1,8 @@
 import { Address, erc20Abi, getContract, GetContractReturnType } from "viem";
 
+import type { SupportChain } from "@/configs/chain.config";
 import { ENV } from "@/configs/env.config";
-import { VIEM_PUBLIC_CLIENT } from "@/configs/viem.config";
+import { VIEM_PUBLIC_CLIENTS } from "@/registries/viem.registry";
 
 export const TOKENS = ["JPYC", "USDC", "EURC"] as const;
 export type Token = (typeof TOKENS)[number];
@@ -16,7 +17,7 @@ export type TokenMeta = {
   decimals: number;
   baseUnit: bigint;
   minTransferAmountUnits: bigint;
-  contract: GetContractReturnType;
+  contract: Record<SupportChain, GetContractReturnType>;
 };
 
 export const TOKEN_REGISTRY = {
@@ -27,7 +28,10 @@ export const TOKEN_REGISTRY = {
     decimals: 18,
     baseUnit: 10n ** 18n,
     minTransferAmountUnits: 100n * 10n ** 18n,
-    contract: getContract({ abi: erc20Abi, address: ENV.JPYC_TOKEN_ADDRESS, client: VIEM_PUBLIC_CLIENT })
+    contract: {
+      main: getContract({ abi: erc20Abi, address: ENV.JPYC_TOKEN_ADDRESS, client: VIEM_PUBLIC_CLIENTS.main }),
+      base: getContract({ abi: erc20Abi, address: ENV.JPYC_TOKEN_ADDRESS, client: VIEM_PUBLIC_CLIENTS.base })
+    }
   },
   USDC: {
     symbol: "USDC",
@@ -36,7 +40,10 @@ export const TOKEN_REGISTRY = {
     decimals: 6,
     baseUnit: 10n ** 6n,
     minTransferAmountUnits: 10n ** 6n,
-    contract: getContract({ abi: erc20Abi, address: ENV.USDC_TOKEN_ADDRESS, client: VIEM_PUBLIC_CLIENT })
+    contract: {
+      main: getContract({ abi: erc20Abi, address: ENV.USDC_TOKEN_ADDRESS, client: VIEM_PUBLIC_CLIENTS.main }),
+      base: getContract({ abi: erc20Abi, address: ENV.USDC_TOKEN_ADDRESS, client: VIEM_PUBLIC_CLIENTS.base })
+    }
   },
   EURC: {
     symbol: "EURC",
@@ -45,7 +52,10 @@ export const TOKEN_REGISTRY = {
     decimals: 6,
     baseUnit: 10n ** 6n,
     minTransferAmountUnits: 10n ** 6n,
-    contract: getContract({ abi: erc20Abi, address: ENV.EURC_TOKEN_ADDRESS, client: VIEM_PUBLIC_CLIENT })
+    contract: {
+      main: getContract({ abi: erc20Abi, address: ENV.EURC_TOKEN_ADDRESS, client: VIEM_PUBLIC_CLIENTS.main }),
+      base: getContract({ abi: erc20Abi, address: ENV.EURC_TOKEN_ADDRESS, client: VIEM_PUBLIC_CLIENTS.base })
+    }
   }
 } as const satisfies Record<Token, TokenMeta>;
 

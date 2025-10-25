@@ -3,18 +3,20 @@
 import { Logger } from "@nestjs/common";
 
 import { restClient } from "@/clients/restClient";
-import { VIEM_PUBLIC_CLIENT } from "@/configs/viem.config";
+import { SUPPORT_CHAINS } from "@/configs/chain.config";
+import { VIEM_PUBLIC_CLIENTS } from "@/registries/viem.registry";
 
 import { StartSettlementWebhookJobInput, SettlementWebhookJobPayload } from "./settlement.worker.interface";
 
 export const startSettlementWebhookJob = (input: StartSettlementWebhookJobInput): void => {
-  const { txHash, chainId, webhook } = input;
+  const { chain, txHash, webhook } = input;
 
   setImmediate(() => {
     void (async () => {
+      const chainId = SUPPORT_CHAINS[chain].id;
       try {
         // included
-        const receiptIncluded = await VIEM_PUBLIC_CLIENT.waitForTransactionReceipt({ hash: txHash });
+        const receiptIncluded = await VIEM_PUBLIC_CLIENTS[chain].waitForTransactionReceipt({ hash: txHash });
         const includedPayload: SettlementWebhookJobPayload = {
           id: webhook.id,
           echo: webhook.echo,
@@ -34,7 +36,7 @@ export const startSettlementWebhookJob = (input: StartSettlementWebhookJobInput)
         }
 
         // confirmed (K=2)
-        const receiptConfirmed = await VIEM_PUBLIC_CLIENT.waitForTransactionReceipt({
+        const receiptConfirmed = await VIEM_PUBLIC_CLIENTS[chain].waitForTransactionReceipt({
           hash: txHash,
           confirmations: 2
         });

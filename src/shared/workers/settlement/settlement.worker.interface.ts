@@ -1,10 +1,11 @@
 import { Hex } from "viem";
 
+import { SupportChain } from "@/configs/chain.config";
 import { NotifyWebhook } from "@/validations/shapes/notify.shape";
 
 export type StartSettlementWebhookJobInput = {
+  chain: SupportChain;
   txHash: Hex;
-  chainId: number;
   webhook: NotifyWebhook;
 };
 

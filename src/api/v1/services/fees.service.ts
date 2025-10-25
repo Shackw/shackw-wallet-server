@@ -17,10 +17,10 @@ export class FeesService {
   ) {}
 
   async estimateFee(dto: EstimateFeeDto): Promise<FeeModel> {
-    const { amountMinUnits, token, feeToken } = dto;
+    const { chain, amountMinUnits, token, feeToken } = dto;
 
-    const bps = FEE_REGISTORY[token.symbol].bps;
-    const maxFeeDecimals = FEE_REGISTORY[feeToken.symbol].capUnits;
+    const bps = FEE_REGISTORY[chain][token.symbol].bps;
+    const maxFeeDecimals = FEE_REGISTORY[chain][feeToken.symbol].capUnits;
 
     const rate = await (async () => {
       if (token.symbol !== feeToken.symbol) {

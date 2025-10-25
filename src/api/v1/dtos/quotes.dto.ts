@@ -3,12 +3,12 @@ import * as v from "valibot";
 import { toDecimals } from "@/helpers/token-units.helper";
 import { TOKEN_REGISTRY } from "@/registries/token.registry";
 import { addressValidator } from "@/validations/rules/address.validator";
-import { chainIdValidator } from "@/validations/rules/chain-id.validator";
+import { chainValidator } from "@/validations/rules/chain.validator";
 import { tokenValidator } from "@/validations/rules/token.validator";
 import { unsignedBigintFromStringValidator } from "@/validations/rules/unsigned-bigint-from-string.validator";
 
 const quoteDtoCommonShape = {
-  chainId: chainIdValidator("chainId"),
+  chain: chainValidator("chainId"),
   sender: addressValidator("sender"),
   recipient: addressValidator("recipient"),
   token: tokenValidator("token"),
