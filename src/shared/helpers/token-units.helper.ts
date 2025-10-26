@@ -8,5 +8,6 @@ export const toMinUnits = (amount: string | number, token: Token): bigint => {
 };
 
 export const toDecimals = (minUnits: bigint, token: Token): number => {
-  return Number(formatUnits(minUnits, TOKEN_REGISTRY[token].decimals));
+  const { decimals } = TOKEN_REGISTRY[token];
+  return Number(formatUnits(minUnits, decimals));
 };

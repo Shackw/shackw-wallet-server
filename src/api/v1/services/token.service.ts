@@ -104,7 +104,7 @@ export class TokenService {
     // 6) Sender balance checks for token and feeToken
     const tokenSym = (() => {
       try {
-        return ADDRESS_TO_TOKEN[token.toLowerCase()];
+        return ADDRESS_TO_TOKEN[chain][token.toLowerCase()];
       } catch {
         throw new BadRequestException(`Unknown token address: ${token}`);
       }
@@ -112,7 +112,7 @@ export class TokenService {
 
     const feeTokenSym = (() => {
       try {
-        return ADDRESS_TO_TOKEN[feeToken.toLowerCase()];
+        return ADDRESS_TO_TOKEN[chain][feeToken.toLowerCase()];
       } catch {
         throw new BadRequestException(`Unknown feeToken address: ${feeToken}`);
       }

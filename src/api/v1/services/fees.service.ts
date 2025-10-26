@@ -42,12 +42,12 @@ export class FeesService {
       return {
         token: {
           symbol: token.symbol,
-          address: TOKEN_REGISTRY[token.symbol].address,
+          address: TOKEN_REGISTRY[token.symbol].address[chain],
           decimals: TOKEN_REGISTRY[token.symbol].decimals
         },
         feeToken: {
           symbol: feeToken.symbol,
-          address: TOKEN_REGISTRY[feeToken.symbol].address,
+          address: TOKEN_REGISTRY[feeToken.symbol].address[chain],
           decimals: TOKEN_REGISTRY[feeToken.symbol].decimals
         },
         feeMinUnits: toMinUnits(feeDecimals, feeToken.symbol),

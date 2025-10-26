@@ -79,12 +79,12 @@ export class QuotesService {
         recipient,
         token: {
           symbol: token.symbol,
-          address: TOKEN_REGISTRY[token.symbol].address,
+          address: TOKEN_REGISTRY[token.symbol].address[chain],
           decimals: TOKEN_REGISTRY[token.symbol].decimals
         },
         feeToken: {
           symbol: feeToken.symbol,
-          address: TOKEN_REGISTRY[feeToken.symbol].address,
+          address: TOKEN_REGISTRY[feeToken.symbol].address[chain],
           decimals: TOKEN_REGISTRY[feeToken.symbol].decimals
         },
         amount: {
@@ -122,13 +122,13 @@ export class QuotesService {
     const { chain, sender, recipient, token, feeToken, amountMinUnits } = dto;
 
     const transferAmountCallData = erc20TransferCall({
-      token: TOKEN_REGISTRY[token.symbol].address,
+      token: TOKEN_REGISTRY[token.symbol].address[chain],
       to: recipient,
       amountMinUnits
     });
 
     const transferFeeCallData = erc20TransferCall({
-      token: TOKEN_REGISTRY[feeToken.symbol].address,
+      token: TOKEN_REGISTRY[feeToken.symbol].address[chain],
       to: ENV.SPONSOR_ADDRESS,
       amountMinUnits: feeMinUnits
     });
@@ -158,8 +158,8 @@ export class QuotesService {
         chainId: SUPPORT_CHAINS[chain].id,
         sender,
         recipient,
-        token: TOKEN_REGISTRY[token.symbol].address,
-        feeToken: TOKEN_REGISTRY[feeToken.symbol].address,
+        token: TOKEN_REGISTRY[token.symbol].address[chain],
+        feeToken: TOKEN_REGISTRY[feeToken.symbol].address[chain],
         amountMinUnits,
         feeMinUnits: feeMinUnits,
         delegate: DELEGATE_CONTRACT_ADDRESS_REGISTORY[chain],
