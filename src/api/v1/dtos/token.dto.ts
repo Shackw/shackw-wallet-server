@@ -7,7 +7,7 @@ import { quoteTokenShape } from "@/validations/shapes/quote-token.shape";
 
 export const TransferTokenDtoSchema = v.object(
   {
-    chain: chainValidator(),
+    chain: chainValidator("chain"),
     quoteToken: quoteTokenShape,
     authorization: v.union(
       [authorizationWithVShape, authorizationWithVShapeYParityShape],

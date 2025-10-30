@@ -16,7 +16,7 @@ import { TOKEN_REGISTRY } from "@/registries/token.registry";
 import { VIEM_PUBLIC_CLIENTS } from "@/registries/viem.registry";
 import { BadRequestWithCodeException } from "@/shared/exceptions/bad-request-with-code.exception";
 
-import { CreateQuoteDto, QuoteDtoCommon } from "../dtos/quotes.dto";
+import { CreateQuoteDto, CreateQuoteDtoBase } from "../dtos/quotes.dto";
 import { QuoteModel } from "../models/quote.model";
 
 import { FeesService } from "./fees.service";
@@ -118,7 +118,7 @@ export class QuotesService {
     return nonce;
   }
 
-  private buildCallHash(dto: QuoteDtoCommon, nonce: bigint, feeMinUnits: bigint, expiresAtSec: bigint): Hex {
+  private buildCallHash(dto: CreateQuoteDtoBase, nonce: bigint, feeMinUnits: bigint, expiresAtSec: bigint): Hex {
     const { chain, sender, recipient, token, feeToken, amountMinUnits } = dto;
 
     const transferAmountCallData = erc20TransferCall({
@@ -144,7 +144,7 @@ export class QuotesService {
   }
 
   private buildQuoteToken(
-    dto: QuoteDtoCommon,
+    dto: CreateQuoteDtoBase,
     nonce: bigint,
     callHash: Hex,
     feeMinUnits: bigint,

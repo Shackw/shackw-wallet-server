@@ -4,7 +4,7 @@ import { CURRENCIES } from "@/registries/token.registry";
 
 export const FetchExchangeResponseSchema = v.object({
   amount: v.number(),
-  base: v.pipe(v.string(), v.picklist(CURRENCIES)),
+  base: v.picklist(CURRENCIES),
   date: v.pipe(
     v.string(),
     v.regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (YYYY-MM-DD expected)"),

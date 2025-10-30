@@ -1,42 +1,60 @@
+import * as v from "valibot";
 import { Address, Hex } from "viem";
 
-import { Token } from "@/registries/token.registry";
+import { SUPPORT_CHAIN_IDS } from "@/configs/chain.config";
+import { TOKENS } from "@/registries/token.registry";
+import { feePolicyShape } from "@/validations/shapes/fee-policy.shape";
 
-export type QuoteModel = {
-  quoteToken: string;
-  expiresAt: Date;
-  chainId: number;
-  sender: Address;
-  recipient: Address;
-  token: {
-    symbol: Token;
-    address: Address;
-    decimals: number;
-  };
-  feeToken: {
-    symbol: Token;
-    address: Address;
-    decimals: number;
-  };
-  amount: {
-    minUnits: bigint;
-    decimals: number;
-  };
-  fee: {
-    minUnits: bigint;
-    decimals: number;
-  };
-  delegate: Address;
-  sponsor: Address;
-  callHash: Hex;
-  policy: {
-    method: string;
-    version: string;
-    bps: number;
-    cap: {
-      minUnit: bigint;
-      currency: any;
-    };
-  };
-  serverTime: Date;
-};
+export const QuoteModelSchema = v.object({
+  quoteToken: v.string(),
+  expiresAt: v.date(),
+  chainId: v.picklist(SUPPORT_CHAIN_IDS),
+  sender: v.pipe(
+    v.string(),
+    v.transform(s => s as Address)
+  ),
+  recipient: v.pipe(
+    v.string(),
+    v.transform(s => s as Address)
+  ),
+  token: v.object({
+    symbol: v.picklist(TOKENS),
+    address: v.pipe(
+      v.string(),
+      v.transform(s => s as Address)
+    ),
+    decimals: v.number()
+  }),
+  feeToken: v.object({
+    symbol: v.picklist(TOKENS),
+    address: v.pipe(
+      v.string(),
+      v.transform(s => s as Address)
+    ),
+    decimals: v.number()
+  }),
+  amount: v.object({
+    minUnits: v.bigint(),
+    decimals: v.number()
+  }),
+  fee: v.object({
+    minUnits: v.bigint(),
+    decimals: v.number()
+  }),
+  delegate: v.pipe(
+    v.string(),
+    v.transform(s => s as Address)
+  ),
+  sponsor: v.pipe(
+    v.string(),
+    v.transform(s => s as Address)
+  ),
+  callHash: v.pipe(
+    v.string(),
+    v.transform(s => s as Hex)
+  ),
+  policy: feePolicyShape,
+  serverTime: v.date()
+});
+
+export type QuoteModel = v.InferOutput<typeof QuoteModelSchema>;

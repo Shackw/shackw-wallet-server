@@ -3,19 +3,21 @@ import * as v from "valibot";
 import { toDecimals } from "@/helpers/token-units.helper";
 import { TOKEN_REGISTRY } from "@/registries/token.registry";
 import { chainValidator } from "@/validations/rules/chain.validator";
-import { tokenValidator } from "@/validations/rules/token.validator";
+import { tokenWithSymbolValidator } from "@/validations/rules/token.validator";
 import { unsignedBigintFromStringValidator } from "@/validations/rules/unsigned-bigint-from-string.validator";
 
+export const EstimateFeeDtoSchemaBase = v.object(
+  {
+    chain: chainValidator(),
+    amountMinUnits: unsignedBigintFromStringValidator("amountMinUnits"),
+    token: tokenWithSymbolValidator("token"),
+    feeToken: tokenWithSymbolValidator("feeToken")
+  },
+  issue => `${issue.expected} is required`
+);
+
 export const EstimateFeeDtoSchema = v.pipe(
-  v.object(
-    {
-      chain: chainValidator(),
-      amountMinUnits: unsignedBigintFromStringValidator("amountMinUnits"),
-      token: tokenValidator("token"),
-      feeToken: tokenValidator("feeToken")
-    },
-    issue => `${issue.expected} is required`
-  ),
+  EstimateFeeDtoSchemaBase,
   v.forward(
     v.check(
       dto => dto.amountMinUnits >= TOKEN_REGISTRY[dto.token.symbol].minTransferAmountUnits,
@@ -33,4 +35,5 @@ export const EstimateFeeDtoSchema = v.pipe(
     ["amountMinUnits"]
   )
 );
+
 export type EstimateFeeDto = v.InferOutput<typeof EstimateFeeDtoSchema>;

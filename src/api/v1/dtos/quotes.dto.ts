@@ -4,22 +4,24 @@ import { toDecimals } from "@/helpers/token-units.helper";
 import { TOKEN_REGISTRY } from "@/registries/token.registry";
 import { addressValidator } from "@/validations/rules/address.validator";
 import { chainValidator } from "@/validations/rules/chain.validator";
-import { tokenValidator } from "@/validations/rules/token.validator";
+import { tokenWithSymbolValidator } from "@/validations/rules/token.validator";
 import { unsignedBigintFromStringValidator } from "@/validations/rules/unsigned-bigint-from-string.validator";
 
-const quoteDtoCommonShape = {
-  chain: chainValidator("chainId"),
-  sender: addressValidator("sender"),
-  recipient: addressValidator("recipient"),
-  token: tokenValidator("token"),
-  feeToken: tokenValidator("feeToken"),
-  amountMinUnits: unsignedBigintFromStringValidator("amountMinUnits")
-};
-const QuoteDtoCommonSchema = v.object(quoteDtoCommonShape, issue => `${issue.expected} is required`);
-export type QuoteDtoCommon = v.InferOutput<typeof QuoteDtoCommonSchema>;
+export const CreateQuoteDtoSchemaBase = v.object(
+  {
+    chain: chainValidator("chain"),
+    sender: addressValidator("sender"),
+    recipient: addressValidator("recipient"),
+    token: tokenWithSymbolValidator("token"),
+    feeToken: tokenWithSymbolValidator("feeToken"),
+    amountMinUnits: unsignedBigintFromStringValidator("amountMinUnits")
+  },
+  issue => `${issue.expected} is required`
+);
+export type CreateQuoteDtoBase = v.InferOutput<typeof CreateQuoteDtoSchemaBase>;
 
 export const CreateQuoteDtoSchema = v.pipe(
-  QuoteDtoCommonSchema,
+  CreateQuoteDtoSchemaBase,
   v.forward(
     v.check(
       dto => dto.amountMinUnits >= TOKEN_REGISTRY[dto.token.symbol].minTransferAmountUnits,
