@@ -1,11 +1,11 @@
 import * as v from "valibot";
 
-import { hex64Validator, addressValidator, hex32Validator } from "../rules/address.validator";
+import { hex32Validator, addressValidator, hex64Validator } from "../rules/address.validator";
 import {
-  eurcFeeCapUnitValidator,
   feeBpsValidator,
   jpycFeeCapUnitValidator,
-  usdcFeeCapUnitValidator
+  usdcFeeCapUnitValidator,
+  eurcFeeCapUnitValidator
 } from "../rules/fee-setting.validator";
 
 export const EnvSchema = v.object({

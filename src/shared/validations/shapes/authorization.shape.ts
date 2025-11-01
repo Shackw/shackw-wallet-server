@@ -1,8 +1,8 @@
 import * as v from "valibot";
 
-import { addressValidator, hex64Validator } from "@/validations/rules/address.validator";
-import { chainIdValidator } from "@/validations/rules/chain.validator";
-import { unsignedBigintFromStringValidator } from "@/validations/rules/unsigned-bigint-from-string.validator";
+import { addressValidator, hex64Validator } from "../rules/address.validator";
+import { chainIdValidator } from "../rules/chain.validator";
+import { unsignedBigintFromStringValidator } from "../rules/string-bigint.validator";
 
 const authorizationCommonShape = {
   address: addressValidator("authorization.address"),
