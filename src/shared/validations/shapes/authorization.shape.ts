@@ -1,8 +1,8 @@
 import * as v from "valibot";
 
-import { addressValidator, hex64Validator } from "@/validations/rules/address.validator";
-import { chainIdValidator } from "@/validations/rules/chain.validator";
-import { unsignedBigintFromStringValidator } from "@/validations/rules/unsigned-bigint-from-string.validator";
+import { addressValidator, hex64Validator } from "../rules/address.validator";
+import { chainIdValidator } from "../rules/chain.validator";
+import { bigintStringValidator } from "../rules/string-bigint.validator";
 
 const authorizationCommonShape = {
   address: addressValidator("authorization.address"),
@@ -19,7 +19,7 @@ const authorizationCommonShape = {
 export const authorizationWithVShape = v.object(
   {
     ...authorizationCommonShape,
-    v: unsignedBigintFromStringValidator("authorization.v"),
+    v: bigintStringValidator("authorization.v"),
     yParity: v.optional(v.union([v.literal(0), v.literal(1)], "authorization.yParity must be 0 or 1."))
   },
   "authorization must be an object. Required fields: address, chainId, nonce, r, s, v"
@@ -29,7 +29,7 @@ export type AuthorizationWithV = v.InferOutput<typeof authorizationWithVShape>;
 export const authorizationWithVShapeYParityShape = v.object(
   {
     ...authorizationCommonShape,
-    v: v.optional(unsignedBigintFromStringValidator("authorization.v")),
+    v: v.optional(bigintStringValidator("authorization.v")),
     yParity: v.union([v.literal(0), v.literal(1)], "authorization.yParity must be 0 or 1.")
   },
   "authorization must be an object. Required fields: address, chainId, nonce, r, s, yParity"
