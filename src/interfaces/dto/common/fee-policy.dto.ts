@@ -1,12 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 
-import { FeeCapDto } from "./fee-cap.dto";
+import { AmountUnitsDto } from "./amount-unit.dto";
 
 export class FeePolicyDto {
   @ApiProperty({
-    example: "bps_with_cap",
-    description: "Fee calculation method (basis points with cap)."
+    example: "bps_with_cap"
   })
   method!: "bps_with_cap";
 
@@ -14,10 +13,18 @@ export class FeePolicyDto {
   version!: "v1";
 
   @ApiProperty({
-    example: 100
+    example: "100"
   })
-  bps!: number;
+  @Transform(({ value }) => (value as bigint).toString(), { toPlainOnly: true })
+  bps!: string;
 
-  @Type(() => FeeCapDto)
-  cap!: FeeCapDto;
+  @Type(() => AmountUnitsDto)
+  @ApiProperty({ type: AmountUnitsDto })
+  cap!: AmountUnitsDto;
+
+  @ApiProperty({
+    example: "10000000000000000"
+  })
+  @Transform(({ value }) => (value as bigint).toString(), { toPlainOnly: true })
+  quantumUnits!: string;
 }

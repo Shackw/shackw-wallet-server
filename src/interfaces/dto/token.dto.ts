@@ -1,5 +1,9 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import * as v from "valibot";
+import { Hex } from "viem";
 
+import { SUPPORT_CHAIN_KEYS, SupportChain } from "@/config/chain.config";
 import { chainValidator } from "@/shared/validations/rules/chain.validator";
 import {
   authorizationWithVShape,
@@ -7,6 +11,9 @@ import {
 } from "@/shared/validations/shapes/authorization.shape";
 import { notifyShape } from "@/shared/validations/shapes/notify.shape";
 import { quoteTokenShape } from "@/shared/validations/shapes/quote-token.shape";
+
+import { AuthorizationDto } from "./common/authorization.dto";
+import { NotifyDto } from "./common/notify.dto";
 
 export const TransferTokenDtoSchema = v.object(
   {
@@ -20,4 +27,32 @@ export const TransferTokenDtoSchema = v.object(
   },
   issue => `${issue.expected} is required`
 );
-export type TransferTokenDto = v.InferOutput<typeof TransferTokenDtoSchema>;
+export type TransferTokenRequestDto = v.InferOutput<typeof TransferTokenDtoSchema>;
+
+export class TransferTokenRequestDocDto {
+  @ApiProperty({ enum: SUPPORT_CHAIN_KEYS })
+  chain!: SupportChain;
+
+  @ApiProperty({ example: "AAAAAAAAAAAAA..." })
+  quoteToken!: string;
+
+  @ApiProperty({ type: AuthorizationDto })
+  authorization!: AuthorizationDto;
+
+  @ApiProperty({ type: NotifyDto, required: false })
+  notify?: NotifyDto;
+}
+
+export class TransferTokenResponceDto {
+  @ApiProperty({
+    example: "submitted"
+  })
+  method!: "submitted";
+
+  @ApiProperty({ example: "0x1234abcd..." })
+  txHash!: Hex;
+
+  @Type(() => NotifyDto)
+  @ApiProperty({ type: NotifyDto })
+  notify?: NotifyDto;
+}

@@ -5,7 +5,7 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ENV } from "@/config/env.config";
 import { FEE_REGISTORY } from "@/registries/fee.registry";
 import { TOKEN_REGISTRY, Token } from "@/registries/token.registry";
-import { toDecimals } from "@/shared/helpers/token-units.helper";
+import { toDisplayValue } from "@/shared/helpers/token-units.helper";
 
 export function setupSwagger(app: INestApplication): void {
   const isProd = ENV.NODE_ENV === "prd";
@@ -29,17 +29,17 @@ export function setupSwagger(app: INestApplication): void {
     .map(([chain, tokens]) => {
       const lines = Object.entries(tokens)
         .map(
-          ([symbol, { bps, cap, capUnits }]) =>
-            `- ${symbol}: bps = ${bps}, cap = \`${cap.toString()}\` (≈ ${capUnits} units)`
+          ([symbol, { bps, capUnits, quantumUnits }]) =>
+            `- ${symbol}: bps = ${bps}, cap = \`${capUnits.toString()}\` units, quantum = \`${quantumUnits.toString()}\``
         )
         .join("\n");
-      return [`[${isProd ? chain.toUpperCase() : `${chain}-sepolia`}]`, lines].join("\n");
+      return [`[${ENV.NODE_ENV === "prd" ? chain.toUpperCase() : `${chain}-sepolia`}]`, lines].join("\n");
     })
     .join("\n\n");
 
   // --- (5) Minimum transferable amounts ---
   const minTransferDesc = Object.entries(TOKEN_REGISTRY)
-    .map(([symbol, meta]) => `- ${symbol}: ${toDecimals(meta.minTransferAmountUnits, symbol as Token)} ${symbol}`)
+    .map(([symbol, meta]) => `- ${symbol}: ${toDisplayValue(meta.minTransferAmountUnits, symbol as Token)} ${symbol}`)
     .join("\n");
 
   // --- (2 & 6) Networks (Delegate / Registry) ---

@@ -3,14 +3,14 @@ import { getContract } from "viem";
 import { verifyAuthorization } from "viem/utils";
 
 import { ENV } from "@/config/env.config";
-import { TransferTokenModel } from "@/domain/entities/token.model";
+import { TransferTokenModel } from "@/domain/entities/token.entity";
 import { DELEGATE_ABI } from "@/infrastructure/evm/abis/delegate.abi";
 import { REGISTRY_ABI } from "@/infrastructure/evm/abis/registry.abi";
 import { QuoteToken } from "@/infrastructure/evm/types/quote-token.type";
 import { erc20TransferCall, hashExecutionIntent } from "@/infrastructure/evm/utils/evm-intent.util";
 import { decodeQuoteToken } from "@/infrastructure/evm/utils/quote-token.util";
 import { startSettlementWebhookJob } from "@/infrastructure/workers/settlement/settlement.worker";
-import { TransferTokenDto } from "@/interfaces/dto/token.dto";
+import { TransferTokenRequestDto } from "@/interfaces/dto/token.dto";
 import { BadRequestWithCodeException } from "@/interfaces/exceptions/bad-request-with-code.exception";
 import {
   REGISTRY_CONTRACT_ADDRESS_REGISTORY,
@@ -22,7 +22,7 @@ import { VIEM_PUBLIC_CLIENTS } from "@/registries/viem.registry";
 
 @Injectable()
 export class TokenService {
-  async transferToken(dto: TransferTokenDto): Promise<TransferTokenModel> {
+  async transferToken(dto: TransferTokenRequestDto): Promise<TransferTokenModel> {
     const { chain, quoteToken, authorization, notify } = dto;
 
     const registryContract = getContract({

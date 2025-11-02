@@ -1,11 +1,16 @@
-import { Controller, UseFilters, Post, UsePipes, Body, ValidationPipe } from "@nestjs/common";
-import { ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { Controller, UseFilters, Post, UsePipes, Body } from "@nestjs/common";
+import { ApiBody, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { plainToInstance } from "class-transformer";
 
 import { FeesService } from "@/application/services/fees.service";
-import { FeeModel } from "@/domain/entities/fee.model";
+import { FeeModel } from "@/domain/entities/fee.entity";
 
-import { EstimateFeeRequestDtoSchema, EstimateFeeRequestDto, FeeResponseDto } from "../dto/fees.dto";
+import {
+  EstimateFeeRequestDtoSchema,
+  EstimateFeeRequestDto,
+  EstimateFeeRequestDocDto,
+  EstimateFeeResponseDto
+} from "../dto/fees.dto";
 import { HttpExceptionsFilter } from "../filters/http-exception.filter";
 import { ValibotPipe } from "../pipes/valibot.pipe";
 
@@ -16,20 +21,13 @@ export class FeesController {
 
   @Post("fees\\:estimate")
   @ApiOperation({ summary: "Estimate transaction fee" })
-  @ApiResponse({ status: 200, type: FeeResponseDto, description: "Estimated fee data." })
-  @UsePipes(
-    new ValibotPipe(EstimateFeeRequestDtoSchema),
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: false,
-      transform: true,
-      transformOptions: { enableImplicitConversion: false }
-    })
-  )
-  async estimate(@Body() body: EstimateFeeRequestDto): Promise<FeeResponseDto> {
+  @ApiBody({ type: EstimateFeeRequestDocDto })
+  @ApiResponse({ status: 200, type: EstimateFeeResponseDto, description: "Estimated fee data." })
+  @UsePipes(new ValibotPipe(EstimateFeeRequestDtoSchema))
+  async estimate(@Body() body: EstimateFeeRequestDto): Promise<EstimateFeeResponseDto> {
     const result: FeeModel = await this.feesService.estimateFee(body);
 
-    return plainToInstance(FeeResponseDto, result, {
+    return plainToInstance(EstimateFeeResponseDto, result, {
       enableImplicitConversion: true
     });
   }
