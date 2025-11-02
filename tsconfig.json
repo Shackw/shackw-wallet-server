@@ -10,7 +10,15 @@
     "sourceMap": true,
     "outDir": "./dist",
     "paths": {
-      "@/*": ["./src/shared/*", "./src/api/*"]
+      "@/*": ["./src/*"],
+      "@interfaces/*": ["./src/interfaces/*"],
+      "@application/*": ["./src/application/*"],
+      "@domain/*": ["./src/domain/*"],
+      "@infrastructure/*": ["./src/infrastructure/*"],
+      "@registries/*": ["./src/registries/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@config/*": ["./src/config/*"],
+      "@docs/*": ["./src/docs/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

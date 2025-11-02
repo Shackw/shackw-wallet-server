@@ -1,6 +1,6 @@
 import * as v from "valibot";
 
-import { isHttpsPublicUrl } from "@/helpers/url.helper";
+import { isHttpsPublicUrl } from "@/shared/helpers/url.helper";
 
 export const notifyWebhookShape = v.object(
   {
