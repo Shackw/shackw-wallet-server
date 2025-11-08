@@ -1,44 +1,46 @@
 import { SupportChain } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
-import { toMinUnits } from "@/shared/helpers/token-units.helper";
 
-import { Token } from "./token.registry";
+import { TokenByChain } from "./token-chain.registry";
 
-type FeeMets = { bps: bigint; capUnits: bigint; quantumUnits: bigint };
+type FeeMeta = {
+  minTransferAmountUnits: bigint;
+  fixedFeeAmountUnits: bigint;
+};
 
-export const FEE_REGISTORY: Record<SupportChain, Record<Token, FeeMets>> = {
+export const FEE_REGISTORY: { [T in SupportChain]: Record<TokenByChain<T>, FeeMeta> } = {
   main: {
     JPYC: {
-      bps: ENV.MAIN_FEE_BPS,
-      capUnits: toMinUnits(ENV.MAIN_JPYC_FEE_CAP_VALUE, "JPYC"),
-      quantumUnits: 10n ** 16n
+      minTransferAmountUnits: ENV.MAIN_JPYC_MIN_TRANSFER_AMOUNT_UNITS,
+      fixedFeeAmountUnits: ENV.MAIN_JPYC_FIXED_FEE_AMOUNT_UNITS
     },
     USDC: {
-      bps: ENV.MAIN_FEE_BPS,
-      capUnits: toMinUnits(ENV.MAIN_USDC_FEE_CAP_VALUE, "USDC"),
-      quantumUnits: 10n ** 2n
+      minTransferAmountUnits: ENV.MAIN_USDC_MIN_TRANSFER_AMOUNT_UNITS,
+      fixedFeeAmountUnits: ENV.MAIN_USDC_FIXED_FEE_AMOUNT_UNITS
     },
     EURC: {
-      bps: ENV.MAIN_FEE_BPS,
-      capUnits: toMinUnits(ENV.MAIN_EURC_FEE_CAP_VALUE, "EURC"),
-      quantumUnits: 10n ** 2n
+      minTransferAmountUnits: ENV.MAIN_EURC_MIN_TRANSFER_AMOUNT_UNITS,
+      fixedFeeAmountUnits: ENV.MAIN_EURC_FIXED_FEE_AMOUNT_UNITS
     }
   },
   base: {
-    JPYC: {
-      bps: ENV.BASE_FEE_BPS,
-      capUnits: toMinUnits(ENV.BASE_JPYC_FEE_CAP_VALUE, "JPYC"),
-      quantumUnits: 10n ** 16n
-    },
     USDC: {
-      bps: ENV.BASE_FEE_BPS,
-      capUnits: toMinUnits(ENV.BASE_USDC_FEE_CAP_VALUE, "USDC"),
-      quantumUnits: 10n ** 2n
+      minTransferAmountUnits: ENV.BASE_USDC_MIN_TRANSFER_AMOUNT_UNITS,
+      fixedFeeAmountUnits: ENV.BASE_USDC_FIXED_FEE_AMOUNT_UNITS
     },
     EURC: {
-      bps: ENV.BASE_FEE_BPS,
-      capUnits: toMinUnits(ENV.BASE_EURC_FEE_CAP_VALUE, "EURC"),
-      quantumUnits: 10n ** 2n
+      minTransferAmountUnits: ENV.BASE_EURC_MIN_TRANSFER_AMOUNT_UNITS,
+      fixedFeeAmountUnits: ENV.BASE_EURC_FIXED_FEE_AMOUNT_UNITS
+    }
+  },
+  polygon: {
+    JPYC: {
+      minTransferAmountUnits: ENV.POLYGON_JPYC_MIN_TRANSFER_AMOUNT_UNITS,
+      fixedFeeAmountUnits: ENV.POLYGON_JPYC_FIXED_FEE_AMOUNT_UNITS
+    },
+    USDC: {
+      minTransferAmountUnits: ENV.POLYGON_USDC_MIN_TRANSFER_AMOUNT_UNITS,
+      fixedFeeAmountUnits: ENV.POLYGON_USDC_FIXED_FEE_AMOUNT_UNITS
     }
   }
 };

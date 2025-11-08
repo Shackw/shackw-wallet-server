@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
 
-import { Token, TOKENS } from "@/registries/token.registry";
+import { Token, TOKENS } from "@/registries/token-chain.registry";
 
 export class AmountUnitsDto {
   @ApiProperty({ enum: TOKENS })

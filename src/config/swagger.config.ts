@@ -1,81 +1,118 @@
-// src/configs/swagger.config.ts
 import { INestApplication } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { formatUnits } from "viem";
 
 import { ENV } from "@/config/env.config";
 import { FEE_REGISTORY } from "@/registries/fee.registry";
-import { TOKEN_REGISTRY, Token } from "@/registries/token.registry";
-import { toDisplayValue } from "@/shared/helpers/token-units.helper";
+import { TOKEN_REGISTRY, Token } from "@/registries/token-chain.registry";
+
+// Labels for chain names shown in Swagger (depends on environment)
+const CHAIN_LABELS = {
+  prod: {
+    main: "Ethereum Mainnet",
+    base: "Base Mainnet",
+    polygon: "Polygon PoS Mainnet"
+  },
+  dev: {
+    main: "Ethereum Sepolia",
+    base: "Base Sepolia",
+    polygon: "Polygon Amoy"
+  }
+} as const;
 
 export function setupSwagger(app: INestApplication): void {
   const isProd = ENV.NODE_ENV === "prd";
+  const labels = isProd ? CHAIN_LABELS.prod : CHAIN_LABELS.dev;
 
-  // --- (3) Supported tokens and addresses (env-based) ---
+  // (3) Supported tokens and addresses (env-based)
+  // Only chains that actually have an address in the registry are listed.
   const tokenAddressDesc = Object.entries(TOKEN_REGISTRY)
     .map(([symbol, meta]) => {
-      const mainAddr = meta.address.main;
-      const baseAddr = meta.address.base;
-      return [
-        `- **${symbol}**`,
-        `  - ${isProd ? "Ethereum Mainnet" : "Ethereum Sepolia"}: \`${mainAddr}\``,
-        `  - ${isProd ? "Base Mainnet" : "Base Sepolia"}: \`${baseAddr}\``,
-        `  - Decimals: ${meta.decimals}`
-      ].join("\n");
+      const perChain = Object.entries(meta.address)
+        .map(([chain, addr]) => `  - ${labels[chain as keyof typeof labels]}: \`${addr}\``)
+        .join("\n");
+
+      return [`- **${symbol}**`, perChain, `  - Decimals: ${meta.decimals}`].join("\n");
     })
     .join("\n");
 
-  // --- (4) Fee policy per chain and token ---
+  // (4) Fee policy: Fixed fee by chain & token
+  // Old bps/cap schema is removed; fees are now fixed.
   const feePolicyDesc = Object.entries(FEE_REGISTORY)
     .map(([chain, tokens]) => {
-      const lines = Object.entries(tokens)
-        .map(
-          ([symbol, { bps, capUnits, quantumUnits }]) =>
-            `- ${symbol}: bps = ${bps}, cap = \`${capUnits.toString()}\` units, quantum = \`${quantumUnits.toString()}\``
-        )
+      const rows = Object.entries(tokens)
+        .map(([symbol, { fixedFeeAmountUnits }]) => {
+          const display = formatUnits(fixedFeeAmountUnits, TOKEN_REGISTRY[symbol as Token].decimals);
+          return `- ${symbol}: **Fixed Fee** = ${display} ${symbol}`;
+        })
         .join("\n");
-      return [`[${ENV.NODE_ENV === "prd" ? chain.toUpperCase() : `${chain}-sepolia`}]`, lines].join("\n");
+      const head = `### ${labels[chain as keyof typeof labels]}`;
+      return [head, rows].join("\n");
     })
     .join("\n\n");
 
-  // --- (5) Minimum transferable amounts ---
-  const minTransferDesc = Object.entries(TOKEN_REGISTRY)
-    .map(([symbol, meta]) => `- ${symbol}: ${toDisplayValue(meta.minTransferAmountUnits, symbol as Token)} ${symbol}`)
-    .join("\n");
+  // (5) Minimum transferable amounts: chain × token
+  const minTransferDesc = Object.entries(FEE_REGISTORY)
+    .map(([chain, tokens]) => {
+      const rows = Object.entries(tokens)
+        .map(([symbol, { minTransferAmountUnits }]) => {
+          const display = formatUnits(minTransferAmountUnits, TOKEN_REGISTRY[symbol as Token].decimals);
+          return `- ${symbol}: **Minimum Transfer** = ${display} ${symbol}`;
+        })
+        .join("\n");
+      const head = `### ${labels[chain as keyof typeof labels]}`;
+      return [head, rows].join("\n");
+    })
+    .join("\n\n");
 
-  // --- (2 & 6) Networks (Delegate / Registry) ---
+  // (2 & 6) Networks (Delegate / Registry / Sponsor)
   const networksDesc = [
-    `### ${isProd ? "Ethereum Mainnet" : "Ethereum Sepolia"}`,
+    `### ${labels.main}`,
     `- Delegate: \`${ENV.MAIN_DELEGATE_ADDRESS}\``,
     `- Registry: \`${ENV.MAIN_REGISTRY_ADDRESS}\``,
     `- Sponsor:  \`${ENV.SPONSOR_ADDRESS}\``,
     "",
-    `### ${isProd ? "Base Mainnet" : "Base Sepolia"}`,
+    `### ${labels.base}`,
     `- Delegate: \`${ENV.BASE_DELEGATE_ADDRESS}\``,
     `- Registry: \`${ENV.BASE_REGISTRY_ADDRESS}\``,
-    `- Sponsor:  \`${ENV.SPONSOR_ADDRESS}\``
+    `- Sponsor:  \`${ENV.SPONSOR_ADDRESS}\``,
+    ...(labels.polygon
+      ? [
+          "",
+          `### ${labels.polygon}`,
+          `- Delegate: \`${ENV.POLYGON_DELEGATE_ADDRESS ?? "-"}\``,
+          `- Registry: \`${ENV.POLYGON_REGISTRY_ADDRESS ?? "-"}\``,
+          `- Sponsor:  \`${ENV.SPONSOR_ADDRESS}\``
+        ]
+      : [])
   ].join("\n");
 
-  // --- (1–6) Combined Markdown description ---
+  // Combined Markdown description
   const description = [
     "## 1. Overview",
     "The **Hinomaru Wallet API** provides endpoints for stablecoin-based transactions and fee estimation.",
-    "It is built on **Account Abstraction (EIP-7702)**, designed to simplify secure and low-volatility payments.",
+    "It is built on **Account Abstraction (EIP-7702)** and focuses on secure, low-volatility payments.",
     "",
     "## 2. Supported Chains",
-    isProd ? "- Ethereum Mainnet\n- Base Mainnet" : "- Ethereum Sepolia (Testnet)\n- Base Sepolia (Testnet)",
+    Object.values(labels)
+      .filter(Boolean)
+      .map(v => `- ${v}`)
+      .join("\n"),
     "",
     "## 3. Supported Tokens and Addresses",
     tokenAddressDesc,
     "",
-    "## 4. Fee Policy",
-    "Transaction fees are defined per chain and token, expressed in **basis points (bps)** with a maximum cap.",
+    "## 4. Fee Policy (Fixed Fee)",
+    "Transaction fee is **fixed per chain and token**.",
     "",
     feePolicyDesc,
     "",
     "## 5. Minimum Transferable Amounts",
+    "Minimum transferable amounts are **defined per chain and token**.",
+    "",
     minTransferDesc,
     "",
-    "## 6. Contract Addresses (Delegate / Registry)",
+    "## 6. Contract Addresses (Delegate / Registry / Sponsor)",
     networksDesc
   ].join("\n");
 

@@ -1,56 +1,42 @@
-import { ExchangeRate } from "@/application/ports/exchanges.gateway.interface";
-import { Token, TOKEN_REGISTRY } from "@/registries/token.registry";
+import { SupportChain } from "@/config/chain.config";
+import { FEE_REGISTORY } from "@/registries/fee.registry";
+import { ChainByToken, Token, TOKEN_REGISTRY } from "@/registries/token-chain.registry";
 
 import { AmountUnit } from "../entities/common/amount-unit.entity";
 
-type BpsWithCapPolicy = {
-  method: "bps_with_cap";
+type FixedByChainPolicy<C extends SupportChain> = {
+  method: "fixed_by_chain";
   version: "v1";
-  bps: bigint;
-  cap: AmountUnit;
-  quantumUnits: bigint;
+  chain: C;
 };
 
-export type FeeWithPolicy = { fee: AmountUnit; policy: BpsWithCapPolicy };
+export type FeeWithPolicy<C extends SupportChain = SupportChain> = {
+  fee: AmountUnit;
+  policy: FixedByChainPolicy<C>;
+};
 
-export class FeeValueObject {
+export class FeeValueObject<T extends Token, C extends ChainByToken<T> & SupportChain> {
   private constructor(
-    private readonly bps: bigint,
-    private readonly capMinUnits: bigint,
-    private readonly quantumUnits: bigint
+    private readonly chain: C,
+    private readonly token: T
   ) {}
 
-  static create(bps: bigint, capMinUnits: bigint, quantumUnits: bigint): FeeValueObject {
-    return new FeeValueObject(bps, capMinUnits, quantumUnits);
+  static create<T extends Token, C extends ChainByToken<T> & SupportChain>(chain: C, token: T): FeeValueObject<T, C> {
+    return new FeeValueObject(chain, token);
   }
 
-  apply(amount: bigint, sendToken: Token, feeToken: Token, exchangeRate: ExchangeRate): FeeWithPolicy {
-    const sendBaseUnit = TOKEN_REGISTRY[sendToken].baseUnit;
-    const feeBaseUnit = TOKEN_REGISTRY[feeToken].baseUnit;
-
-    const amountInFeeTokenUnits = (amount * exchangeRate.rate * feeBaseUnit) / (exchangeRate.unit * sendBaseUnit);
-
-    let rawFeeUnits = (amountInFeeTokenUnits * this.bps) / 10_000n;
-    if (this.quantumUnits > 1n) rawFeeUnits = (rawFeeUnits / this.quantumUnits) * this.quantumUnits;
-
-    const cappedFeeUnits = rawFeeUnits > this.capMinUnits ? this.capMinUnits : rawFeeUnits;
-
+  apply(): FeeWithPolicy<C> {
+    const { chain, token } = this;
     return {
       fee: {
-        symbol: feeToken,
-        minUnits: cappedFeeUnits,
-        decimals: TOKEN_REGISTRY[feeToken].decimals
+        symbol: token,
+        minUnits: FEE_REGISTORY[chain][token].fixedFeeAmountUnits,
+        decimals: TOKEN_REGISTRY[token].decimals
       },
       policy: {
-        method: "bps_with_cap",
+        method: "fixed_by_chain",
         version: "v1",
-        bps: this.bps,
-        cap: {
-          symbol: feeToken,
-          minUnits: this.capMinUnits,
-          decimals: TOKEN_REGISTRY[feeToken].decimals
-        },
-        quantumUnits: this.quantumUnits
+        chain
       }
     };
   }

@@ -24,8 +24,8 @@ export class FeesController {
   @ApiBody({ type: EstimateFeeRequestDocDto })
   @ApiResponse({ status: 200, type: EstimateFeeResponseDto, description: "Estimated fee data." })
   @UsePipes(new ValibotPipe(EstimateFeeRequestDtoSchema))
-  async estimate(@Body() body: EstimateFeeRequestDto): Promise<EstimateFeeResponseDto> {
-    const result: FeeModel = await this.feesService.estimateFee(body);
+  estimate(@Body() body: EstimateFeeRequestDto): EstimateFeeResponseDto {
+    const result: FeeModel = this.feesService.estimateFee(body);
 
     return plainToInstance(EstimateFeeResponseDto, result, {
       enableImplicitConversion: true

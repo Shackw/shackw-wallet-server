@@ -1,8 +1,6 @@
 import * as v from "valibot";
 
-import { isHttpsPublicUrl } from "@/shared/helpers/url.helper";
-
-export const notifyWebhookShape = v.object(
+const NotifyWebhookShape = v.object(
   {
     id: v.pipe(
       v.string("webhook.id must be a string."),
@@ -10,11 +8,7 @@ export const notifyWebhookShape = v.object(
       v.maxLength(64, "webhook.id is too long."),
       v.regex(/^[A-Za-z0-9:_-]+$/, "webhook.id has invalid chars.")
     ),
-    url: v.pipe(
-      v.string("webhook.url must be a string."),
-      v.url("webhook.url must be a url."),
-      v.check(isHttpsPublicUrl, "webhook.url must be HTTPS and public (no localhost/private ranges).")
-    ),
+    url: v.pipe(v.string("webhook.url must be a string."), v.url("webhook.url must be a url.")),
     echo: v.pipe(
       v.string("webhook.echo must be a string."),
       v.minLength(16, "webhook.echo must be at least 16 chars."),
@@ -24,12 +18,11 @@ export const notifyWebhookShape = v.object(
   },
   "notify.webhook must be an object. Required fields: id, url, echo"
 );
-export type NotifyWebhook = v.InferOutput<typeof notifyWebhookShape>;
+export type NotifyWebhook = v.InferOutput<typeof NotifyWebhookShape>;
 
-export const notifyShape = v.object(
+export const NotifyShape = v.object(
   {
-    webhook: notifyWebhookShape
+    webhook: NotifyWebhookShape
   },
   "notify must be an object. Required fields: webhook"
 );
-export type Notify = v.InferOutput<typeof notifyShape>;

@@ -5,12 +5,9 @@ import { Hex } from "viem";
 
 import { SUPPORT_CHAIN_KEYS, SupportChain } from "@/config/chain.config";
 import { chainValidator } from "@/shared/validations/rules/chain.validator";
-import {
-  authorizationWithVShape,
-  authorizationWithVShapeYParityShape
-} from "@/shared/validations/shapes/authorization.shape";
-import { notifyShape } from "@/shared/validations/shapes/notify.shape";
-import { quoteTokenShape } from "@/shared/validations/shapes/quote-token.shape";
+import { AuthorizationShape } from "@/shared/validations/shapes/authorization.shape";
+import { NotifyShape } from "@/shared/validations/shapes/notify.shape";
+import { QuoteTokenShape } from "@/shared/validations/shapes/quote-token.shape";
 
 import { AuthorizationDto } from "./common/authorization.dto";
 import { NotifyDto } from "./common/notify.dto";
@@ -18,12 +15,9 @@ import { NotifyDto } from "./common/notify.dto";
 export const TransferTokenDtoSchema = v.object(
   {
     chain: chainValidator("chain"),
-    quoteToken: quoteTokenShape,
-    authorization: v.union(
-      [authorizationWithVShape, authorizationWithVShapeYParityShape],
-      "authorization must include either 'v' or 'yParity'."
-    ),
-    notify: v.optional(notifyShape)
+    quoteToken: QuoteTokenShape,
+    authorization: AuthorizationShape,
+    notify: v.optional(NotifyShape)
   },
   issue => `${issue.expected} is required`
 );
