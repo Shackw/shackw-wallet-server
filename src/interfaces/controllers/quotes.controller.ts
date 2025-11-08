@@ -1,4 +1,4 @@
-import { Controller, UseFilters, Post, UsePipes, Body, ValidationPipe } from "@nestjs/common";
+import { Controller, UseFilters, Post, UsePipes, Body } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { plainToInstance } from "class-transformer";
 
@@ -23,15 +23,7 @@ export class QuotesController {
   @ApiOperation({ summary: "Create a payment quote" })
   @ApiBody({ type: CreateQuoteRequestDocDto })
   @ApiResponse({ status: 201, type: CreateQuoteResponseDto, description: "Created quote." })
-  @UsePipes(
-    new ValibotPipe(CreateQuoteRequestDtoSchema),
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: false,
-      transform: true,
-      transformOptions: { enableImplicitConversion: false }
-    })
-  )
+  @UsePipes(new ValibotPipe(CreateQuoteRequestDtoSchema))
   async create(@Body() body: CreateQuoteRequestDto): Promise<CreateQuoteResponseDto> {
     const result: QuoteModel = await this.quotesService.createQuote(body);
 

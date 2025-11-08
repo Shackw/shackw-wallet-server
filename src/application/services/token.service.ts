@@ -2,6 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/com
 import { getContract } from "viem";
 import { verifyAuthorization } from "viem/utils";
 
+import { SUPPORT_CHAINS } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
 import { TransferTokenModel } from "@/domain/entities/token.entity";
 import { DELEGATE_ABI } from "@/infrastructure/evm/abis/delegate.abi";
@@ -16,8 +17,8 @@ import {
   REGISTRY_CONTRACT_ADDRESS_REGISTORY,
   DELEGATE_CONTRACT_ADDRESS_REGISTORY
 } from "@/registries/invoker.registry";
-import { SPONSOR_CLIENTS } from "@/registries/sponser.registry";
-import { ADDRESS_TO_TOKEN, TOKEN_REGISTRY } from "@/registries/token.registry";
+import { SPONSOR_CLIENTS } from "@/registries/sponsor.registry";
+import { ADDRESS_TO_TOKEN, resolveTokenContract } from "@/registries/token-chain.registry";
 import { VIEM_PUBLIC_CLIENTS } from "@/registries/viem.registry";
 
 @Injectable()
@@ -55,13 +56,17 @@ export class TokenService {
       callHash
     } = decodedToken;
 
-    // 2) Basic validation: version & expiration
+    // 2a) Basic validation: version & expiration
     if (v !== 1) throw new BadRequestException("Unsupported quoteToken version: v must be 1.");
 
     const nowSec = BigInt(Math.floor(Date.now() / 1000));
     if (nowSec > expiresAt + 15n) throw new ForbiddenException("Quote expired (15s grace).");
 
-    // 2b) Environment consistency
+    // 2b) Validate that the chain in the payload matches the chain used when issuing the quote.
+    if (SUPPORT_CHAINS[chain].id !== chainId)
+      throw new BadRequestException("Chain in the payload does not match the chain used to issue the quote.");
+
+    // 2c) Environment consistency
     const delegateAddress = DELEGATE_CONTRACT_ADDRESS_REGISTORY[chain];
     if (delegate !== delegateAddress)
       throw new BadRequestException(`Delegate mismatch: expected ${delegateAddress}, got ${delegate}.`);
@@ -117,7 +122,7 @@ export class TokenService {
       }
     })();
 
-    const erc20Contract = TOKEN_REGISTRY[tokenSym].contract[chain];
+    const erc20Contract = resolveTokenContract(tokenSym, chain);
     const balToken = await erc20Contract.read.balanceOf([sender]);
 
     if (tokenSym === feeTokenSym) {
@@ -128,7 +133,7 @@ export class TokenService {
           `Insufficient ${tokenSym} balance: required ${required} minimal units (amount ${amountMinUnits} + fee ${feeMinUnits}), but sender has ${balToken}.`
         );
     } else {
-      const erc20ContractWithFee = TOKEN_REGISTRY[feeTokenSym].contract[chain];
+      const erc20ContractWithFee = resolveTokenContract(feeTokenSym, chain);
       const balFeeToken = await erc20ContractWithFee.read.balanceOf([sender]);
 
       if (balToken < amountMinUnits)

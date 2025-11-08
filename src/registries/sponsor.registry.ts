@@ -17,5 +17,10 @@ export const SPONSOR_CLIENTS: Record<SupportChain, WalletClient<Transport, Chain
     account: SPONSOR_ACCOUNT,
     chain: SUPPORT_CHAINS.base,
     transport: http(CUSTOM_RPC_URLS.base)
+  }),
+  polygon: createWalletClient({
+    account: SPONSOR_ACCOUNT,
+    chain: SUPPORT_CHAINS.polygon,
+    transport: http(CUSTOM_RPC_URLS.polygon)
   })
 };
