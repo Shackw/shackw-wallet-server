@@ -1,98 +1,248 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Hinomaru Wallet API
+Wallet-to-Wallet stablecoin transfers using **Account Abstraction (EIP-7702)**
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This API powers **Hinomaru Wallet**, a stablecoin-focused payment system designed to enable **low-volatility, gas-abstracted transfers** over supported EVM chains.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This document describes the **environment-agnostic API architecture**, including the supported concepts, endpoints, request flow, and usage guidelines.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+# 1. Overview
 
-## Project setup
+The **Hinomaru Wallet API** provides:
 
-```bash
-$ yarn install
+- Stablecoin transfers with fixed per-chain transaction fees
+- EIP-7702–based authorization signing (no private key exposure to backend)
+- Token metadata, fee metadata, and contract metadata endpoints
+- Quote → Authorization → Transfer execution flow
+- Server-side validation of minimum transferable amounts and fixed fees
+
+The backend does **not** store user private keys.
+Authorization is signed locally by the user wallet and verified on-chain via EIP-7702 delegation.
+
+---
+
+# 2. Supported Concepts
+
+## 2.1 Supported Tokens
+The API supports multiple stablecoins.
+Each token definition includes:
+
+- `symbol`
+- `decimals`
+- `address[chain]`
+- `fixedFeeAmountUnits[chain]`
+- `minTransferAmountUnits[chain]`
+
+Token availability may differ per chain, but the API exposes this dynamically at:
+
+```
+GET /meta/tokens
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ yarn run start
+## 2.2 Supported Chains
+Supported chains vary per environment (Testnet / Mainnet), but the API exposes available chains and contracts dynamically via:
 
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+```
+GET /meta/contracts
+GET /meta/fees
+GET /meta/min-transfer
 ```
 
-## Run tests
+---
 
-```bash
-# unit tests
-$ yarn run test
+# 3. Fixed Fee Policy
 
-# e2e tests
-$ yarn run test:e2e
+The Hinomaru Wallet API uses **fixed fees per chain and token**.
+Each fee entry includes:
 
-# test coverage
-$ yarn run test:cov
+- `symbol`
+- `chain`
+- `fixedFeeAmountUnits`
+- `fixedFeeAmountDisplay`
+
+Clients use:
+
+```
+GET /meta/fees
 ```
 
-## Deployment
+to retrieve the applicable fee table.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+---
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+# 4. Minimum Transfer Amounts
 
-```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
+Transfers must satisfy a **minimum token amount**, defined per chain and token.
+
+Example fields:
+
+- `symbol`
+- `chain`
+- `minUnits`
+- `display`
+
+Retrieve via:
+
+```
+GET /meta/min-transfer
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+# 5. Contract Addresses
 
-Check out a few resources that may come in handy when working with NestJS:
+The API exposes the contract addresses used for:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- Delegation Contract (EIP-7702)
+- Registry Contract
+- Sponsor Contract
 
-## Support
+Retrieve via:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```
+GET /meta/contracts
+```
 
-## Stay in touch
+These values differ between environments and are **intentionally not hard-coded in this README**.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+# 6. Metadata Endpoints
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+The `/meta` endpoints provide all chain- and token-dependent metadata:
+
+| Endpoint | Description |
+|---------|-------------|
+| `GET /meta/summary` | Full metadata bundle (tokens, fees, min-transfer, contracts) |
+| `GET /meta/tokens` | Supported tokens and their addresses |
+| `GET /meta/fees` | Fixed fees per chain & token |
+| `GET /meta/min-transfer` | Minimum transferable amounts |
+| `GET /meta/contracts` | Delegate / Registry / Sponsor addresses |
+
+These responses are environment-dependent but **require no environment information in the README**.
+
+---
+
+# 7. How to Use (End-to-End Flow)
+
+This is the core flow for performing a **token transfer with fixed fee** using Hinomaru Wallet + EIP-7702.
+
+---
+
+## **Step 1 — Request a Quote Token**
+
+Call:
+
+```
+POST /api/quotes
+```
+
+with the parameters:
+
+- `chain`
+- `token.symbol`
+- `amountMinUnits`
+- `sender`
+- `recipient`
+
+The API returns a **quoteToken**, which is a signed piece of data required for the final transfer.
+
+Example fields returned:
+
+- `quoteToken` (opaque string)
+- `chain`
+- `token`
+- `feeToken`
+- `fee`
+- `expiresAt`
+
+---
+
+## **Step 2 — Sign Authorization (EIP-7702)**
+
+Use **viem**’s `signAuthorization` to produce an authorization signature:
+
+Docs:
+https://viem.sh/docs/eip7702/signAuthorization
+
+The authorization binds:
+
+- delegated account
+- expiry
+- allowed call(s)
+- nonce
+- chain
+- wallet address
+
+This signature **never reaches the backend** until the user explicitly submits the transfer.
+
+---
+
+## **Step 3 — Execute the Transfer**
+
+Call:
+
+```
+POST /api/tokens:transfer
+```
+
+with:
+
+- `quoteToken` (from Step 1)
+- `authorization` (from Step 2)
+
+If:
+
+- quote is valid
+- EIP-7702 signature is valid
+- minimum transfer amount is satisfied
+- the sender has sufficient balance for the fixed fee
+
+…then the server relays the transaction.
+
+---
+
+# 8. Error Handling
+
+The API uses structured exceptions such as:
+
+- `BadRequestWithCodeException`
+- `ChainMismatch`
+- `InsufficientFeeBalance`
+- `MinTransferAmountViolation`
+- `TokenBalanceFetchFailed`
+
+Errors always include:
+
+- machine-readable code
+- human-readable message
+
+---
+
+# 9. Security Notes
+
+- User private keys are never sent to the backend.
+- Signing uses EIP-7702 Authorization Messages.
+- Backend does not hold or issue keys; it only verifies authorizations.
+- All fee and minimum transfer validation is performed server-side.
+
+---
+
+# 10. Development Notes
+
+- All chain- and environment-dependent values (addresses, decimals, fees) should be retrieved via `/meta/**`, not hardcoded.
+- This README intentionally avoids embedding environment-specific constants.
+
+---
+
+# 11. License
+
+Internal use only unless otherwise specified.
+
+
+## Author
+
+**FickleWolf**
