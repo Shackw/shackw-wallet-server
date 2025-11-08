@@ -2,9 +2,9 @@ import * as v from "valibot";
 
 import { addressValidator, hex64Validator } from "../rules/address.validator";
 import { chainIdValidator } from "../rules/chain.validator";
-import { bigintStringValidator } from "../rules/string-bigint.validator";
+import { stringBigintValidator } from "../rules/string-bigint.validator";
 
-const authorizationCommonShape = {
+const AuthorizationCommonShape = {
   address: addressValidator("authorization.address"),
   chainId: chainIdValidator(),
   nonce: v.pipe(
@@ -16,24 +16,24 @@ const authorizationCommonShape = {
   s: hex64Validator("authorization.r")
 };
 
-export const authorizationWithVShape = v.object(
-  {
-    ...authorizationCommonShape,
-    v: bigintStringValidator("authorization.v"),
-    yParity: v.optional(v.union([v.literal(0), v.literal(1)], "authorization.yParity must be 0 or 1."))
-  },
-  "authorization must be an object. Required fields: address, chainId, nonce, r, s, v"
+export const AuthorizationShape = v.union(
+  [
+    v.object(
+      {
+        ...AuthorizationCommonShape,
+        v: stringBigintValidator("authorization.v"),
+        yParity: v.optional(v.union([v.literal(0), v.literal(1)], "authorization.yParity must be 0 or 1."))
+      },
+      "authorization must be an object. Required fields: address, chainId, nonce, r, s, v"
+    ),
+    v.object(
+      {
+        ...AuthorizationCommonShape,
+        v: v.optional(stringBigintValidator("authorization.v")),
+        yParity: v.union([v.literal(0), v.literal(1)], "authorization.yParity must be 0 or 1.")
+      },
+      "authorization must be an object. Required fields: address, chainId, nonce, r, s, yParity"
+    )
+  ],
+  "authorization must include either 'v' or 'yParity'."
 );
-export type AuthorizationWithV = v.InferOutput<typeof authorizationWithVShape>;
-
-export const authorizationWithVShapeYParityShape = v.object(
-  {
-    ...authorizationCommonShape,
-    v: v.optional(bigintStringValidator("authorization.v")),
-    yParity: v.union([v.literal(0), v.literal(1)], "authorization.yParity must be 0 or 1.")
-  },
-  "authorization must be an object. Required fields: address, chainId, nonce, r, s, yParity"
-);
-export type AuthorizationWithVShapeYParity = v.InferOutput<typeof authorizationWithVShapeYParityShape>;
-
-export type Authorization = AuthorizationWithV | AuthorizationWithVShapeYParity;
