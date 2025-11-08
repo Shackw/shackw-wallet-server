@@ -76,15 +76,32 @@ export function setupSwagger(app: INestApplication): void {
     `- Delegate: \`${ENV.BASE_DELEGATE_ADDRESS}\``,
     `- Registry: \`${ENV.BASE_REGISTRY_ADDRESS}\``,
     `- Sponsor:  \`${ENV.SPONSOR_ADDRESS}\``,
-    ...(labels.polygon
-      ? [
-          "",
-          `### ${labels.polygon}`,
-          `- Delegate: \`${ENV.POLYGON_DELEGATE_ADDRESS ?? "-"}\``,
-          `- Registry: \`${ENV.POLYGON_REGISTRY_ADDRESS ?? "-"}\``,
-          `- Sponsor:  \`${ENV.SPONSOR_ADDRESS}\``
-        ]
-      : [])
+    "",
+    `### ${labels.polygon}`,
+    `- Delegate: \`${ENV.POLYGON_DELEGATE_ADDRESS ?? "-"}\``,
+    `- Registry: \`${ENV.POLYGON_REGISTRY_ADDRESS ?? "-"}\``,
+    `- Sponsor:  \`${ENV.SPONSOR_ADDRESS}\``
+  ].join("\n");
+
+  // (7) How to Use: Quote -> Sign Authorization -> Transfer
+  // Short end-to-end flow that users can follow from the docs.
+  const howToUseDesc = [
+    "Follow the steps below to perform a token transfer with a fixed fee:",
+    "",
+    "1) **Request a quote token**",
+    "   - `POST /api/quotes` with the transfer parameters.",
+    "   - The response contains a `quoteToken` (opaque payload) and related metadata.",
+    "",
+    "2) **Sign an Authorization (EIP-7702)**",
+    "   - Use viem’s `signAuthorization` to produce an authorization signature.",
+    "   - Docs: https://viem.sh/docs/eip7702/signAuthorization",
+    "",
+    "3) **Execute the transfer**",
+    "   - `POST /api/tokens:transfer` with:",
+    "     - `quoteToken` returned from step 1",
+    "     - `authorization` produced in step 2",
+    "",
+    "If the request is valid and the fee & minimum transfer checks pass, the transfer will be broadcast."
   ].join("\n");
 
   // Combined Markdown description
@@ -113,7 +130,10 @@ export function setupSwagger(app: INestApplication): void {
     minTransferDesc,
     "",
     "## 6. Contract Addresses (Delegate / Registry / Sponsor)",
-    networksDesc
+    networksDesc,
+    "",
+    "## 7. How to Use",
+    howToUseDesc
   ].join("\n");
 
   const config = new DocumentBuilder()
@@ -121,7 +141,7 @@ export function setupSwagger(app: INestApplication): void {
     .setDescription(description)
     .addServer(
       isProd ? "https://wallet.ficklewolf.com/" : "https://dev.wallet.ficklewolf.com/",
-      isProd ? "Main (Ethereum & Base Mainnet)" : "Test (Sepolia & Base Sepolia)"
+      isProd ? "Main (Ethereum & Base Mainnet & Polygon Mainnet)" : "Test (Sepolia & Base Sepolia & Polygon Amoy)"
     )
     .setVersion("0.0.1")
     .build();
