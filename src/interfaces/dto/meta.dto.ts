@@ -15,7 +15,7 @@ export class FeeItemDto {
   @ApiProperty({ example: TOKENS }) symbol!: Token;
   @ApiProperty({ example: "50000000000000000" })
   fixedFeeAmountUnits!: string;
-  @ApiProperty({ example: "0.05" }) fixedFeeAmountDisplay!: string;
+  @ApiProperty({ example: 0.05 }) fixedFeeAmountDisplay!: number;
 }
 
 export class MinTransferItemDto {
@@ -23,7 +23,7 @@ export class MinTransferItemDto {
   @ApiProperty({ example: TOKENS }) symbol!: Token;
   @ApiProperty({ example: "100000000000000000000" })
   minUnits!: string;
-  @ApiProperty({ example: "100" }) display!: string;
+  @ApiProperty({ example: 100 }) display!: number;
 }
 
 export class ContractsDto {

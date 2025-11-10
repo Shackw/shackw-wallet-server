@@ -37,7 +37,7 @@ export class MetaService {
           chain,
           symbol,
           fixedFeeAmountUnits: fixedFeeAmountUnits.toString(),
-          fixedFeeAmountDisplay: formatUnits(fixedFeeAmountUnits, TOKEN_REGISTRY[symbol].decimals)
+          fixedFeeAmountDisplay: Number(formatUnits(fixedFeeAmountUnits, TOKEN_REGISTRY[symbol].decimals))
         });
       }
     }
@@ -58,7 +58,7 @@ export class MetaService {
           chain,
           symbol,
           minUnits: minTransferAmountUnits.toString(),
-          display: formatUnits(minTransferAmountUnits, TOKEN_REGISTRY[symbol].decimals)
+          display: Number(formatUnits(minTransferAmountUnits, TOKEN_REGISTRY[symbol].decimals))
         });
       }
     }
