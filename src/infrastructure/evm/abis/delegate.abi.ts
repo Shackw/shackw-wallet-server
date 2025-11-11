@@ -29,7 +29,7 @@ export const DELEGATE_ABI = [
     name: "execute",
     inputs: [
       {
-        internalType: "struct HinomaruDelegate.Call[]",
+        internalType: "struct ShackwDelegate.Call[]",
         name: "calls",
         type: "tuple[]",
         components: [

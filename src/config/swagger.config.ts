@@ -104,7 +104,7 @@ export function setupSwagger(app: INestApplication): void {
   // Combined Markdown description
   const description = [
     "## 1. Overview",
-    "The **Hinomaru Wallet API** provides endpoints for stablecoin-based transactions and fee estimation.",
+    "The **Shackw Wallet API** provides endpoints for stablecoin-based transactions and fee estimation.",
     "It is built on **Account Abstraction (EIP-7702)** and focuses on secure, low-volatility payments.",
     "",
     "## 2. Supported Chains",
@@ -134,9 +134,9 @@ export function setupSwagger(app: INestApplication): void {
   ].join("\n");
 
   const config = new DocumentBuilder()
-    .setTitle("Hinomaru Wallet API")
+    .setTitle("Shackw Wallet API")
     .setDescription(description)
-    .addServer("https://wallet.ficklewolf.com/")
+    .addServer("https://wallet.shackw.com/")
     .setVersion("0.0.1")
     .build();
 
