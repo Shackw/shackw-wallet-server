@@ -5,7 +5,7 @@ import { formatISO } from "date-fns";
 import * as v from "valibot";
 import { Address, Hex } from "viem";
 
-import { SUPPORT_CHAIN_IDS, SUPPORT_CHAIN_KEYS, SupportChain } from "@/config/chain.config";
+import { CHAIN_IDS, CHAIN_KEYS, Chain } from "@/config/chain.config";
 import { SUPPORT_CHAIN_TO_TOKEN, TOKENS } from "@/registries/token-chain.registry";
 import { TransferAddressValidator } from "@/shared/validations/shapes/transfer-address.shape";
 import { TokenTransferFloorShape } from "@/shared/validations/shapes/transfer-floor.shape";
@@ -21,9 +21,9 @@ export const CreateQuoteRequestDtoSchema = v.intersect([
     [TokenTransferFloorShape.JPYC, TokenTransferFloorShape.USDC, TokenTransferFloorShape.EURC],
     issue => {
       const input = issue.input as string;
-      if (SUPPORT_CHAIN_KEYS.includes(input as SupportChain))
-        return `When chain is ${input}, token.symbol must be one of: ${SUPPORT_CHAIN_TO_TOKEN[input as SupportChain].join(", ")}.`;
-      return `token.symbol or chain is invalid, token.symbol must be one of: ${TOKENS.join(", ")}, chain must be one of: ${SUPPORT_CHAIN_KEYS.join(", ")}.`;
+      if (CHAIN_KEYS.includes(input as Chain))
+        return `When chain is ${input}, token.symbol must be one of: ${SUPPORT_CHAIN_TO_TOKEN[input as Chain].join(", ")}.`;
+      return `token.symbol or chain is invalid, token.symbol must be one of: ${TOKENS.join(", ")}, chain must be one of: ${CHAIN_KEYS.join(", ")}.`;
     }
   ),
   TransferAddressValidator
@@ -31,8 +31,8 @@ export const CreateQuoteRequestDtoSchema = v.intersect([
 export type CreateQuoteRequestDto = v.InferOutput<typeof CreateQuoteRequestDtoSchema>;
 
 export class CreateQuoteRequestDocDto {
-  @ApiProperty({ enum: SUPPORT_CHAIN_KEYS })
-  chain!: SupportChain;
+  @ApiProperty({ enum: CHAIN_KEYS })
+  chain!: Chain;
 
   @ApiProperty({ example: "0x1234abcd..." })
   sender!: Address;
@@ -59,8 +59,8 @@ export class CreateQuoteResponseDto {
   @Transform(({ value }) => formatISO(value as Date), { toPlainOnly: true })
   expiresAt!: Date;
 
-  @ApiProperty({ example: 8453, enum: SUPPORT_CHAIN_IDS })
-  @IsEnum(SUPPORT_CHAIN_IDS)
+  @ApiProperty({ example: 8453, enum: CHAIN_IDS })
+  @IsEnum(CHAIN_IDS)
   chainId!: number;
 
   @ApiProperty({ example: "0x1234abcd..." })

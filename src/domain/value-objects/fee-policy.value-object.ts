@@ -1,27 +1,27 @@
-import { SupportChain } from "@/config/chain.config";
+import { Chain } from "@/config/chain.config";
 import { FEE_REGISTORY } from "@/registries/fee.registry";
 import { ChainByToken, Token, TOKEN_REGISTRY } from "@/registries/token-chain.registry";
 
 import { AmountUnit } from "../entities/common/amount-unit.entity";
 
-type FixedByChainPolicy<C extends SupportChain> = {
+type FixedByChainPolicy<C extends Chain> = {
   method: "fixed_by_chain";
   version: "v1";
   chain: C;
 };
 
-export type FeeWithPolicy<C extends SupportChain = SupportChain> = {
+export type FeeWithPolicy<C extends Chain = Chain> = {
   fee: AmountUnit;
   policy: FixedByChainPolicy<C>;
 };
 
-export class FeeValueObject<T extends Token, C extends ChainByToken<T> & SupportChain> {
+export class FeeValueObject<T extends Token, C extends ChainByToken<T> & Chain> {
   private constructor(
     private readonly chain: C,
     private readonly token: T
   ) {}
 
-  static create<T extends Token, C extends ChainByToken<T> & SupportChain>(chain: C, token: T): FeeValueObject<T, C> {
+  static create<T extends Token, C extends ChainByToken<T> & Chain>(chain: C, token: T): FeeValueObject<T, C> {
     return new FeeValueObject(chain, token);
   }
 

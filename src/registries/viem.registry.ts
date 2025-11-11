@@ -1,40 +1,31 @@
-import { createPublicClient, http } from "viem";
+import { createPublicClient, http, PublicClient, Transport, Chain as ViemChain } from "viem";
 
-import { SUPPORT_CHAINS } from "@/config/chain.config";
-import { CUSTOM_RPC_URLS } from "@/config/rpc-urls.config";
+import { Chain, CHAINS } from "@/config/chain.config";
+import { CUSTOM_RPC_URL } from "@/config/rpc-urls.config";
 
-export const VIEM_PUBLIC_CLIENTS = {
-  main: createPublicClient({
-    chain: SUPPORT_CHAINS.main,
-    transport: http(CUSTOM_RPC_URLS.main, {
-      batch: {
-        wait: 15,
-        batchSize: 50
-      },
-      retryCount: 3,
-      retryDelay: 250
-    })
+export const VIEM_PUBLIC_CLIENTS: Record<Chain, PublicClient<Transport, ViemChain | undefined>> = {
+  mainnet: createPublicClient({
+    chain: CHAINS.mainnet,
+    transport: http(CUSTOM_RPC_URL.mainnet)
   }),
   base: createPublicClient({
-    chain: SUPPORT_CHAINS.base,
-    transport: http(CUSTOM_RPC_URLS.base, {
-      batch: {
-        wait: 15,
-        batchSize: 50
-      },
-      retryCount: 3,
-      retryDelay: 250
-    })
+    chain: CHAINS.base,
+    transport: http(CUSTOM_RPC_URL.base)
   }),
   polygon: createPublicClient({
-    chain: SUPPORT_CHAINS.polygon,
-    transport: http(CUSTOM_RPC_URLS.polygon, {
-      batch: {
-        wait: 15,
-        batchSize: 50
-      },
-      retryCount: 3,
-      retryDelay: 250
-    })
+    chain: CHAINS.polygon,
+    transport: http(CUSTOM_RPC_URL.polygon)
+  }),
+  sepolia: createPublicClient({
+    chain: CHAINS.sepolia,
+    transport: http(CUSTOM_RPC_URL.sepolia)
+  }),
+  baseSepolia: createPublicClient({
+    chain: CHAINS.baseSepolia,
+    transport: http(CUSTOM_RPC_URL.baseSepolia)
+  }),
+  polygonAmoy: createPublicClient({
+    chain: CHAINS.polygonAmoy,
+    transport: http(CUSTOM_RPC_URL.polygonAmoy)
   })
 };

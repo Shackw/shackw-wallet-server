@@ -1,16 +1,22 @@
 import { Address } from "viem";
 
-import { SupportChain } from "@/config/chain.config";
+import { Chain } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
 
-export const DELEGATE_CONTRACT_ADDRESS_REGISTORY: Record<SupportChain, Address> = {
-  main: ENV.MAIN_DELEGATE_ADDRESS,
-  base: ENV.BASE_DELEGATE_ADDRESS,
-  polygon: ENV.POLYGON_DELEGATE_ADDRESS
+export const DELEGATE_CONTRACT_ADDRESS_REGISTORY: Record<Chain, Address> = {
+  mainnet: ENV.ETH_MAIN_DELEGATE_ADDRESS,
+  base: ENV.BASE_MAIN_DELEGATE_ADDRESS,
+  polygon: ENV.POLYGON_MAIN_DELEGATE_ADDRESS,
+  sepolia: ENV.ETH_SEPOLIA_DELEGATE_ADDRESS,
+  baseSepolia: ENV.BASE_SEPOLIA_DELEGATE_ADDRESS,
+  polygonAmoy: ENV.POLYGON_AMOY_DELEGATE_ADDRESS
 };
 
-export const REGISTRY_CONTRACT_ADDRESS_REGISTORY: Record<SupportChain, Address> = {
-  main: ENV.MAIN_REGISTRY_ADDRESS,
-  base: ENV.BASE_REGISTRY_ADDRESS,
-  polygon: ENV.POLYGON_REGISTRY_ADDRESS
+export const REGISTRY_CONTRACT_ADDRESS_REGISTORY: Record<Chain, Address> = {
+  mainnet: ENV.ETH_MAIN_REGISTRY_ADDRESS,
+  base: ENV.BASE_MAIN_REGISTRY_ADDRESS,
+  polygon: ENV.POLYGON_MAIN_REGISTRY_ADDRESS,
+  sepolia: ENV.ETH_SEPOLIA_REGISTRY_ADDRESS,
+  baseSepolia: ENV.BASE_SEPOLIA_REGISTRY_ADDRESS,
+  polygonAmoy: ENV.POLYGON_AMOY_REGISTRY_ADDRESS
 };

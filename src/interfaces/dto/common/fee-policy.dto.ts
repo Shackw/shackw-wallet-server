@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-import { SUPPORT_CHAIN_KEYS, SupportChain } from "@/config/chain.config";
+import { CHAIN_KEYS, Chain } from "@/config/chain.config";
 
 export class FeePolicyDto {
   @ApiProperty({
@@ -11,6 +11,6 @@ export class FeePolicyDto {
   @ApiProperty({ example: "v1" })
   version!: "v1";
 
-  @ApiProperty({ enum: SUPPORT_CHAIN_KEYS })
-  chain!: SupportChain;
+  @ApiProperty({ enum: CHAIN_KEYS })
+  chain!: Chain;
 }

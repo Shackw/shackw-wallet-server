@@ -4,35 +4,34 @@ import { formatUnits } from "viem";
 
 import { ENV } from "@/config/env.config";
 import { FEE_REGISTORY } from "@/registries/fee.registry";
+import {
+  DELEGATE_CONTRACT_ADDRESS_REGISTORY,
+  REGISTRY_CONTRACT_ADDRESS_REGISTORY
+} from "@/registries/invoker.registry";
 import { TOKEN_REGISTRY, Token } from "@/registries/token-chain.registry";
+
+import { Chain, CHAIN_KEYS } from "./chain.config";
 
 // Labels for chain names shown in Swagger (depends on environment)
 const CHAIN_LABELS = {
-  prod: {
-    main: "Ethereum Mainnet",
-    base: "Base Mainnet",
-    polygon: "Polygon PoS Mainnet"
-  },
-  dev: {
-    main: "Ethereum Sepolia",
-    base: "Base Sepolia",
-    polygon: "Polygon Amoy"
-  }
-} as const;
+  mainnet: "Ethereum Mainnet",
+  base: "Base Mainnet",
+  polygon: "Polygon PoS Mainnet",
+  sepolia: "Ethereum Sepolia",
+  baseSepolia: "Base Sepolia",
+  polygonAmoy: "Polygon Amoy"
+} as const satisfies Record<Chain, string>;
 
 export function setupSwagger(app: INestApplication): void {
-  const isProd = ENV.NODE_ENV === "prd";
-  const labels = isProd ? CHAIN_LABELS.prod : CHAIN_LABELS.dev;
-
   // (3) Supported tokens and addresses (env-based)
   // Only chains that actually have an address in the registry are listed.
   const tokenAddressDesc = Object.entries(TOKEN_REGISTRY)
     .map(([symbol, meta]) => {
       const perChain = Object.entries(meta.address)
-        .map(([chain, addr]) => `  - ${labels[chain as keyof typeof labels]}: \`${addr}\``)
+        .map(([chain, addr]) => `    - ${CHAIN_LABELS[chain as Chain]}: \`${addr}\``)
         .join("\n");
 
-      return [`- **${symbol}**`, perChain, `  - Decimals: ${meta.decimals}`].join("\n");
+      return [`- **${symbol}**`, "  - Contract Address", perChain, `  - Decimals: ${meta.decimals}`].join("\n");
     })
     .join("\n");
 
@@ -46,7 +45,7 @@ export function setupSwagger(app: INestApplication): void {
           return `- ${symbol}: **Fixed Fee** = ${display} ${symbol}`;
         })
         .join("\n");
-      const head = `### ${labels[chain as keyof typeof labels]}`;
+      const head = `### ${CHAIN_LABELS[chain as Chain]}`;
       return [head, rows].join("\n");
     })
     .join("\n\n");
@@ -60,28 +59,26 @@ export function setupSwagger(app: INestApplication): void {
           return `- ${symbol}: **Minimum Transfer** = ${display} ${symbol}`;
         })
         .join("\n");
-      const head = `### ${labels[chain as keyof typeof labels]}`;
+      const head = `### ${CHAIN_LABELS[chain as Chain]}`;
       return [head, rows].join("\n");
     })
     .join("\n\n");
 
   // (2 & 6) Networks (Delegate / Registry / Sponsor)
-  const networksDesc = [
-    `### ${labels.main}`,
-    `- Delegate: \`${ENV.MAIN_DELEGATE_ADDRESS}\``,
-    `- Registry: \`${ENV.MAIN_REGISTRY_ADDRESS}\``,
-    `- Sponsor:  \`${ENV.SPONSOR_ADDRESS}\``,
-    "",
-    `### ${labels.base}`,
-    `- Delegate: \`${ENV.BASE_DELEGATE_ADDRESS}\``,
-    `- Registry: \`${ENV.BASE_REGISTRY_ADDRESS}\``,
-    `- Sponsor:  \`${ENV.SPONSOR_ADDRESS}\``,
-    "",
-    `### ${labels.polygon}`,
-    `- Delegate: \`${ENV.POLYGON_DELEGATE_ADDRESS ?? "-"}\``,
-    `- Registry: \`${ENV.POLYGON_REGISTRY_ADDRESS ?? "-"}\``,
-    `- Sponsor:  \`${ENV.SPONSOR_ADDRESS}\``
-  ].join("\n");
+  const networksDesc = CHAIN_KEYS.map(chain => {
+    const label = CHAIN_LABELS[chain];
+
+    const sponsor = ENV.SPONSOR_ADDRESS;
+    const delegate = DELEGATE_CONTRACT_ADDRESS_REGISTORY[chain];
+    const registry = REGISTRY_CONTRACT_ADDRESS_REGISTORY[chain];
+
+    return [
+      `### ${label}`,
+      `- Delegate: \`${delegate ?? "-"}\``,
+      `- Registry: \`${registry ?? "-"}\``,
+      `- Sponsor:  \`${sponsor ?? "-"}\``
+    ].join("\n");
+  }).join("\n\n");
 
   // (7) How to Use: Quote -> Sign Authorization -> Transfer
   // Short end-to-end flow that users can follow from the docs.
@@ -111,7 +108,7 @@ export function setupSwagger(app: INestApplication): void {
     "It is built on **Account Abstraction (EIP-7702)** and focuses on secure, low-volatility payments.",
     "",
     "## 2. Supported Chains",
-    Object.values(labels)
+    Object.values(CHAIN_LABELS)
       .filter(Boolean)
       .map(v => `- ${v}`)
       .join("\n"),
@@ -139,10 +136,7 @@ export function setupSwagger(app: INestApplication): void {
   const config = new DocumentBuilder()
     .setTitle("Hinomaru Wallet API")
     .setDescription(description)
-    .addServer(
-      isProd ? "https://wallet.ficklewolf.com/" : "https://dev.wallet.ficklewolf.com/",
-      isProd ? "Main (Ethereum & Base Mainnet & Polygon Mainnet)" : "Test (Sepolia & Base Sepolia & Polygon Amoy)"
-    )
+    .addServer("https://wallet.ficklewolf.com/")
     .setVersion("0.0.1")
     .build();
 

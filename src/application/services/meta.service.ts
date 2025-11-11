@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { formatUnits } from "viem";
 
-import { SupportChain } from "@/config/chain.config";
+import { Chain } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
 import {
   MetaSummaryDto,
@@ -11,6 +11,10 @@ import {
   TokenAddressDto
 } from "@/interfaces/dto/meta.dto";
 import { FEE_REGISTORY } from "@/registries/fee.registry";
+import {
+  DELEGATE_CONTRACT_ADDRESS_REGISTORY,
+  REGISTRY_CONTRACT_ADDRESS_REGISTORY
+} from "@/registries/invoker.registry";
 import { TOKEN_REGISTRY, Token } from "@/registries/token-chain.registry";
 
 @Injectable()
@@ -25,10 +29,7 @@ export class MetaService {
 
   buildFees(): FeeItemDto[] {
     const out: FeeItemDto[] = [];
-    for (const [chain, tokens] of Object.entries(FEE_REGISTORY) as [
-      SupportChain,
-      (typeof FEE_REGISTORY)[SupportChain]
-    ][]) {
+    for (const [chain, tokens] of Object.entries(FEE_REGISTORY) as [Chain, (typeof FEE_REGISTORY)[Chain]][]) {
       for (const [symbol, { fixedFeeAmountUnits }] of Object.entries(tokens) as [
         Token,
         { fixedFeeAmountUnits: bigint }
@@ -37,7 +38,7 @@ export class MetaService {
           chain,
           symbol,
           fixedFeeAmountUnits: fixedFeeAmountUnits.toString(),
-          fixedFeeAmountDisplay: formatUnits(fixedFeeAmountUnits, TOKEN_REGISTRY[symbol].decimals)
+          fixedFeeAmountDisplay: Number(formatUnits(fixedFeeAmountUnits, TOKEN_REGISTRY[symbol].decimals))
         });
       }
     }
@@ -46,10 +47,7 @@ export class MetaService {
 
   buildMinTransfers(): MinTransferItemDto[] {
     const out: MinTransferItemDto[] = [];
-    for (const [chain, tokens] of Object.entries(FEE_REGISTORY) as [
-      SupportChain,
-      (typeof FEE_REGISTORY)[SupportChain]
-    ][]) {
+    for (const [chain, tokens] of Object.entries(FEE_REGISTORY) as [Chain, (typeof FEE_REGISTORY)[Chain]][]) {
       for (const [symbol, { minTransferAmountUnits }] of Object.entries(tokens) as [
         Token,
         { minTransferAmountUnits: bigint }
@@ -58,7 +56,7 @@ export class MetaService {
           chain,
           symbol,
           minUnits: minTransferAmountUnits.toString(),
-          display: formatUnits(minTransferAmountUnits, TOKEN_REGISTRY[symbol].decimals)
+          display: Number(formatUnits(minTransferAmountUnits, TOKEN_REGISTRY[symbol].decimals))
         });
       }
     }
@@ -68,17 +66,9 @@ export class MetaService {
   buildContracts(): ContractsDto {
     const sponsor = ENV.SPONSOR_ADDRESS;
     return {
-      delegate: {
-        main: ENV.MAIN_DELEGATE_ADDRESS,
-        base: ENV.BASE_DELEGATE_ADDRESS,
-        polygon: ENV.POLYGON_DELEGATE_ADDRESS
-      },
-      registry: {
-        main: ENV.MAIN_REGISTRY_ADDRESS,
-        base: ENV.BASE_REGISTRY_ADDRESS,
-        polygon: ENV.POLYGON_REGISTRY_ADDRESS
-      },
-      sponsor: { main: sponsor, base: sponsor, polygon: sponsor }
+      sponsor,
+      delegate: DELEGATE_CONTRACT_ADDRESS_REGISTORY,
+      registry: REGISTRY_CONTRACT_ADDRESS_REGISTORY
     };
   }
 

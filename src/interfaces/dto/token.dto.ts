@@ -3,7 +3,7 @@ import { Type } from "class-transformer";
 import * as v from "valibot";
 import { Hex } from "viem";
 
-import { SUPPORT_CHAIN_KEYS, SupportChain } from "@/config/chain.config";
+import { CHAIN_KEYS, Chain } from "@/config/chain.config";
 import { chainValidator } from "@/shared/validations/rules/chain.validator";
 import { AuthorizationShape } from "@/shared/validations/shapes/authorization.shape";
 import { NotifyShape } from "@/shared/validations/shapes/notify.shape";
@@ -24,8 +24,8 @@ export const TransferTokenDtoSchema = v.object(
 export type TransferTokenRequestDto = v.InferOutput<typeof TransferTokenDtoSchema>;
 
 export class TransferTokenRequestDocDto {
-  @ApiProperty({ enum: SUPPORT_CHAIN_KEYS })
-  chain!: SupportChain;
+  @ApiProperty({ enum: CHAIN_KEYS })
+  chain!: Chain;
 
   @ApiProperty({ example: "AAAAAAAAAAAAA..." })
   quoteToken!: string;
