@@ -127,7 +127,7 @@ export const TOKEN_REGISTRY: { [K in Token]: TokenMeta<K> } = {
     address: {
       mainnet: ENV.ETH_MAIN_USDC_TOKEN_ADDRESS,
       base: ENV.BASE_MAIN_USDC_TOKEN_ADDRESS,
-      polygon: ENV.POLYGON_MAIN_JPYC_TOKEN_ADDRESS,
+      polygon: ENV.POLYGON_MAIN_USDC_TOKEN_ADDRESS,
       sepolia: ENV.ETH_SEPOLIA_USDC_TOKEN_ADDRESS,
       baseSepolia: ENV.BASE_SEPOLIA_USDC_TOKEN_ADDRESS,
       polygonAmoy: ENV.POLYGON_AMOY_USDC_TOKEN_ADDRESS
@@ -147,7 +147,7 @@ export const TOKEN_REGISTRY: { [K in Token]: TokenMeta<K> } = {
       }),
       polygon: getContract({
         abi: erc20Abi,
-        address: ENV.POLYGON_MAIN_JPYC_TOKEN_ADDRESS,
+        address: ENV.POLYGON_MAIN_USDC_TOKEN_ADDRESS,
         client: VIEM_PUBLIC_CLIENTS.polygon
       }),
       sepolia: getContract({
