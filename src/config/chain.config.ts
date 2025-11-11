@@ -1,23 +1,16 @@
-import { mainnet, base, sepolia, baseSepolia, polygon, polygonAmoy, type Chain } from "viem/chains";
+import { mainnet, base, sepolia, baseSepolia, polygon, polygonAmoy, Chain as ViemChain } from "viem/chains";
 
-import { Env } from "@/shared/validations/schemas/env.schema";
+export type Chain = (typeof CHAIN_KEYS)[number];
 
-import { ENV } from "./env.config";
+export const CHAIN_KEYS = ["mainnet", "base", "polygon", "sepolia", "baseSepolia", "polygonAmoy"] as const;
 
-export const SUPPORT_CHAIN_KEYS = ["main", "base", "polygon"] as const;
-export type SupportChain = (typeof SUPPORT_CHAIN_KEYS)[number];
-
-const BUILD_ENV_TO_SUPPORT_CHAINS: Record<Env["NODE_ENV"], Record<SupportChain, Chain>> = {
-  dev: {
-    main: sepolia,
-    base: baseSepolia,
-    polygon: polygonAmoy
-  },
-  prd: {
-    main: mainnet,
-    base: base,
-    polygon: polygon
-  }
+export const CHAINS: Record<Chain, ViemChain> = {
+  mainnet,
+  base,
+  polygon,
+  sepolia,
+  baseSepolia,
+  polygonAmoy
 };
-export const SUPPORT_CHAINS = BUILD_ENV_TO_SUPPORT_CHAINS[ENV.NODE_ENV];
-export const SUPPORT_CHAIN_IDS = Object.values(SUPPORT_CHAINS).map(c => c.id);
+
+export const CHAIN_IDS = Object.values(CHAINS).map(c => c.id);

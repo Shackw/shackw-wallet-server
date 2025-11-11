@@ -1,12 +1,20 @@
-import { GetContractReturnType, getContract, erc20Abi, Address, PublicClient } from "viem";
+import {
+  getContract,
+  erc20Abi,
+  Address,
+  GetContractReturnType,
+  PublicClient,
+  Transport,
+  Chain as ViemChain
+} from "viem";
 
-import { SUPPORT_CHAINS, SupportChain } from "@/config/chain.config";
+import { CHAINS, Chain } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
 
 import { VIEM_PUBLIC_CLIENTS } from "./viem.registry";
 
 /** TYPES */
-type Erc20Instance = GetContractReturnType<typeof erc20Abi, PublicClient>;
+type Erc20Instance = GetContractReturnType<typeof erc20Abi, PublicClient<Transport, ViemChain | undefined>>;
 
 export const TOKENS = ["JPYC", "USDC", "EURC"] as const;
 export type Token = (typeof TOKENS)[number];
@@ -15,42 +23,58 @@ export const CURRENCIES = ["JPY", "USD", "EUR"] as const;
 export type Currency = (typeof CURRENCIES)[number];
 
 export type ChainByToken<T extends Token> = (typeof TOKEN_TO_SUPPORT_CHAIN)[T][number];
-export type TokenByChain<T extends SupportChain> = (typeof SUPPORT_CHAIN_TO_TOKEN)[T][number];
+export type TokenByChain<T extends Chain> = (typeof SUPPORT_CHAIN_TO_TOKEN)[T][number];
 
 /** MAPPING */
 export const TOKEN_TO_SUPPORT_CHAIN = {
-  JPYC: ["main", "polygon"],
-  USDC: ["main", "base", "polygon"],
-  EURC: ["main", "base"]
-} as const satisfies Record<Token, SupportChain[]>;
+  JPYC: ["mainnet", "polygon", "sepolia", "polygonAmoy"],
+  USDC: ["mainnet", "base", "polygon", "sepolia", "baseSepolia", "polygonAmoy"],
+  EURC: ["mainnet", "base", "sepolia", "baseSepolia"]
+} as const satisfies Record<Token, Chain[]>;
 
 export const TOKEN_TO_SUPPORT_CHAIN_IDS = {
-  JPYC: TOKEN_TO_SUPPORT_CHAIN.JPYC.map(c => SUPPORT_CHAINS[c].id),
-  USDC: TOKEN_TO_SUPPORT_CHAIN.USDC.map(c => SUPPORT_CHAINS[c].id),
-  EURC: TOKEN_TO_SUPPORT_CHAIN.EURC.map(c => SUPPORT_CHAINS[c].id)
+  JPYC: TOKEN_TO_SUPPORT_CHAIN.JPYC.map(c => CHAINS[c].id),
+  USDC: TOKEN_TO_SUPPORT_CHAIN.USDC.map(c => CHAINS[c].id),
+  EURC: TOKEN_TO_SUPPORT_CHAIN.EURC.map(c => CHAINS[c].id)
 } as const satisfies Record<Token, number[]>;
 
 export const SUPPORT_CHAIN_TO_TOKEN = {
-  main: ["JPYC", "USDC", "EURC"],
+  mainnet: ["JPYC", "USDC", "EURC"],
   base: ["USDC", "EURC"],
-  polygon: ["JPYC", "USDC"]
-} as const satisfies Record<SupportChain, Token[]>;
+  polygon: ["JPYC", "USDC"],
+  sepolia: ["JPYC", "USDC", "EURC"],
+  baseSepolia: ["USDC", "EURC"],
+  polygonAmoy: ["JPYC", "USDC"]
+} as const satisfies Record<Chain, Token[]>;
 
 export const ADDRESS_TO_TOKEN = {
-  main: {
-    [ENV.MAIN_JPYC_TOKEN_ADDRESS.toLowerCase() as Address]: "JPYC",
-    [ENV.MAIN_USDC_TOKEN_ADDRESS.toLowerCase() as Address]: "USDC",
-    [ENV.MAIN_EURC_TOKEN_ADDRESS.toLowerCase() as Address]: "EURC"
+  mainnet: {
+    [ENV.ETH_MAIN_JPYC_TOKEN_ADDRESS.toLowerCase() as Address]: "JPYC",
+    [ENV.ETH_MAIN_USDC_TOKEN_ADDRESS.toLowerCase() as Address]: "USDC",
+    [ENV.ETH_MAIN_EURC_TOKEN_ADDRESS.toLowerCase() as Address]: "EURC"
   },
   base: {
-    [ENV.BASE_USDC_TOKEN_ADDRESS.toLowerCase() as Address]: "USDC",
-    [ENV.BASE_EURC_TOKEN_ADDRESS.toLowerCase() as Address]: "EURC"
+    [ENV.BASE_MAIN_USDC_TOKEN_ADDRESS.toLowerCase() as Address]: "USDC",
+    [ENV.BASE_MAIN_EURC_TOKEN_ADDRESS.toLowerCase() as Address]: "EURC"
   },
   polygon: {
-    [ENV.POLYGON_JPYC_TOKEN_ADDRESS.toLowerCase() as Address]: "JPYC",
-    [ENV.POLYGON_USDC_TOKEN_ADDRESS.toLowerCase() as Address]: "USDC"
+    [ENV.POLYGON_MAIN_JPYC_TOKEN_ADDRESS.toLowerCase() as Address]: "JPYC",
+    [ENV.POLYGON_MAIN_USDC_TOKEN_ADDRESS.toLowerCase() as Address]: "USDC"
+  },
+  sepolia: {
+    [ENV.ETH_SEPOLIA_JPYC_TOKEN_ADDRESS.toLowerCase() as Address]: "JPYC",
+    [ENV.ETH_SEPOLIA_USDC_TOKEN_ADDRESS.toLowerCase() as Address]: "USDC",
+    [ENV.ETH_SEPOLIA_EURC_TOKEN_ADDRESS.toLowerCase() as Address]: "EURC"
+  },
+  baseSepolia: {
+    [ENV.BASE_SEPOLIA_USDC_TOKEN_ADDRESS.toLowerCase() as Address]: "USDC",
+    [ENV.BASE_SEPOLIA_EURC_TOKEN_ADDRESS.toLowerCase() as Address]: "EURC"
+  },
+  polygonAmoy: {
+    [ENV.POLYGON_AMOY_JPYC_TOKEN_ADDRESS.toLowerCase() as Address]: "JPYC",
+    [ENV.POLYGON_AMOY_USDC_TOKEN_ADDRESS.toLowerCase() as Address]: "USDC"
   }
-} as const satisfies { [T in SupportChain]: Record<Address, TokenByChain<T>> };
+} as const satisfies { [T in Chain]: Record<Address, TokenByChain<T>> };
 
 /** TOKEN CONSTANT */
 export type TokenMeta<T extends Token> = {
@@ -67,21 +91,33 @@ export const TOKEN_REGISTRY: { [K in Token]: TokenMeta<K> } = {
     symbol: "JPYC",
     currency: "JPY",
     address: {
-      main: ENV.MAIN_JPYC_TOKEN_ADDRESS,
-      polygon: ENV.POLYGON_JPYC_TOKEN_ADDRESS
+      mainnet: ENV.ETH_MAIN_JPYC_TOKEN_ADDRESS,
+      polygon: ENV.POLYGON_MAIN_JPYC_TOKEN_ADDRESS,
+      sepolia: ENV.ETH_SEPOLIA_JPYC_TOKEN_ADDRESS,
+      polygonAmoy: ENV.POLYGON_AMOY_JPYC_TOKEN_ADDRESS
     },
     decimals: 18,
     baseUnit: 10n ** 18n,
     contract: {
-      main: getContract({
+      mainnet: getContract({
         abi: erc20Abi,
-        address: ENV.MAIN_JPYC_TOKEN_ADDRESS,
-        client: VIEM_PUBLIC_CLIENTS.main
+        address: ENV.ETH_MAIN_JPYC_TOKEN_ADDRESS,
+        client: VIEM_PUBLIC_CLIENTS.mainnet
       }),
       polygon: getContract({
         abi: erc20Abi,
-        address: ENV.POLYGON_JPYC_TOKEN_ADDRESS,
+        address: ENV.POLYGON_MAIN_JPYC_TOKEN_ADDRESS,
         client: VIEM_PUBLIC_CLIENTS.polygon
+      }),
+      sepolia: getContract({
+        abi: erc20Abi,
+        address: ENV.ETH_SEPOLIA_JPYC_TOKEN_ADDRESS,
+        client: VIEM_PUBLIC_CLIENTS.sepolia
+      }),
+      polygonAmoy: getContract({
+        abi: erc20Abi,
+        address: ENV.POLYGON_AMOY_JPYC_TOKEN_ADDRESS,
+        client: VIEM_PUBLIC_CLIENTS.polygonAmoy
       })
     }
   },
@@ -89,27 +125,45 @@ export const TOKEN_REGISTRY: { [K in Token]: TokenMeta<K> } = {
     symbol: "USDC",
     currency: "USD",
     address: {
-      main: ENV.MAIN_USDC_TOKEN_ADDRESS,
-      base: ENV.BASE_USDC_TOKEN_ADDRESS,
-      polygon: ENV.POLYGON_USDC_TOKEN_ADDRESS
+      mainnet: ENV.ETH_MAIN_USDC_TOKEN_ADDRESS,
+      base: ENV.BASE_MAIN_USDC_TOKEN_ADDRESS,
+      polygon: ENV.POLYGON_MAIN_JPYC_TOKEN_ADDRESS,
+      sepolia: ENV.ETH_SEPOLIA_USDC_TOKEN_ADDRESS,
+      baseSepolia: ENV.BASE_SEPOLIA_USDC_TOKEN_ADDRESS,
+      polygonAmoy: ENV.POLYGON_AMOY_USDC_TOKEN_ADDRESS
     },
     decimals: 6,
     baseUnit: 10n ** 6n,
     contract: {
-      main: getContract({
+      mainnet: getContract({
         abi: erc20Abi,
-        address: ENV.MAIN_USDC_TOKEN_ADDRESS,
-        client: VIEM_PUBLIC_CLIENTS.main
+        address: ENV.ETH_MAIN_USDC_TOKEN_ADDRESS,
+        client: VIEM_PUBLIC_CLIENTS.mainnet
       }),
       base: getContract({
         abi: erc20Abi,
-        address: ENV.BASE_USDC_TOKEN_ADDRESS,
+        address: ENV.BASE_MAIN_USDC_TOKEN_ADDRESS,
         client: VIEM_PUBLIC_CLIENTS.base
       }),
       polygon: getContract({
         abi: erc20Abi,
-        address: ENV.POLYGON_USDC_TOKEN_ADDRESS,
+        address: ENV.POLYGON_MAIN_JPYC_TOKEN_ADDRESS,
         client: VIEM_PUBLIC_CLIENTS.polygon
+      }),
+      sepolia: getContract({
+        abi: erc20Abi,
+        address: ENV.ETH_SEPOLIA_USDC_TOKEN_ADDRESS,
+        client: VIEM_PUBLIC_CLIENTS.sepolia
+      }),
+      baseSepolia: getContract({
+        abi: erc20Abi,
+        address: ENV.BASE_SEPOLIA_USDC_TOKEN_ADDRESS,
+        client: VIEM_PUBLIC_CLIENTS.baseSepolia
+      }),
+      polygonAmoy: getContract({
+        abi: erc20Abi,
+        address: ENV.POLYGON_AMOY_USDC_TOKEN_ADDRESS,
+        client: VIEM_PUBLIC_CLIENTS.polygonAmoy
       })
     }
   },
@@ -117,21 +171,33 @@ export const TOKEN_REGISTRY: { [K in Token]: TokenMeta<K> } = {
     symbol: "EURC",
     currency: "EUR",
     address: {
-      main: ENV.MAIN_EURC_TOKEN_ADDRESS,
-      base: ENV.BASE_EURC_TOKEN_ADDRESS
+      mainnet: ENV.ETH_MAIN_EURC_TOKEN_ADDRESS,
+      base: ENV.BASE_MAIN_EURC_TOKEN_ADDRESS,
+      sepolia: ENV.ETH_SEPOLIA_EURC_TOKEN_ADDRESS,
+      baseSepolia: ENV.BASE_SEPOLIA_EURC_TOKEN_ADDRESS
     },
     decimals: 6,
     baseUnit: 10n ** 6n,
     contract: {
-      main: getContract({
+      mainnet: getContract({
         abi: erc20Abi,
-        address: ENV.MAIN_EURC_TOKEN_ADDRESS,
-        client: VIEM_PUBLIC_CLIENTS.main
+        address: ENV.ETH_MAIN_EURC_TOKEN_ADDRESS,
+        client: VIEM_PUBLIC_CLIENTS.mainnet
       }),
       base: getContract({
         abi: erc20Abi,
-        address: ENV.BASE_EURC_TOKEN_ADDRESS,
+        address: ENV.BASE_MAIN_EURC_TOKEN_ADDRESS,
         client: VIEM_PUBLIC_CLIENTS.base
+      }),
+      sepolia: getContract({
+        abi: erc20Abi,
+        address: ENV.ETH_SEPOLIA_EURC_TOKEN_ADDRESS,
+        client: VIEM_PUBLIC_CLIENTS.sepolia
+      }),
+      baseSepolia: getContract({
+        abi: erc20Abi,
+        address: ENV.BASE_SEPOLIA_EURC_TOKEN_ADDRESS,
+        client: VIEM_PUBLIC_CLIENTS.baseSepolia
       })
     }
   }

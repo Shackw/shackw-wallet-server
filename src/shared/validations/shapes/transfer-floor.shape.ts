@@ -43,17 +43,24 @@ const BuildTransferFloorShape = <T extends Token, K extends ChainByToken<T>>(tok
 
 const TokenToTransferFloorShapeMap = {
   JPYC: {
-    main: BuildTransferFloorShape("JPYC", "main"),
-    polygon: BuildTransferFloorShape("JPYC", "polygon")
+    mainnet: BuildTransferFloorShape("JPYC", "mainnet"),
+    polygon: BuildTransferFloorShape("JPYC", "polygon"),
+    sepolia: BuildTransferFloorShape("JPYC", "sepolia"),
+    polygonAmoy: BuildTransferFloorShape("JPYC", "polygonAmoy")
   },
   USDC: {
-    main: BuildTransferFloorShape("USDC", "main"),
+    mainnet: BuildTransferFloorShape("USDC", "mainnet"),
     base: BuildTransferFloorShape("USDC", "base"),
-    polygon: BuildTransferFloorShape("USDC", "polygon")
+    polygon: BuildTransferFloorShape("USDC", "polygon"),
+    sepolia: BuildTransferFloorShape("USDC", "sepolia"),
+    baseSepolia: BuildTransferFloorShape("USDC", "baseSepolia"),
+    polygonAmoy: BuildTransferFloorShape("USDC", "polygonAmoy")
   },
   EURC: {
-    main: BuildTransferFloorShape("EURC", "main"),
-    base: BuildTransferFloorShape("EURC", "base")
+    mainnet: BuildTransferFloorShape("EURC", "mainnet"),
+    base: BuildTransferFloorShape("EURC", "base"),
+    sepolia: BuildTransferFloorShape("EURC", "sepolia"),
+    baseSepolia: BuildTransferFloorShape("EURC", "baseSepolia")
   }
 } as const satisfies { [T in Token]: Record<ChainByToken<T>, unknown> };
 

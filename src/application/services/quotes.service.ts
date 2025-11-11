@@ -2,7 +2,7 @@ import { InternalServerErrorException } from "@nestjs/common";
 import { add } from "date-fns";
 import { Address, getContract, Hex } from "viem";
 
-import { SUPPORT_CHAINS, SupportChain } from "@/config/chain.config";
+import { CHAINS, Chain } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
 import { QuoteModel } from "@/domain/entities/quote.entity";
 import { FeeValueObject } from "@/domain/value-objects/fee-policy.value-object";
@@ -76,7 +76,7 @@ export class QuotesService {
       return {
         quoteToken,
         expiresAt,
-        chainId: SUPPORT_CHAINS[chain].id,
+        chainId: CHAINS[chain].id,
         sender,
         recipient,
         token: {
@@ -107,7 +107,7 @@ export class QuotesService {
   }
 
   /** ===== Private Functions ===== */
-  private async getNextNonce(chain: SupportChain, sender: Address): Promise<bigint> {
+  private async getNextNonce(chain: Chain, sender: Address): Promise<bigint> {
     const registryContract = getContract({
       abi: REGISTRY_ABI,
       address: REGISTRY_CONTRACT_ADDRESS_REGISTORY[chain],
@@ -134,7 +134,7 @@ export class QuotesService {
     });
 
     const callHash = hashExecutionIntent({
-      chainId: SUPPORT_CHAINS[chain].id,
+      chainId: CHAINS[chain].id,
       sender,
       calls: [transferAmountCallData, transferFeeCallData],
       nonce,
@@ -155,7 +155,7 @@ export class QuotesService {
     const quoteToken = encodeQuoteToken(
       {
         v: 1,
-        chainId: SUPPORT_CHAINS[chain].id,
+        chainId: CHAINS[chain].id,
         sender,
         recipient,
         token: resolveTokenAddress(token.symbol, chain),

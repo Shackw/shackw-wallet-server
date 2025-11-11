@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Logger } from "@nestjs/common";
 
-import { SUPPORT_CHAINS } from "@/config/chain.config";
+import { CHAINS } from "@/config/chain.config";
 import { restClient } from "@/infrastructure/http-clients/rest.client";
 import { VIEM_PUBLIC_CLIENTS } from "@/registries/viem.registry";
 
@@ -13,7 +13,7 @@ export const startSettlementWebhookJob = (input: StartSettlementWebhookJobInput)
 
   setImmediate(() => {
     void (async () => {
-      const chainId = SUPPORT_CHAINS[chain].id;
+      const chainId = CHAINS[chain].id;
       try {
         // included
         const receiptIncluded = await VIEM_PUBLIC_CLIENTS[chain].waitForTransactionReceipt({ hash: txHash });

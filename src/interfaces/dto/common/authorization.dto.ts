@@ -2,13 +2,13 @@ import { Address } from "cluster";
 
 import { ApiProperty } from "@nestjs/swagger";
 
-import { SUPPORT_CHAIN_IDS } from "@/config/chain.config";
+import { CHAIN_IDS } from "@/config/chain.config";
 
 export class AuthorizationDto {
   @ApiProperty({ example: "0x1234abcd..." })
   address!: Address;
 
-  @ApiProperty({ example: 8453, enum: SUPPORT_CHAIN_IDS })
+  @ApiProperty({ example: 8453, enum: CHAIN_IDS })
   chainId!: number;
 
   @ApiProperty({ example: 3 })

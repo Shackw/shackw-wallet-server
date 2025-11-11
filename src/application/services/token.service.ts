@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/com
 import { getContract } from "viem";
 import { verifyAuthorization } from "viem/utils";
 
-import { SUPPORT_CHAINS } from "@/config/chain.config";
+import { CHAINS } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
 import { TransferTokenModel } from "@/domain/entities/token.entity";
 import { DELEGATE_ABI } from "@/infrastructure/evm/abis/delegate.abi";
@@ -63,7 +63,7 @@ export class TokenService {
     if (nowSec > expiresAt + 15n) throw new ForbiddenException("Quote expired (15s grace).");
 
     // 2b) Validate that the chain in the payload matches the chain used when issuing the quote.
-    if (SUPPORT_CHAINS[chain].id !== chainId)
+    if (CHAINS[chain].id !== chainId)
       throw new BadRequestException("Chain in the payload does not match the chain used to issue the quote.");
 
     // 2c) Environment consistency

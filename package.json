@@ -8,7 +8,7 @@
   "scripts": {
     "build": "yarn format && yarn lint && nest build",
     "start": "nest start",
-    "start:dev": "dotenv -e .env.dev -- nest start --watch",
+    "start:dev": "dotenv -e .env -- nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "ngrok": "ngrok http http://localhost:3000",
