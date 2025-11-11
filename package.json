@@ -1,8 +1,8 @@
 {
-  "name": "hinomaru-wallet-server",
+  "name": "shackw-wallet-server",
   "version": "0.0.1",
   "description": "",
-  "author": "FickleWolf",
+  "author": "Shackw",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

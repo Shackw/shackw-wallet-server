@@ -1,7 +1,7 @@
-# Hinomaru Wallet API
+# Shackw Wallet API
 Wallet-to-Wallet stablecoin transfers using **Account Abstraction (EIP-7702)**
 
-This API powers **Hinomaru Wallet**, a stablecoin-focused payment system designed to enable **low-volatility, gas-abstracted transfers** over supported EVM chains.
+This API powers **Shackw Wallet**, a stablecoin-focused payment system designed to enable **low-volatility, gas-abstracted transfers** over supported EVM chains.
 
 This document describes the **environment-agnostic API architecture**, including the supported concepts, endpoints, request flow, and usage guidelines.
 
@@ -9,7 +9,7 @@ This document describes the **environment-agnostic API architecture**, including
 
 # 1. Overview
 
-The **Hinomaru Wallet API** provides:
+The **Shackw Wallet API** provides:
 
 - Stablecoin transfers with fixed per-chain transaction fees
 - EIP-7702–based authorization signing (no private key exposure to backend)
@@ -55,7 +55,7 @@ GET /meta/min-transfer
 
 # 3. Fixed Fee Policy
 
-The Hinomaru Wallet API uses **fixed fees per chain and token**.
+The Shackw Wallet API uses **fixed fees per chain and token**.
 Each fee entry includes:
 
 - `symbol`
@@ -128,7 +128,7 @@ These responses are environment-dependent but **require no environment informati
 
 # 7. How to Use (End-to-End Flow)
 
-This is the core flow for performing a **token transfer with fixed fee** using Hinomaru Wallet + EIP-7702.
+This is the core flow for performing a **token transfer with fixed fee** using Shackw Wallet + EIP-7702.
 
 ---
 
@@ -245,4 +245,4 @@ Internal use only unless otherwise specified.
 
 ## Author
 
-**FickleWolf**
+**Shackw**
