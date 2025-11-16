@@ -10,8 +10,6 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new WrapArrayInterceptor());
 
-  app.setGlobalPrefix("api");
-
   setupSwagger(app);
 
   await app.listen(3000);
