@@ -136,7 +136,7 @@ export function setupSwagger(app: INestApplication): void {
   const config = new DocumentBuilder()
     .setTitle("Shackw Wallet API")
     .setDescription(description)
-    .addServer("https://wallet.shackw.com/")
+    .addServer("https://api.wallet.shackw.com/")
     .setVersion("0.0.1")
     .build();
 
