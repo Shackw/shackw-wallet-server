@@ -1,14 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { formatUnits } from "viem";
 
-import { Chain } from "@/config/chain.config";
+import { Chain, CHAINS } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
 import {
   MetaSummaryDto,
-  FeeItemDto,
-  MinTransferItemDto,
-  ContractsDto,
-  TokenAddressDto
+  FeeMetaDto,
+  MinTransferMetaDto,
+  ContractsMetaDto,
+  TokenMetaDto,
+  ChainMetaDto
 } from "@/interfaces/dto/meta.dto";
 import { FEE_REGISTORY } from "@/registries/fee.registry";
 import {
@@ -19,7 +20,15 @@ import { TOKEN_REGISTRY, Token } from "@/registries/token-chain.registry";
 
 @Injectable()
 export class MetaService {
-  buildTokens(): TokenAddressDto[] {
+  buildChains(): ChainMetaDto[] {
+    return Object.entries(CHAINS).map(([symbol, meta]) => ({
+      symbol: symbol as Chain,
+      id: meta.id,
+      testnet: meta.testnet ?? false
+    }));
+  }
+
+  buildTokens(): TokenMetaDto[] {
     return Object.entries(TOKEN_REGISTRY).map(([symbol, meta]) => ({
       symbol: symbol as Token,
       address: meta.address,
@@ -27,43 +36,43 @@ export class MetaService {
     }));
   }
 
-  buildFees(): FeeItemDto[] {
-    const out: FeeItemDto[] = [];
+  buildFees(): FeeMetaDto[] {
+    const out: FeeMetaDto[] = [];
     for (const [chain, tokens] of Object.entries(FEE_REGISTORY) as [Chain, (typeof FEE_REGISTORY)[Chain]][]) {
-      for (const [symbol, { fixedFeeAmountUnits }] of Object.entries(tokens) as [
+      for (const [token, { fixedFeeAmountUnits }] of Object.entries(tokens) as [
         Token,
         { fixedFeeAmountUnits: bigint }
       ][]) {
         out.push({
-          chain,
-          symbol,
+          chainSymbol: chain,
+          tokenSymbol: token,
           fixedFeeAmountUnits: fixedFeeAmountUnits.toString(),
-          fixedFeeAmountDisplay: Number(formatUnits(fixedFeeAmountUnits, TOKEN_REGISTRY[symbol].decimals))
+          fixedFeeAmountDisplay: Number(formatUnits(fixedFeeAmountUnits, TOKEN_REGISTRY[token].decimals))
         });
       }
     }
     return out;
   }
 
-  buildMinTransfers(): MinTransferItemDto[] {
-    const out: MinTransferItemDto[] = [];
+  buildMinTransfers(): MinTransferMetaDto[] {
+    const out: MinTransferMetaDto[] = [];
     for (const [chain, tokens] of Object.entries(FEE_REGISTORY) as [Chain, (typeof FEE_REGISTORY)[Chain]][]) {
-      for (const [symbol, { minTransferAmountUnits }] of Object.entries(tokens) as [
+      for (const [token, { minTransferAmountUnits }] of Object.entries(tokens) as [
         Token,
         { minTransferAmountUnits: bigint }
       ][]) {
         out.push({
-          chain,
-          symbol,
+          chainSymbol: chain,
+          tokenSymbol: token,
           minUnits: minTransferAmountUnits.toString(),
-          display: Number(formatUnits(minTransferAmountUnits, TOKEN_REGISTRY[symbol].decimals))
+          display: Number(formatUnits(minTransferAmountUnits, TOKEN_REGISTRY[token].decimals))
         });
       }
     }
     return out;
   }
 
-  buildContracts(): ContractsDto {
+  buildContracts(): ContractsMetaDto {
     const sponsor = ENV.SPONSOR_ADDRESS;
     return {
       sponsor,
@@ -75,6 +84,7 @@ export class MetaService {
   buildSummary(): MetaSummaryDto {
     return {
       schemaVersion: "v1",
+      chains: this.buildChains(),
       tokens: this.buildTokens(),
       fixedFees: this.buildFees(),
       minTransfers: this.buildMinTransfers(),
