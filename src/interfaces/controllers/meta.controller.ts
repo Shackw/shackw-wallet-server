@@ -46,7 +46,7 @@ export class MetaController {
     return this.metaService.buildFees();
   }
 
-  @Get("min-transfer")
+  @Get("min-transfers")
   @ApiOperation({ summary: "Get minimum transferable amounts per chain and token" })
   @ApiOkResponse({ type: [MinTransferMetaDto] })
   minTransfer(): MinTransferMetaDto[] {
