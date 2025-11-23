@@ -11,6 +11,8 @@ export const EnvSchema = v.object({
 
   QUOTE_TOKEN_SECRET: hex64Validator("QUOTE_TOKEN_SECRET"),
 
+  THIRD_WEB_API_SECRET: v.string("THIRD_WEB_API_SECRET must be a string."),
+
   ETH_MAIN_JPYC_TOKEN_ADDRESS: addressValidator("ETH_MAIN_JPYC_TOKEN_ADDRESS"),
   ETH_MAIN_USDC_TOKEN_ADDRESS: addressValidator("ETH_MAIN_USDC_TOKEN_ADDRESS"),
   ETH_MAIN_EURC_TOKEN_ADDRESS: addressValidator("ETH_MAIN_EURC_TOKEN_ADDRESS"),
