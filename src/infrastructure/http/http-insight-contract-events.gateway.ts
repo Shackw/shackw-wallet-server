@@ -5,7 +5,7 @@ import {
   InsightContranctEventsGateway,
   InsightContranctEventsQuery,
   InsightContranctEventsResult
-} from "@/application/ports/insight-contracr-events.gateway";
+} from "@/application/ports/insight-contract-events.gateway";
 import { ENV } from "@/config/env.config";
 import { InsightContractEventsResponseSchema } from "@/shared/validations/schemas/http-insight-contracr-events.schema";
 

@@ -5,7 +5,7 @@ import {
   InsightContranctEventsBaseQuery,
   InsightContranctEventsGateway,
   InsightContranctEventsQuery
-} from "@/application/ports/insight-contracr-events.gateway";
+} from "@/application/ports/insight-contract-events.gateway";
 import { CHAINS } from "@/config/chain.config";
 import { TransactionModel } from "@/domain/entities/transaction";
 import { SearchTransactionsRequestDto } from "@/interfaces/dto/transactions.dto";

@@ -17,7 +17,7 @@ import { ValibotPipe } from "../pipes/valibot.pipe";
 @Controller()
 @UseFilters(HttpExceptionsFilter)
 export class FeesController {
-  constructor(private feesService: FeesService) {}
+  constructor(private readonly feesService: FeesService) {}
 
   @Post("fees\\:estimate")
   @ApiOperation({ summary: "Estimate transaction fee" })

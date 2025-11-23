@@ -4,7 +4,7 @@ import { Chain } from "@/config/chain.config";
 import { TransactionModel, TransferDirection } from "@/domain/entities/transaction";
 import { ADDRESS_TO_TOKEN, TOKEN_REGISTRY } from "@/registries/token-chain.registry";
 
-import { InsightContranctEventItem } from "../ports/insight-contracr-events.gateway";
+import { InsightContranctEventItem } from "../ports/insight-contract-events.gateway";
 
 export const insightEventToTransaction = (
   chain: Chain,

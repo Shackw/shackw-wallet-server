@@ -1,4 +1,4 @@
-import { Controller, UseFilters, Post, UsePipes, Body } from "@nestjs/common";
+import { Body, Controller, Post, UseFilters, UsePipes } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { plainToInstance } from "class-transformer";
 
@@ -17,14 +17,19 @@ import { ValibotPipe } from "../pipes/valibot.pipe";
 @Controller()
 @UseFilters(HttpExceptionsFilter)
 export class TransactionsController {
-  constructor(private transactionsService: TransactionsService) {}
+  constructor(private readonly transactionsService: TransactionsService) {}
 
   @Post("transactions\\:search")
-  @ApiOperation({ summary: "Execute token transfer" })
+  @ApiOperation({ summary: "Search token transactions" })
   @ApiBody({ type: SearchTransactionsRequestDocDto })
-  @ApiResponse({ status: 200, type: [SearchTransactionResponseDto], description: "Transfer successfully executed." })
+  @ApiResponse({
+    status: 200,
+    type: SearchTransactionResponseDto,
+    isArray: true,
+    description: "Transactions successfully fetched."
+  })
   @UsePipes(new ValibotPipe(SearchTransactionsDtoSchema))
-  async createTransfer(@Body() body: SearchTransactionsRequestDto): Promise<SearchTransactionResponseDto[]> {
+  async searchTransactions(@Body() body: SearchTransactionsRequestDto): Promise<SearchTransactionResponseDto[]> {
     const result: TransactionModel[] = await this.transactionsService.searchTransactions(body);
 
     return plainToInstance(SearchTransactionResponseDto, result, {

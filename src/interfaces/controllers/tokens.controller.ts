@@ -17,7 +17,7 @@ import { ValibotPipe } from "../pipes/valibot.pipe";
 @Controller()
 @UseFilters(HttpExceptionsFilter)
 export class TokensController {
-  constructor(private tokenService: TokenService) {}
+  constructor(private readonly tokenService: TokenService) {}
 
   @Post("tokens\\:transfer")
   @ApiOperation({ summary: "Execute token transfer" })

@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { HttpInsightContractEventsGateway } from "@/infrastructure/http/http-insight-contracr-events.gateway";
+import { HttpInsightContractEventsGateway } from "@/infrastructure/http/http-insight-contract-events.gateway";
 
 @Module({
   providers: [
