@@ -97,4 +97,8 @@ export class CreateQuoteResponseDto {
   @Type(() => FeePolicyDto)
   @ApiProperty({ type: FeePolicyDto })
   policy!: FeePolicyDto;
+
+  @ApiProperty({ example: "2025-01-10T09:21:59.000Z" })
+  @Transform(({ value }) => (value as Date).toISOString(), { toPlainOnly: true })
+  serverTime!: Date;
 }

@@ -17,7 +17,7 @@ import { ValibotPipe } from "../pipes/valibot.pipe";
 @Controller()
 @UseFilters(HttpExceptionsFilter)
 export class QuotesController {
-  constructor(private quotesService: QuotesService) {}
+  constructor(private readonly quotesService: QuotesService) {}
 
   @Post("quotes")
   @ApiOperation({ summary: "Create a payment quote" })

@@ -1,7 +1,16 @@
 import { Module } from "@nestjs/common";
 
+import { HttpInsightContractEventsGateway } from "@/infrastructure/http/http-insight-contract-events.gateway";
+
 @Module({
-  providers: [],
-  exports: []
+  providers: [
+    {
+      provide: "InsightWalletTransactionsGateway",
+      useFactory: () => {
+        return new HttpInsightContractEventsGateway();
+      }
+    }
+  ],
+  exports: ["InsightWalletTransactionsGateway"]
 })
 export class InfrastructureModule {}

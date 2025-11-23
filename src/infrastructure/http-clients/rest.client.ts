@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+import { Logger } from "@nestjs/common";
+
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+export type RestClient = ReturnType<typeof createRestClient>;
+
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 export type RestClientConfig = {
@@ -139,6 +144,7 @@ export function createRestClient(cfg: RestClientConfig = {}) {
       }
       return data;
     } catch (e: any) {
+      Logger.error(e);
       if (e instanceof ApiError) throw e;
       const isAbort = e?.name === "AbortError" || e?.message?.toLowerCase?.().includes("aborted");
       throw new ApiError({

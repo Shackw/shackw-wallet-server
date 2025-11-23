@@ -6,7 +6,7 @@ import { ChainByToken, SUPPORT_CHAIN_TO_TOKEN, Token, TOKEN_REGISTRY } from "@/r
 
 import { stringBigintValidator } from "../rules/string-bigint.validator";
 
-const BuildTransferFloorShape = <T extends Token, K extends ChainByToken<T>>(token: T, chain: K) =>
+const buildTransferFloorShape = <T extends Token, K extends ChainByToken<T>>(token: T, chain: K) =>
   v.pipe(
     v.object(
       {
@@ -43,24 +43,24 @@ const BuildTransferFloorShape = <T extends Token, K extends ChainByToken<T>>(tok
 
 const TokenToTransferFloorShapeMap = {
   JPYC: {
-    mainnet: BuildTransferFloorShape("JPYC", "mainnet"),
-    polygon: BuildTransferFloorShape("JPYC", "polygon"),
-    sepolia: BuildTransferFloorShape("JPYC", "sepolia"),
-    polygonAmoy: BuildTransferFloorShape("JPYC", "polygonAmoy")
+    mainnet: buildTransferFloorShape("JPYC", "mainnet"),
+    polygon: buildTransferFloorShape("JPYC", "polygon"),
+    sepolia: buildTransferFloorShape("JPYC", "sepolia"),
+    polygonAmoy: buildTransferFloorShape("JPYC", "polygonAmoy")
   },
   USDC: {
-    mainnet: BuildTransferFloorShape("USDC", "mainnet"),
-    base: BuildTransferFloorShape("USDC", "base"),
-    polygon: BuildTransferFloorShape("USDC", "polygon"),
-    sepolia: BuildTransferFloorShape("USDC", "sepolia"),
-    baseSepolia: BuildTransferFloorShape("USDC", "baseSepolia"),
-    polygonAmoy: BuildTransferFloorShape("USDC", "polygonAmoy")
+    mainnet: buildTransferFloorShape("USDC", "mainnet"),
+    base: buildTransferFloorShape("USDC", "base"),
+    polygon: buildTransferFloorShape("USDC", "polygon"),
+    sepolia: buildTransferFloorShape("USDC", "sepolia"),
+    baseSepolia: buildTransferFloorShape("USDC", "baseSepolia"),
+    polygonAmoy: buildTransferFloorShape("USDC", "polygonAmoy")
   },
   EURC: {
-    mainnet: BuildTransferFloorShape("EURC", "mainnet"),
-    base: BuildTransferFloorShape("EURC", "base"),
-    sepolia: BuildTransferFloorShape("EURC", "sepolia"),
-    baseSepolia: BuildTransferFloorShape("EURC", "baseSepolia")
+    mainnet: buildTransferFloorShape("EURC", "mainnet"),
+    base: buildTransferFloorShape("EURC", "base"),
+    sepolia: buildTransferFloorShape("EURC", "sepolia"),
+    baseSepolia: buildTransferFloorShape("EURC", "baseSepolia")
   }
 } as const satisfies { [T in Token]: Record<ChainByToken<T>, unknown> };
 
