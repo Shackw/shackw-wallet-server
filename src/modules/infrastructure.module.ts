@@ -1,16 +1,23 @@
 import { Module } from "@nestjs/common";
 
-import { HttpInsightContractEventsGateway } from "@/infrastructure/http/http-insight-contract-events.gateway";
+import { HttpMorarisTokenTransfersGateway } from "@/infrastructure/http/http-moraris-token-transfers.gateway";
+import { HttpThirdwebContractEventsGateway } from "@/infrastructure/http/http-thirdweb-contract-events.gateway";
 
 @Module({
   providers: [
     {
-      provide: "InsightWalletTransactionsGateway",
+      provide: "ThirdwebContractEventsGateway",
       useFactory: () => {
-        return new HttpInsightContractEventsGateway();
+        return new HttpThirdwebContractEventsGateway();
+      }
+    },
+    {
+      provide: "MorarisTokenTransfersGateway",
+      useFactory: () => {
+        return new HttpMorarisTokenTransfersGateway();
       }
     }
   ],
-  exports: ["InsightWalletTransactionsGateway"]
+  exports: ["ThirdwebContractEventsGateway", "MorarisTokenTransfersGateway"]
 })
 export class InfrastructureModule {}
