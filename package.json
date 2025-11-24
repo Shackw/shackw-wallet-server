@@ -16,11 +16,11 @@
     "lint": "eslint \"{src, test}/**/*.ts\" --fix"
   },
   "dependencies": {
-    "@nestjs/common": "^11.1.8",
+    "@nestjs/common": "^11.1.9",
     "@nestjs/config": "^4.0.2",
-    "@nestjs/core": "^11.1.8",
-    "@nestjs/platform-express": "^11.1.8",
-    "@nestjs/swagger": "^11.2.1",
+    "@nestjs/core": "^11.1.9",
+    "@nestjs/platform-express": "^11.1.9",
+    "@nestjs/swagger": "^11.2.3",
     "@nestjs/throttler": "^6.4.0",
     "@types/express": "^5.0.5",
     "class-transformer": "^0.5.1",
@@ -31,17 +31,17 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "valibot": "^1.1.0",
-    "viem": "^2.38.6"
+    "viem": "^2.40.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.39.1",
-    "@nestjs/cli": "^11.0.10",
+    "@nestjs/cli": "^11.0.12",
     "@nestjs/schematics": "^11.0.9",
-    "@nestjs/testing": "^11.1.8",
+    "@nestjs/testing": "^11.1.9",
     "@swc/cli": "^0.7.9",
-    "@swc/core": "^1.15.1",
-    "@types/node": "^24.10.0",
+    "@swc/core": "^1.15.3",
+    "@types/node": "^24.10.1",
     "@types/supertest": "^6.0.3",
     "dotenv-cli": "^11.0.0",
     "eslint": "^9.39.1",
@@ -58,7 +58,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.3"
+    "typescript-eslint": "^8.47.0"
   },
   "jest": {
     "moduleFileExtensions": [
