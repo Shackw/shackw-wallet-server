@@ -2,27 +2,27 @@ import * as v from "valibot";
 import { getAddress, pad } from "viem";
 
 import {
-  InsightContranctEventsGateway,
-  InsightContranctEventsQuery,
-  InsightContranctEventsResult
-} from "@/application/ports/insight-contract-events.gateway";
+  ThirdwebContranctEventsGateway,
+  ThirdwebContranctEventsQuery,
+  ThirdwebContranctEventsResult
+} from "@/application/ports/thirdweb-contract-events.gateway";
 import { ENV } from "@/config/env.config";
-import { InsightContractEventsResponseSchema } from "@/shared/validations/schemas/http-insight-contracr-events.schema";
+import { ThirdwebContractEventsResponseSchema } from "@/shared/validations/schemas/http-thirdweb-contract-events.schema";
 
 import { restClient, RestClient } from "../http-clients/rest.client";
 
-export class HttpInsightContractEventsGateway implements InsightContranctEventsGateway {
+export class HttpThirdwebContractEventsGateway implements ThirdwebContranctEventsGateway {
   private readonly client: RestClient;
   private readonly baseUrl: string;
   private readonly apiKey: string;
 
   constructor() {
     this.client = restClient;
-    this.baseUrl = "https://api.thirdweb.com/v1/";
+    this.baseUrl = "https://api.thirdweb.com";
     this.apiKey = ENV.THIRD_WEB_API_SECRET;
   }
 
-  async fetch(query: InsightContranctEventsQuery): Promise<InsightContranctEventsResult> {
+  async fetch(query: ThirdwebContranctEventsQuery): Promise<ThirdwebContranctEventsResult> {
     const { chainId, tokenAddress, timestampGte, timestampLte, limit, page } = query;
 
     const url = new URL(`/v1/contracts/${chainId}/${tokenAddress}/events`, this.baseUrl);
@@ -43,7 +43,7 @@ export class HttpInsightContractEventsGateway implements InsightContranctEventsG
     };
 
     const fetched = await this.client.get(url.toString(), { headers });
-    const parsed = v.parse(InsightContractEventsResponseSchema, fetched);
+    const parsed = v.parse(ThirdwebContractEventsResponseSchema, fetched);
 
     return parsed;
   }
