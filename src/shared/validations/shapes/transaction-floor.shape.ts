@@ -28,7 +28,7 @@ const buildSearchTransferSchema = <C extends Chain, T extends TokenByChain<C>>(c
         timestampLte: v.pipe(
           v.number("timestampLte must be a number"),
           v.minValue(1_000_000_000, "timestampLte must be a valid Unix timestamp (10 digits)"),
-          v.check(value => value <= Math.floor(Date.now() / 1000), "timestampGte must not be in the future")
+          v.check(value => value <= Math.floor(Date.now() / 1000), "timestampLte must not be in the future")
         ),
         limit: v.optional(v.number("limit must be a number")),
         direction: v.picklist(
