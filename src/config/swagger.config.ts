@@ -16,7 +16,7 @@ import { Chain, CHAIN_KEYS } from "./chain.config";
 const CHAIN_LABELS = {
   mainnet: "Ethereum Mainnet",
   base: "Base Mainnet",
-  polygon: "Polygon PoS Mainnet",
+  polygon: "Polygon Mainnet",
   sepolia: "Ethereum Sepolia",
   baseSepolia: "Base Sepolia",
   polygonAmoy: "Polygon Amoy"
