@@ -2,9 +2,10 @@ import { BadRequestException, Injectable, PipeTransform } from "@nestjs/common";
 import * as v from "valibot";
 
 @Injectable()
-export class ValibotPipe<S extends v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>>
-  implements PipeTransform<unknown, v.InferOutput<S>>
-{
+export class ValibotPipe<S extends v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>> implements PipeTransform<
+  unknown,
+  v.InferOutput<S>
+> {
   constructor(private readonly schema: S) {}
 
   transform(value: unknown) {
