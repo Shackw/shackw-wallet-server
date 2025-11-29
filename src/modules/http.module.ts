@@ -6,10 +6,11 @@ import { QuotesController } from "@/interfaces/controllers/quotes.controller";
 import { TokensController } from "@/interfaces/controllers/tokens.controller";
 import { TransactionsController } from "@/interfaces/controllers/transactions.controller";
 
+import { AppCheckModule } from "./app-check.module";
 import { ApplicationModule } from "./application.module";
 
 @Module({
-  imports: [ApplicationModule],
+  imports: [ApplicationModule, AppCheckModule],
   controllers: [FeesController, QuotesController, TokensController, TransactionsController, MetaController]
 })
 export class HttpModule {}

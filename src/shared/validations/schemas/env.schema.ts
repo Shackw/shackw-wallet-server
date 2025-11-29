@@ -13,6 +13,10 @@ export const EnvSchema = v.object({
 
   THIRD_WEB_API_SECRET: v.string("THIRD_WEB_API_SECRET must be a string."),
   MORARIS_API_SECRET: v.string("MORARIS_API_SECRET must be a string."),
+  FIREBASE_ADMIN_SECRET: v.pipe(
+    v.string("FIREBASE_ADMIN_SECRET must be a string."),
+    v.transform(value => value.trim().replace(/^"|"$/g, "").replace(/\\n/g, "\n"))
+  ),
 
   ETH_MAIN_DELEGATE_ADDRESS: addressValidator("ETH_MAIN_DELEGATE_ADDRESS"),
   ETH_MAIN_REGISTRY_ADDRESS: addressValidator("ETH_MAIN_REGISTRY_ADDRESS"),

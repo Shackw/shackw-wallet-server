@@ -1,4 +1,4 @@
-import { Controller, UseFilters, Post, UsePipes, Body } from "@nestjs/common";
+import { Controller, UseFilters, Post, UsePipes, Body, UseGuards } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { plainToInstance } from "class-transformer";
 
@@ -12,9 +12,11 @@ import {
   CreateQuoteResponseDto
 } from "../dto/quotes.dto";
 import { HttpExceptionsFilter } from "../filters/http-exception.filter";
+import { AppCheckGuard } from "../guards/app-check.guard";
 import { ValibotPipe } from "../pipes/valibot.pipe";
 
 @Controller()
+@UseGuards(AppCheckGuard)
 @UseFilters(HttpExceptionsFilter)
 export class QuotesController {
   constructor(private readonly quotesService: QuotesService) {}
