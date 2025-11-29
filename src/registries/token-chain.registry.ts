@@ -112,12 +112,7 @@ export const TOKEN_REGISTRY: { [K in Token]: TokenMeta<K> } = {
   JPYC: {
     symbol: "JPYC",
     currency: "JPY",
-    address: {
-      mainnet: TOKEN_ADDRESSES.JPYC.mainnet,
-      polygon: TOKEN_ADDRESSES.JPYC.polygon,
-      sepolia: TOKEN_ADDRESSES.JPYC.sepolia,
-      polygonAmoy: TOKEN_ADDRESSES.JPYC.polygonAmoy
-    },
+    address: TOKEN_ADDRESSES.JPYC,
     decimals: 18,
     baseUnit: 10n ** 18n,
     contract: {
@@ -146,14 +141,7 @@ export const TOKEN_REGISTRY: { [K in Token]: TokenMeta<K> } = {
   USDC: {
     symbol: "USDC",
     currency: "USD",
-    address: {
-      mainnet: TOKEN_ADDRESSES.USDC.mainnet,
-      base: TOKEN_ADDRESSES.USDC.base,
-      polygon: TOKEN_ADDRESSES.USDC.polygon,
-      sepolia: TOKEN_ADDRESSES.USDC.sepolia,
-      baseSepolia: TOKEN_ADDRESSES.USDC.baseSepolia,
-      polygonAmoy: TOKEN_ADDRESSES.USDC.polygonAmoy
-    },
+    address: TOKEN_ADDRESSES.USDC,
     decimals: 6,
     baseUnit: 10n ** 6n,
     contract: {
@@ -192,12 +180,7 @@ export const TOKEN_REGISTRY: { [K in Token]: TokenMeta<K> } = {
   EURC: {
     symbol: "EURC",
     currency: "EUR",
-    address: {
-      mainnet: TOKEN_ADDRESSES.EURC.mainnet,
-      base: TOKEN_ADDRESSES.EURC.base,
-      sepolia: TOKEN_ADDRESSES.EURC.sepolia,
-      baseSepolia: TOKEN_ADDRESSES.EURC.baseSepolia
-    },
+    address: TOKEN_ADDRESSES.EURC,
     decimals: 6,
     baseUnit: 10n ** 6n,
     contract: {
