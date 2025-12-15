@@ -1,6 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 
-import { AppModule } from "@/app.module";
+import { AppModule } from "@/modules/app.module";
 
 import { setupSwagger } from "./config/swagger.config";
 import { WrapArrayInterceptor } from "./interfaces/interceptors/wrap-array.interceptor";
