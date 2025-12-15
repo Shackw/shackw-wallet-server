@@ -9,15 +9,15 @@ import {
 import { ENV } from "@/config/env.config";
 import { MorarisTokenTransfersResponseSchema } from "@/shared/validations/schemas/http-moraris-token-transfer.shema";
 
-import { restClient, RestClient } from "../http-clients/rest.client";
+import { httpClient, HttpClient } from "../clients/http.client";
 
 export class HttpMorarisTokenTransfersGateway implements MorarisTokenTransfersGateway {
-  private readonly client: RestClient;
+  private readonly client: HttpClient;
   private readonly baseUrl: string;
   private readonly apiKey: string;
 
   constructor() {
-    this.client = restClient;
+    this.client = httpClient;
     this.baseUrl = "https://deep-index.moralis.io";
     this.apiKey = ENV.MORARIS_API_SECRET;
   }
