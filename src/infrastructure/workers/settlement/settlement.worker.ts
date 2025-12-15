@@ -3,7 +3,7 @@
 import { Logger } from "@nestjs/common";
 
 import { CHAINS } from "@/config/chain.config";
-import { restClient } from "@/infrastructure/http-clients/rest.client";
+import { httpClient } from "@/infrastructure/clients/http.client";
 import { VIEM_PUBLIC_CLIENTS } from "@/registries/viem.registry";
 
 import { StartSettlementWebhookJobInput, SettlementWebhookJobPayload } from "./settlement.worker.interface";
@@ -27,7 +27,7 @@ export const startSettlementWebhookJob = (input: StartSettlementWebhookJobInput)
           occurredAt: new Date().toISOString()
         };
         try {
-          await restClient.post(webhook.url, includedPayload, {
+          await httpClient.post(webhook.url, includedPayload, {
             headers: { "Idempotency-Key": `${webhook.id}:included:${txHash}` },
             timeoutMs: 3000
           });
@@ -50,7 +50,7 @@ export const startSettlementWebhookJob = (input: StartSettlementWebhookJobInput)
           occurredAt: new Date().toISOString()
         };
         try {
-          await restClient.post(webhook.url, confirmedPayload, {
+          await httpClient.post(webhook.url, confirmedPayload, {
             headers: { "Idempotency-Key": `${webhook.id}:confirmed:${txHash}` },
             timeoutMs: 3000
           });
@@ -72,7 +72,7 @@ export const startSettlementWebhookJob = (input: StartSettlementWebhookJobInput)
           occurredAt: new Date().toISOString()
         };
         try {
-          await restClient.post(webhook.url, failedPayload, {
+          await httpClient.post(webhook.url, failedPayload, {
             headers: { "Idempotency-Key": `${webhook.id}:failed:${txHash}` },
             timeoutMs: 3000
           });

@@ -9,15 +9,15 @@ import {
 import { ENV } from "@/config/env.config";
 import { ThirdwebContractEventsResponseSchema } from "@/shared/validations/schemas/http-thirdweb-contract-events.schema";
 
-import { restClient, RestClient } from "../http-clients/rest.client";
+import { httpClient, HttpClient } from "../clients/http.client";
 
 export class HttpThirdwebContractEventsGateway implements ThirdwebContranctEventsGateway {
-  private readonly client: RestClient;
+  private readonly client: HttpClient;
   private readonly baseUrl: string;
   private readonly apiKey: string;
 
   constructor() {
-    this.client = restClient;
+    this.client = httpClient;
     this.baseUrl = "https://api.thirdweb.com";
     this.apiKey = ENV.THIRD_WEB_API_SECRET;
   }

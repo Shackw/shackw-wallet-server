@@ -3,11 +3,11 @@
 import { Logger } from "@nestjs/common";
 
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-export type RestClient = ReturnType<typeof createRestClient>;
+export type HttpClient = ReturnType<typeof createHttpClient>;
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
-export type RestClientConfig = {
+export type HttpClientConfig = {
   baseURL?: string;
   timeoutMs?: number;
   headers?: Record<string, string>;
@@ -88,7 +88,7 @@ async function parseResponse(res: Response): Promise<unknown> {
   }
 }
 
-export function createRestClient(cfg: RestClientConfig = {}) {
+export function createHttpClient(cfg: HttpClientConfig = {}) {
   const baseURL = cfg.baseURL;
   const defaultHeaders = cfg.headers ?? {};
   const defaultTimeoutMs = cfg.timeoutMs;
@@ -169,4 +169,4 @@ export function createRestClient(cfg: RestClientConfig = {}) {
   };
 }
 
-export const restClient = createRestClient();
+export const httpClient = createHttpClient();
