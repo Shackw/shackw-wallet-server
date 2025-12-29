@@ -85,7 +85,7 @@ export class TransactionsService {
       timestampGte,
       timestampLte,
       limit: 100,
-      page: 2
+      page: 1
     };
 
     const works: Promise<ThirdwebContranctEventItem[]>[] = [];
