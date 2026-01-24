@@ -1,4 +1,3 @@
-import { INestApplication } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { formatUnits } from "viem";
 
@@ -8,9 +7,13 @@ import {
   DELEGATE_CONTRACT_ADDRESS_REGISTORY,
   REGISTRY_CONTRACT_ADDRESS_REGISTORY
 } from "@/registries/invoker.registry";
-import { TOKEN_REGISTRY, Token } from "@/registries/token-chain.registry";
+import type { Token } from "@/registries/token-chain.registry";
+import { TOKEN_REGISTRY } from "@/registries/token-chain.registry";
 
-import { Chain, CHAIN_KEYS } from "./chain.config";
+import { CHAIN_KEYS } from "./chain.config";
+
+import type { Chain } from "./chain.config";
+import type { INestApplication } from "@nestjs/common";
 
 // Labels for chain names shown in Swagger (depends on environment)
 const CHAIN_LABELS = {

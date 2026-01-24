@@ -1,8 +1,9 @@
 import { encodeFunctionData, encodeAbiParameters, keccak256, erc20Abi, type Address, type Hex } from "viem";
 
 import { INTENT_TYPES } from "../encodings/intent.abi";
-import { Call } from "../types/call.type";
-import { ExecutionIntent } from "../types/execution-intent.type";
+
+import type { Call } from "../types/call.type";
+import type { ExecutionIntent } from "../types/execution-intent.type";
 
 export function erc20TransferCall(params: { token: Address; to: Address; amountMinUnits: bigint }): Call {
   return {

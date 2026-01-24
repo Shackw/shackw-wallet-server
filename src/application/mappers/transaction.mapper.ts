@@ -1,11 +1,10 @@
-import { Address, Hex } from "viem";
-
-import { Chain } from "@/config/chain.config";
-import { TransactionModel, TransferDirection } from "@/domain/entities/transaction";
+import type { Chain } from "@/config/chain.config";
+import type { TransactionModel, TransferDirection } from "@/domain/entities/transaction";
 import { ADDRESS_TO_TOKEN, TOKEN_REGISTRY } from "@/registries/token-chain.registry";
 
-import { MorarisTokenTransferItem } from "../ports/moraris-token-transfers.gateway";
-import { ThirdwebContranctEventItem } from "../ports/thirdweb-contract-events.gateway";
+import type { MorarisTokenTransferItem } from "../ports/moraris-token-transfers.gateway";
+import type { ThirdwebContranctEventItem } from "../ports/thirdweb-contract-events.gateway";
+import type { Address, Hex } from "viem";
 
 export const thirdwebContractEventToTransaction = (
   chain: Chain,

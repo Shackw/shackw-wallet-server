@@ -1,7 +1,7 @@
 import * as v from "valibot";
 import { getAddress, pad } from "viem";
 
-import {
+import type {
   ThirdwebContranctEventsGateway,
   ThirdwebContranctEventsQuery,
   ThirdwebContranctEventsResult
@@ -9,7 +9,9 @@ import {
 import { ENV } from "@/config/env.config";
 import { ThirdwebContractEventsResponseSchema } from "@/shared/validations/schemas/http-thirdweb-contract-events.schema";
 
-import { httpClient, HttpClient } from "../clients/http.client";
+import { httpClient } from "../clients/http.client";
+
+import type { HttpClient } from "../clients/http.client";
 
 export class HttpThirdwebContractEventsGateway implements ThirdwebContranctEventsGateway {
   private readonly client: HttpClient;

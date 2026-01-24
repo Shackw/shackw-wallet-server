@@ -1,15 +1,17 @@
 import * as v from "valibot";
 
-import {
-  CHIAN_TO_MORARIS_CHAIN,
+import type {
   MorarisTokenTransfersGateway,
   MorarisTokenTransfersQuery,
   MorarisTokenTransfersResult
 } from "@/application/ports/moraris-token-transfers.gateway";
+import { CHIAN_TO_MORARIS_CHAIN } from "@/application/ports/moraris-token-transfers.gateway";
 import { ENV } from "@/config/env.config";
 import { MorarisTokenTransfersResponseSchema } from "@/shared/validations/schemas/http-moraris-token-transfer.shema";
 
-import { httpClient, HttpClient } from "../clients/http.client";
+import { httpClient } from "../clients/http.client";
+
+import type { HttpClient } from "../clients/http.client";
 
 export class HttpMorarisTokenTransfersGateway implements MorarisTokenTransfersGateway {
   private readonly client: HttpClient;

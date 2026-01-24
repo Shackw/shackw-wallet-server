@@ -1,9 +1,12 @@
-import { Account, Chain as ViemChain, createWalletClient, http, Transport, WalletClient } from "viem";
+import { createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
-import { Chain, CHAINS } from "@/config/chain.config";
+import type { Chain } from "@/config/chain.config";
+import { CHAINS } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
 import { CUSTOM_RPC_URL } from "@/config/rpc-urls.config";
+
+import type { Account, Chain as ViemChain, Transport, WalletClient } from "viem";
 
 export const SPONSOR_ACCOUNT = privateKeyToAccount(ENV.SPONSOR_PK);
 

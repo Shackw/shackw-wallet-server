@@ -1,16 +1,11 @@
-import {
-  getContract,
-  erc20Abi,
-  Address,
-  GetContractReturnType,
-  PublicClient,
-  Transport,
-  Chain as ViemChain
-} from "viem";
+import { getContract, erc20Abi } from "viem";
 
-import { CHAINS, Chain } from "@/config/chain.config";
+import type { Chain } from "@/config/chain.config";
+import { CHAINS } from "@/config/chain.config";
 
 import { VIEM_PUBLIC_CLIENTS } from "./viem.registry";
+
+import type { Address, GetContractReturnType, PublicClient, Transport, Chain as ViemChain } from "viem";
 
 /** TYPES */
 type Erc20Instance = GetContractReturnType<typeof erc20Abi, PublicClient<Transport, ViemChain | undefined>>;

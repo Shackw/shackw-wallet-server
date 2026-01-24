@@ -66,6 +66,13 @@ export default [
           "newlines-between": "always",
           alphabetize: { order: "asc", caseInsensitive: true }
         }
+      ],
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        {
+          prefer: "type-imports",
+          disallowTypeAnnotations: false
+        }
       ]
     }
   }

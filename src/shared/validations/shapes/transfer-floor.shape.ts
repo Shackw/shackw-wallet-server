@@ -2,7 +2,8 @@ import * as v from "valibot";
 import { formatUnits } from "viem";
 
 import { FEE_REGISTORY } from "@/registries/fee.registry";
-import { ChainByToken, SUPPORT_CHAIN_TO_TOKEN, Token, TOKEN_REGISTRY } from "@/registries/token-chain.registry";
+import type { ChainByToken, Token } from "@/registries/token-chain.registry";
+import { SUPPORT_CHAIN_TO_TOKEN, TOKEN_REGISTRY } from "@/registries/token-chain.registry";
 
 import { stringBigintValidator } from "../rules/string-bigint.validator";
 

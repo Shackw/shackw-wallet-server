@@ -1,4 +1,6 @@
-import { mainnet, base, sepolia, baseSepolia, polygon, polygonAmoy, Chain as ViemChain } from "viem/chains";
+import { mainnet, base, sepolia, baseSepolia, polygon, polygonAmoy } from "viem/chains";
+
+import type { Chain as ViemChain } from "viem/chains";
 
 export type Chain = (typeof CHAIN_KEYS)[number];
 

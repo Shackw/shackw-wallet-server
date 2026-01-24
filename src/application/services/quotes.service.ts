@@ -1,15 +1,16 @@
 import { InternalServerErrorException } from "@nestjs/common";
 import { add } from "date-fns";
-import { Address, getContract, Hex } from "viem";
+import { getContract } from "viem";
 
-import { CHAINS, Chain } from "@/config/chain.config";
+import type { Chain } from "@/config/chain.config";
+import { CHAINS } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
-import { QuoteModel } from "@/domain/entities/quote.entity";
+import type { QuoteModel } from "@/domain/entities/quote.entity";
 import { FeeValueObject } from "@/domain/value-objects/fee-policy.value-object";
 import { REGISTRY_ABI } from "@/infrastructure/evm/abis/registry.abi";
 import { erc20TransferCall, hashExecutionIntent } from "@/infrastructure/evm/utils/evm-intent.util";
 import { encodeQuoteToken } from "@/infrastructure/evm/utils/quote-token.util";
-import { CreateQuoteRequestDto } from "@/interfaces/dto/quotes.dto";
+import type { CreateQuoteRequestDto } from "@/interfaces/dto/quotes.dto";
 import { BadRequestWithCodeException } from "@/interfaces/exceptions/bad-request-with-code.exception";
 import {
   DELEGATE_CONTRACT_ADDRESS_REGISTORY,
@@ -17,6 +18,8 @@ import {
 } from "@/registries/invoker.registry";
 import { resolveTokenAddress, resolveTokenContract, TOKEN_REGISTRY } from "@/registries/token-chain.registry";
 import { VIEM_PUBLIC_CLIENTS } from "@/registries/viem.registry";
+
+import type { Address, Hex } from "viem";
 
 export class QuotesService {
   constructor() {}

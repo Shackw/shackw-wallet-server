@@ -1,4 +1,4 @@
-import { Token } from "@/registries/token-chain.registry";
+import type { Token } from "@/registries/token-chain.registry";
 
 export type AmountUnit = {
   symbol: Token;

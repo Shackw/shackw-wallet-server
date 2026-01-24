@@ -1,8 +1,8 @@
-import * as v from "valibot";
-import { Address } from "viem";
+import type { Chain } from "@/config/chain.config";
+import type { MorarisTokenTransfersResponseSchema } from "@/shared/validations/schemas/http-moraris-token-transfer.shema";
 
-import { Chain } from "@/config/chain.config";
-import { MorarisTokenTransfersResponseSchema } from "@/shared/validations/schemas/http-moraris-token-transfer.shema";
+import type * as v from "valibot";
+import type { Address } from "viem";
 
 export interface MorarisTokenTransfersGateway {
   fetch(query: MorarisTokenTransfersQuery): Promise<MorarisTokenTransfersResult>;

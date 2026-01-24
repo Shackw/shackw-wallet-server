@@ -1,7 +1,10 @@
-import { createPublicClient, http, PublicClient, Transport, Chain as ViemChain } from "viem";
+import { createPublicClient, http } from "viem";
 
-import { Chain, CHAINS } from "@/config/chain.config";
+import type { Chain } from "@/config/chain.config";
+import { CHAINS } from "@/config/chain.config";
 import { CUSTOM_RPC_URL } from "@/config/rpc-urls.config";
+
+import type { PublicClient, Transport, Chain as ViemChain } from "viem";
 
 export const VIEM_PUBLIC_CLIENTS: Record<Chain, PublicClient<Transport, ViemChain | undefined>> = {
   mainnet: createPublicClient({

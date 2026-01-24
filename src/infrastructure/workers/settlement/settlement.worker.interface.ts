@@ -1,7 +1,7 @@
-import { Hex } from "viem";
+import type { Chain } from "@/config/chain.config";
+import type { NotifyWebhook } from "@/shared/validations/shapes/notify.shape";
 
-import { Chain } from "@/config/chain.config";
-import { NotifyWebhook } from "@/shared/validations/shapes/notify.shape";
+import type { Hex } from "viem";
 
 export type StartSettlementWebhookJobInput = {
   chain: Chain;

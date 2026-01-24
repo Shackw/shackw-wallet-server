@@ -1,6 +1,6 @@
-import { Address } from "viem";
+import type { Token } from "@/registries/token-chain.registry";
 
-import { Token } from "@/registries/token-chain.registry";
+import type { Address } from "viem";
 
 export type TokenInfo = {
   symbol: Token;

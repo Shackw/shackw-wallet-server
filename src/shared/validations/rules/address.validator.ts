@@ -1,5 +1,7 @@
 import * as v from "valibot";
-import { Address, Hex, isAddress, zeroAddress } from "viem";
+import { isAddress, zeroAddress } from "viem";
+
+import type { Address, Hex } from "viem";
 
 export const addressValidator = (field: string) =>
   v.pipe(

@@ -1,7 +1,6 @@
-import { Address, Hex } from "viem";
-
-import { AmountUnit } from "./common/amount-unit.entity";
-import { TokenInfo } from "./common/token-info.entity";
+import type { AmountUnit } from "./common/amount-unit.entity";
+import type { TokenInfo } from "./common/token-info.entity";
+import type { Address, Hex } from "viem";
 
 export const TRANSACTION_DIRECTIONS = ["in", "out", "self"] as const;
 export type TransferDirection = (typeof TRANSACTION_DIRECTIONS)[number];

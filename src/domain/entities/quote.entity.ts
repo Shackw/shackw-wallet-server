@@ -1,9 +1,7 @@
-import { Address, Hex } from "viem";
-
-import { FeeWithPolicy } from "../value-objects/fee-policy.value-object";
-
-import { AmountUnit } from "./common/amount-unit.entity";
-import { TokenInfo } from "./common/token-info.entity";
+import type { FeeWithPolicy } from "../value-objects/fee-policy.value-object";
+import type { AmountUnit } from "./common/amount-unit.entity";
+import type { TokenInfo } from "./common/token-info.entity";
+import type { Address, Hex } from "viem";
 
 export type QuoteModel = {
   quoteToken: string;

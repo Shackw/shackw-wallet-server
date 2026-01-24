@@ -1,7 +1,7 @@
-import * as v from "valibot";
-import { Address } from "viem";
+import type { ThirdwebContractEventsResponseSchema } from "@/shared/validations/schemas/http-thirdweb-contract-events.schema";
 
-import { ThirdwebContractEventsResponseSchema } from "@/shared/validations/schemas/http-thirdweb-contract-events.schema";
+import type * as v from "valibot";
+import type { Address } from "viem";
 
 export interface ThirdwebContranctEventsGateway {
   fetch(query: ThirdwebContranctEventsQuery): Promise<ThirdwebContranctEventsResult>;
