@@ -6,39 +6,41 @@ import pluginImport from "eslint-plugin-import";
 import unusedImports from "eslint-plugin-unused-imports";
 
 export default [
-  {
-    ignores: ["dist", "node_modules", "eslint.config.mjs"]
-  },
+  { ignores: ["dist", "node_modules", "eslint.config.mjs"] },
 
   eslint.configs.recommended,
-
   ...tseslint.configs.recommendedTypeChecked,
-
   eslintPluginPrettierRecommended,
 
   {
+    files: ["src/**/*.ts", "test/**/*.ts"],
+
     languageOptions: {
+      parser: tseslint.parser,
       globals: { ...globals.node, ...globals.jest },
       sourceType: "commonjs",
       parserOptions: {
-        projectService: true,
         tsconfigRootDir: import.meta.dirname,
-        noWarnOnMultipleProjects: true
+        project: ["./tsconfig.eslint.json"]
       }
     },
+
     plugins: {
+      "@typescript-eslint": tseslint.plugin,
       import: pluginImport,
       "unused-imports": unusedImports
     },
+
     settings: {
       "import/resolver": {
         typescript: {
           alwaysTryTypes: true,
-          project: ["./tsconfig.json", "./tsconfig.eslint.json"]
+          project: ["./tsconfig.eslint.json"]
         },
         node: true
       }
     },
+
     rules: {
       "@typescript-eslint/no-unsafe-call": "off",
       "@typescript-eslint/no-explicit-any": "off",
@@ -49,12 +51,7 @@ export default [
       "unused-imports/no-unused-imports": "error",
       "unused-imports/no-unused-vars": [
         "warn",
-        {
-          vars: "all",
-          varsIgnorePattern: "^_",
-          args: "after-used",
-          argsIgnorePattern: "^_"
-        }
+        { vars: "all", varsIgnorePattern: "^_", args: "after-used", argsIgnorePattern: "^_" }
       ],
 
       "import/order": [
@@ -67,12 +64,10 @@ export default [
           alphabetize: { order: "asc", caseInsensitive: true }
         }
       ],
+
       "@typescript-eslint/consistent-type-imports": [
         "error",
-        {
-          prefer: "type-imports",
-          disallowTypeAnnotations: false
-        }
+        { prefer: "type-imports", disallowTypeAnnotations: false }
       ]
     }
   }
