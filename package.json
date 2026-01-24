@@ -13,7 +13,7 @@
     "start:prod": "node dist/main",
     "ngrok": "ngrok http http://localhost:3010",
     "format": "prettier --write \"**/*.ts\"",
-    "lint": "eslint \"{src, test}/**/*.ts\" --fix"
+    "lint": "eslint src --fix"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.12",
@@ -35,7 +35,6 @@
     "viem": "^2.44.4"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^9.39.2",
     "@nestjs/cli": "^11.0.16",
     "@nestjs/schematics": "^11.0.9",
@@ -48,7 +47,7 @@
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.4",
-    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-import-x": "^4.16.1",
     "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-unused-imports": "^4.3.0",
     "globals": "^17.1.0",
