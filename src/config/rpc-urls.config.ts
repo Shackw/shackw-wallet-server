@@ -1,5 +1,6 @@
-import { Chain } from "./chain.config";
 import { ENV } from "./env.config";
+
+import type { Chain } from "./chain.config";
 
 export const CUSTOM_RPC_URL: Record<Chain, string> = {
   mainnet: `https://mainnet.infura.io/v3/${ENV.RPC_INFURA_ID}`,

@@ -1,8 +1,9 @@
-import { Chain } from "@/config/chain.config";
+import type { Chain } from "@/config/chain.config";
 import { FEE_REGISTORY } from "@/registries/fee.registry";
-import { ChainByToken, Token, TOKEN_REGISTRY } from "@/registries/token-chain.registry";
+import type { ChainByToken, Token } from "@/registries/token-chain.registry";
+import { TOKEN_REGISTRY } from "@/registries/token-chain.registry";
 
-import { AmountUnit } from "../entities/common/amount-unit.entity";
+import type { AmountUnitEntity } from "../entities/common/amount-unit.entity";
 
 type FixedByChainPolicy<C extends Chain> = {
   method: "fixed_by_chain";
@@ -11,7 +12,7 @@ type FixedByChainPolicy<C extends Chain> = {
 };
 
 export type FeeWithPolicy<C extends Chain = Chain> = {
-  fee: AmountUnit;
+  fee: AmountUnitEntity;
   policy: FixedByChainPolicy<C>;
 };
 

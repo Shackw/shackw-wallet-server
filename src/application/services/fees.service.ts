@@ -1,12 +1,12 @@
-import { FeeModel } from "@/domain/entities/fee.entity";
+import type { FeeEntity } from "@/domain/entities/fee.entity";
 import { FeeValueObject } from "@/domain/value-objects/fee-policy.value-object";
-import { EstimateFeeRequestDto } from "@/interfaces/dto/fees.dto";
+import type { EstimateFeeRequestDto } from "@/interfaces/dto/fees.dto";
 import { TOKEN_REGISTRY, resolveTokenAddress } from "@/registries/token-chain.registry";
 
 export class FeesService {
   constructor() {}
 
-  estimateFee(dto: EstimateFeeRequestDto): FeeModel {
+  estimateFee(dto: EstimateFeeRequestDto): FeeEntity {
     const { chain, amountMinUnits, token, feeToken } = dto;
 
     const feeValueObject = FeeValueObject.create(chain, feeToken.symbol);

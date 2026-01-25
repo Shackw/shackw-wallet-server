@@ -1,11 +1,11 @@
-import * as v from "valibot";
-import { Address } from "viem";
+import type { ThirdwebContractEventsResponseSchema } from "@/shared/validations/schemas/http-thirdweb-contract-events.schema";
 
-import { ThirdwebContractEventsResponseSchema } from "@/shared/validations/schemas/http-thirdweb-contract-events.schema";
+import type * as v from "valibot";
+import type { Address } from "viem";
 
-export interface ThirdwebContranctEventsGateway {
-  fetch(query: ThirdwebContranctEventsQuery): Promise<ThirdwebContranctEventsResult>;
-}
+export type ThirdwebContranctEventsContract = v.InferOutput<typeof ThirdwebContractEventsResponseSchema>;
+
+export type ThirdwebContranctEventItemContract = ThirdwebContranctEventsContract["result"]["events"][number];
 
 export type ThirdwebContranctEventsBaseQuery = {
   chainId: number;
@@ -19,6 +19,6 @@ export type ThirdwebContranctEventsBaseQuery = {
 export type ThirdwebContranctEventsQuery = ThirdwebContranctEventsBaseQuery &
   ({ fromAddress: Address } | { toAddress: Address });
 
-export type ThirdwebContranctEventItem = ThirdwebContranctEventsResult["result"]["events"][number];
-
-export type ThirdwebContranctEventsResult = v.InferOutput<typeof ThirdwebContractEventsResponseSchema>;
+export interface ThirdwebContranctEventsGateway {
+  fetch(query: ThirdwebContranctEventsQuery): Promise<ThirdwebContranctEventsContract>;
+}

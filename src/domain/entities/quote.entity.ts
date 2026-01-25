@@ -1,19 +1,17 @@
-import { Address, Hex } from "viem";
+import type { FeeWithPolicy } from "../value-objects/fee-policy.value-object";
+import type { AmountUnitEntity } from "./common/amount-unit.entity";
+import type { TokenInfoEntity } from "./common/token-info.entity";
+import type { Address, Hex } from "viem";
 
-import { FeeWithPolicy } from "../value-objects/fee-policy.value-object";
-
-import { AmountUnit } from "./common/amount-unit.entity";
-import { TokenInfo } from "./common/token-info.entity";
-
-export type QuoteModel = {
+export type QuoteEntity = {
   quoteToken: string;
   expiresAt: Date;
   chainId: number;
   sender: Address;
   recipient: Address;
-  token: TokenInfo;
-  feeToken: TokenInfo;
-  amount: AmountUnit;
+  token: TokenInfoEntity;
+  feeToken: TokenInfoEntity;
+  amount: AmountUnitEntity;
   delegate: Address;
   sponsor: Address;
   callHash: Hex;

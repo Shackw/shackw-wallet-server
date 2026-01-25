@@ -6,7 +6,7 @@ import { CHAINS } from "@/config/chain.config";
 import { httpClient } from "@/infrastructure/clients/http.client";
 import { VIEM_PUBLIC_CLIENTS } from "@/registries/viem.registry";
 
-import { StartSettlementWebhookJobInput, SettlementWebhookJobPayload } from "./settlement.worker.interface";
+import type { StartSettlementWebhookJobInput, SettlementWebhookJobPayload } from "./settlement.worker.interface";
 
 export const startSettlementWebhookJob = (input: StartSettlementWebhookJobInput): void => {
   const { chain, txHash, webhook } = input;

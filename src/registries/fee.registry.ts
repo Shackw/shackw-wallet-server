@@ -1,7 +1,7 @@
-import { Chain } from "@/config/chain.config";
+import type { Chain } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
 
-import { TokenByChain } from "./token-chain.registry";
+import type { TokenByChain } from "./token-chain.registry";
 
 type FeeMeta = {
   minTransferAmountUnits: bigint;

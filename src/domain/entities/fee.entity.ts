@@ -1,10 +1,9 @@
-import { FeeWithPolicy } from "../value-objects/fee-policy.value-object";
+import type { FeeWithPolicy } from "../value-objects/fee-policy.value-object";
+import type { AmountUnitEntity } from "./common/amount-unit.entity";
+import type { TokenInfoEntity } from "./common/token-info.entity";
 
-import { AmountUnit } from "./common/amount-unit.entity";
-import { TokenInfo } from "./common/token-info.entity";
-
-export type FeeModel = {
-  token: TokenInfo;
-  feeToken: TokenInfo;
-  amount: AmountUnit;
+export type FeeEntity = {
+  token: TokenInfoEntity;
+  feeToken: TokenInfoEntity;
+  amount: AmountUnitEntity;
 } & FeeWithPolicy;

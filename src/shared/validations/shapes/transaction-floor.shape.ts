@@ -1,7 +1,8 @@
 import * as v from "valibot";
 
-import { Chain } from "@/config/chain.config";
-import { SUPPORT_CHAIN_TO_TOKEN, TokenByChain } from "@/registries/token-chain.registry";
+import type { Chain } from "@/config/chain.config";
+import type { TokenByChain } from "@/registries/token-chain.registry";
+import { SUPPORT_CHAIN_TO_TOKEN } from "@/registries/token-chain.registry";
 
 import { addressValidator } from "../rules/address.validator";
 

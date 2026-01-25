@@ -1,7 +1,7 @@
-import { Address } from "viem";
-
-import { Chain } from "@/config/chain.config";
+import type { Chain } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
+
+import type { Address } from "viem";
 
 export const DELEGATE_CONTRACT_ADDRESS_REGISTORY: Record<Chain, Address> = {
   mainnet: ENV.ETH_MAIN_DELEGATE_ADDRESS,

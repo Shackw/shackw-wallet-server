@@ -5,7 +5,8 @@ import { sha256 } from "@noble/hashes/sha2";
 import { encodeAbiParameters, decodeAbiParameters, hexToBytes, bytesToHex, type Address, type Hex } from "viem";
 
 import { QUOTE_TOKEN_TYPES } from "../encodings/quote-token.abi";
-import { QuoteToken } from "../types/quote-token.type";
+
+import type { QuoteToken } from "../types/quote-token.type";
 
 const toB64u = (u8: Uint8Array) => Buffer.from(u8).toString("base64url");
 const fromB64u = (s: string) => new Uint8Array(Buffer.from(s, "base64url"));

@@ -1,12 +1,8 @@
-import * as v from "valibot";
-import { Address } from "viem";
+import type { Chain } from "@/config/chain.config";
+import type { MorarisTokenTransfersResponseSchema } from "@/shared/validations/schemas/http-moraris-token-transfer.shema";
 
-import { Chain } from "@/config/chain.config";
-import { MorarisTokenTransfersResponseSchema } from "@/shared/validations/schemas/http-moraris-token-transfer.shema";
-
-export interface MorarisTokenTransfersGateway {
-  fetch(query: MorarisTokenTransfersQuery): Promise<MorarisTokenTransfersResult>;
-}
+import type * as v from "valibot";
+import type { Address } from "viem";
 
 export const CHIAN_TO_MORARIS_CHAIN = {
   mainnet: "eth",
@@ -16,6 +12,10 @@ export const CHIAN_TO_MORARIS_CHAIN = {
   baseSepolia: "base sepolia",
   polygonAmoy: "polygon amoy"
 } as const satisfies Record<Chain, string>;
+
+export type MorarisTokenTransfersContract = v.InferOutput<typeof MorarisTokenTransfersResponseSchema>;
+
+export type MorarisTokenTransferItemContract = MorarisTokenTransfersContract["result"][number];
 
 export type MorarisTokenTransfersQuery = {
   chain: Chain;
@@ -27,6 +27,6 @@ export type MorarisTokenTransfersQuery = {
   cursor?: string;
 };
 
-export type MorarisTokenTransferItem = MorarisTokenTransfersResult["result"][number];
-
-export type MorarisTokenTransfersResult = v.InferOutput<typeof MorarisTokenTransfersResponseSchema>;
+export interface MorarisTokenTransfersGateway {
+  fetch(query: MorarisTokenTransfersQuery): Promise<MorarisTokenTransfersContract>;
+}

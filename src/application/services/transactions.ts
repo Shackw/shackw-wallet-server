@@ -2,18 +2,21 @@ import { Inject, Injectable } from "@nestjs/common";
 import { Address } from "viem";
 
 import {
-  ThirdwebContranctEventItem,
+  ThirdwebContranctEventItemContract,
   ThirdwebContranctEventsBaseQuery,
   ThirdwebContranctEventsGateway,
   ThirdwebContranctEventsQuery
 } from "@/application/ports/thirdweb-contract-events.gateway";
 import { CHAINS, Chain } from "@/config/chain.config";
-import { TransactionModel } from "@/domain/entities/transaction";
+import { TransactionEntity } from "@/domain/entities/transaction";
 import { SearchTransactionsRequestDto } from "@/interfaces/dto/transactions.dto";
 import { resolveTokenAddress } from "@/registries/token-chain.registry";
 
 import { morarisTokenTransfersToTransaction, thirdwebContractEventToTransaction } from "../mappers/transaction.mapper";
-import { MorarisTokenTransferItem, MorarisTokenTransfersGateway } from "../ports/moraris-token-transfers.gateway";
+import {
+  MorarisTokenTransferItemContract,
+  MorarisTokenTransfersGateway
+} from "../ports/moraris-token-transfers.gateway";
 
 @Injectable()
 export class TransactionsService {
@@ -25,10 +28,10 @@ export class TransactionsService {
     private readonly tokenTransfersGateway: MorarisTokenTransfersGateway
   ) {}
 
-  async searchTransactions(dto: SearchTransactionsRequestDto): Promise<TransactionModel[]> {
+  async searchTransactions(dto: SearchTransactionsRequestDto): Promise<TransactionEntity[]> {
     const { chain, tokens, wallet, timestampGte, timestampLte, direction, limit } = dto;
 
-    const thirdwebEvents: ThirdwebContranctEventItem[] = [];
+    const thirdwebEvents: ThirdwebContranctEventItemContract[] = [];
     const failedTokenAddresses: Address[] = [];
 
     for (const { symbol } of tokens) {
@@ -51,7 +54,7 @@ export class TransactionsService {
 
     const thirdwebTxs = thirdwebEvents.map(ev => thirdwebContractEventToTransaction(chain, wallet, ev));
 
-    let moralisTxs: TransactionModel[] = [];
+    let moralisTxs: TransactionEntity[] = [];
     if (failedTokenAddresses.length > 0) {
       moralisTxs = await this.fetchMoralisForTokens({
         chain,
@@ -76,7 +79,7 @@ export class TransactionsService {
     timestampGte: number;
     timestampLte: number;
     direction: SearchTransactionsRequestDto["direction"];
-  }): Promise<ThirdwebContranctEventItem[]> {
+  }): Promise<ThirdwebContranctEventItemContract[]> {
     const { chain, wallet, tokenAddress, timestampGte, timestampLte, direction } = params;
 
     const baseQuery: ThirdwebContranctEventsBaseQuery = {
@@ -88,7 +91,7 @@ export class TransactionsService {
       page: 1
     };
 
-    const works: Promise<ThirdwebContranctEventItem[]>[] = [];
+    const works: Promise<ThirdwebContranctEventItemContract[]>[] = [];
 
     if (direction === "in" || direction === "both") {
       works.push(this.fetchContractEvents({ ...baseQuery, toAddress: wallet }));
@@ -102,8 +105,10 @@ export class TransactionsService {
     return fetcheds.flat();
   }
 
-  private async fetchContractEvents(query: ThirdwebContranctEventsQuery): Promise<ThirdwebContranctEventItem[]> {
-    const results: ThirdwebContranctEventItem[] = [];
+  private async fetchContractEvents(
+    query: ThirdwebContranctEventsQuery
+  ): Promise<ThirdwebContranctEventItemContract[]> {
+    const results: ThirdwebContranctEventItemContract[] = [];
     let page = query.page;
 
     while (true) {
@@ -128,10 +133,10 @@ export class TransactionsService {
     direction: SearchTransactionsRequestDto["direction"];
     tokenAddresses: Address[];
     limit?: number;
-  }): Promise<TransactionModel[]> {
+  }): Promise<TransactionEntity[]> {
     const { chain, wallet, timestampGte, timestampLte, direction, tokenAddresses, limit } = params;
 
-    const allTransfers: MorarisTokenTransferItem[] = [];
+    const allTransfers: MorarisTokenTransferItemContract[] = [];
     let cursor: string | undefined = undefined;
 
     while (true) {
@@ -164,8 +169,8 @@ export class TransactionsService {
   }
 
   // ========== uniq / sort / limit ==========
-  private dedupeSortAndLimit(transactions: TransactionModel[], limit?: number): TransactionModel[] {
-    const uniqueMap = new Map<string, TransactionModel>();
+  private dedupeSortAndLimit(transactions: TransactionEntity[], limit?: number): TransactionEntity[] {
+    const uniqueMap = new Map<string, TransactionEntity>();
 
     for (const tx of transactions) {
       const key = `${tx.txHash}:${tx.logIndex}:${tx.blockNumber}`;

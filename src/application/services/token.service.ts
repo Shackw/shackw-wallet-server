@@ -4,7 +4,7 @@ import { verifyAuthorization } from "viem/utils";
 
 import { CHAINS } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
-import { TransferTokenModel } from "@/domain/entities/token.entity";
+import { TransferTokenEntity } from "@/domain/entities/token.entity";
 import { DELEGATE_ABI } from "@/infrastructure/evm/abis/delegate.abi";
 import { REGISTRY_ABI } from "@/infrastructure/evm/abis/registry.abi";
 import { QuoteToken } from "@/infrastructure/evm/types/quote-token.type";
@@ -23,7 +23,7 @@ import { VIEM_PUBLIC_CLIENTS } from "@/registries/viem.registry";
 
 @Injectable()
 export class TokenService {
-  async transferToken(dto: TransferTokenRequestDto): Promise<TransferTokenModel> {
+  async transferToken(dto: TransferTokenRequestDto): Promise<TransferTokenEntity> {
     const { chain, quoteToken, authorization, notify } = dto;
 
     const registryContract = getContract({
