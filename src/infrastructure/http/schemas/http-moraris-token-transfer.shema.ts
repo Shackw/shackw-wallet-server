@@ -1,6 +1,6 @@
 import * as v from "valibot";
 
-import { nullableString } from "../rules/nullable-string";
+import { nullableString } from "@/shared/validations/rules/nullable-string";
 
 const MorarisTokenTransferItemSchema = v.object({
   token_name: nullableString("token_name"),

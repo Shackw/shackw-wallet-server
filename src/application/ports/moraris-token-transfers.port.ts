@@ -1,5 +1,5 @@
 import type { Chain } from "@/config/chain.config";
-import type { MorarisTokenTransfersResponseSchema } from "@/shared/validations/schemas/http-moraris-token-transfer.shema";
+import type { MorarisTokenTransfersResponseSchema } from "@/infrastructure/http/schemas/http-moraris-token-transfer.shema";
 
 import type * as v from "valibot";
 import type { Address } from "viem";

@@ -1,4 +1,4 @@
-import type { ThirdwebContractEventsResponseSchema } from "@/shared/validations/schemas/http-thirdweb-contract-events.schema";
+import type { ThirdwebContractEventsResponseSchema } from "@/infrastructure/http/schemas/http-thirdweb-contract-events.schema";
 
 import type * as v from "valibot";
 import type { Address } from "viem";

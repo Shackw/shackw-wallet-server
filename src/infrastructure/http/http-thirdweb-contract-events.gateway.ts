@@ -6,7 +6,8 @@ import type {
   ThirdwebContranctEventsQuery,
   ThirdwebContranctEventsContract
 } from "@/application/ports/thirdweb-contract-events.port";
-import { ThirdwebContractEventsResponseSchema } from "@/shared/validations/schemas/http-thirdweb-contract-events.schema";
+
+import { ThirdwebContractEventsResponseSchema } from "./schemas/http-thirdweb-contract-events.schema";
 
 import type { HttpClient } from "../clients/http.client";
 
