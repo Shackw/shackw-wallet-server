@@ -4,8 +4,8 @@ import type {
   MorarisTokenTransfersGateway,
   MorarisTokenTransfersQuery,
   MorarisTokenTransfersContract
-} from "@/application/ports/moraris-token-transfers.gateway";
-import { CHIAN_TO_MORARIS_CHAIN } from "@/application/ports/moraris-token-transfers.gateway";
+} from "@/application/ports/moraris-token-transfers.port";
+import { CHIAN_TO_MORARIS_CHAIN } from "@/application/ports/moraris-token-transfers.port";
 import { MorarisTokenTransfersResponseSchema } from "@/shared/validations/schemas/http-moraris-token-transfer.shema";
 
 import type { HttpClient } from "../clients/http.client";
