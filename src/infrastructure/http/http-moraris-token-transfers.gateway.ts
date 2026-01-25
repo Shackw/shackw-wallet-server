@@ -3,28 +3,21 @@ import * as v from "valibot";
 import type {
   MorarisTokenTransfersGateway,
   MorarisTokenTransfersQuery,
-  MorarisTokenTransfersResult
+  MorarisTokenTransfersContract
 } from "@/application/ports/moraris-token-transfers.gateway";
 import { CHIAN_TO_MORARIS_CHAIN } from "@/application/ports/moraris-token-transfers.gateway";
-import { ENV } from "@/config/env.config";
 import { MorarisTokenTransfersResponseSchema } from "@/shared/validations/schemas/http-moraris-token-transfer.shema";
-
-import { httpClient } from "../clients/http.client";
 
 import type { HttpClient } from "../clients/http.client";
 
 export class HttpMorarisTokenTransfersGateway implements MorarisTokenTransfersGateway {
-  private readonly client: HttpClient;
-  private readonly baseUrl: string;
-  private readonly apiKey: string;
+  constructor(
+    private readonly client: HttpClient,
+    private readonly baseUrl: string,
+    private readonly apiKey: string
+  ) {}
 
-  constructor() {
-    this.client = httpClient;
-    this.baseUrl = "https://deep-index.moralis.io";
-    this.apiKey = ENV.MORARIS_API_SECRET;
-  }
-
-  async fetch(query: MorarisTokenTransfersQuery): Promise<MorarisTokenTransfersResult> {
+  async fetch(query: MorarisTokenTransfersQuery): Promise<MorarisTokenTransfersContract> {
     const { chain, wallet, fromDate, toDate, tokenAddresses, limit, cursor } = query;
 
     const url = new URL(`/api/v2.2/${wallet}/erc20/transfers`, this.baseUrl);

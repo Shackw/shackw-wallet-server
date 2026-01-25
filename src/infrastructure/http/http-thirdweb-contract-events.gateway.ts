@@ -4,27 +4,20 @@ import { getAddress, pad } from "viem";
 import type {
   ThirdwebContranctEventsGateway,
   ThirdwebContranctEventsQuery,
-  ThirdwebContranctEventsResult
+  ThirdwebContranctEventsContract
 } from "@/application/ports/thirdweb-contract-events.gateway";
-import { ENV } from "@/config/env.config";
 import { ThirdwebContractEventsResponseSchema } from "@/shared/validations/schemas/http-thirdweb-contract-events.schema";
-
-import { httpClient } from "../clients/http.client";
 
 import type { HttpClient } from "../clients/http.client";
 
 export class HttpThirdwebContractEventsGateway implements ThirdwebContranctEventsGateway {
-  private readonly client: HttpClient;
-  private readonly baseUrl: string;
-  private readonly apiKey: string;
+  constructor(
+    private readonly client: HttpClient,
+    private readonly baseUrl: string,
+    private readonly apiKey: string
+  ) {}
 
-  constructor() {
-    this.client = httpClient;
-    this.baseUrl = "https://api.thirdweb.com";
-    this.apiKey = ENV.THIRD_WEB_API_SECRET;
-  }
-
-  async fetch(query: ThirdwebContranctEventsQuery): Promise<ThirdwebContranctEventsResult> {
+  async fetch(query: ThirdwebContranctEventsQuery): Promise<ThirdwebContranctEventsContract> {
     const { chainId, tokenAddress, timestampGte, timestampLte, limit, page } = query;
 
     const url = new URL(`/v1/contracts/${chainId}/${tokenAddress}/events`, this.baseUrl);

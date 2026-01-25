@@ -1,11 +1,11 @@
 import { InternalServerErrorException } from "@nestjs/common";
-import { add } from "date-fns";
+import dayjs from "dayjs";
 import { getContract } from "viem";
 
 import type { Chain } from "@/config/chain.config";
 import { CHAINS } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
-import type { QuoteModel } from "@/domain/entities/quote.entity";
+import type { QuoteEntity } from "@/domain/entities/quote.entity";
 import { FeeValueObject } from "@/domain/value-objects/fee-policy.value-object";
 import { REGISTRY_ABI } from "@/infrastructure/evm/abis/registry.abi";
 import { erc20TransferCall, hashExecutionIntent } from "@/infrastructure/evm/utils/evm-intent.util";
@@ -24,11 +24,11 @@ import type { Address, Hex } from "viem";
 export class QuotesService {
   constructor() {}
 
-  async createQuote(dto: CreateQuoteRequestDto): Promise<QuoteModel> {
+  async createQuote(dto: CreateQuoteRequestDto): Promise<QuoteEntity> {
     const { chain, sender, recipient, token, feeToken, amountMinUnits } = dto;
 
-    const now = new Date();
-    const expiresAt = add(now, { minutes: 2 });
+    const now = dayjs();
+    const expiresAt = now.add(2, "minute").toDate();
     const expiresAtSec = BigInt(Math.floor(expiresAt.getTime() / 1000));
 
     // Calculate Fee

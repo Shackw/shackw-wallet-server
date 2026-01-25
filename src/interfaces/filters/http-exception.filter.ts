@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Logger } from "@nestjs/common";
+import { randomUUID } from "crypto";
 
-import type { Response } from "express";
+import { Catch, ExceptionFilter, ArgumentsHost, HttpException, HttpStatus, Logger } from "@nestjs/common";
+
+import type { Request, Response } from "express";
 
 type ErrorItem = { code: string; message: string };
 
@@ -30,29 +32,46 @@ function toCode(raw: unknown, fallback = "HTTP_ERROR"): string {
 @Catch()
 export class HttpExceptionsFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
-    const res = host.switchToHttp().getResponse<Response>();
-    const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+    const ctx = host.switchToHttp();
+    const res = ctx.getResponse<Response>();
+    const req = ctx.getRequest<Request>();
+
+    const requestId = randomUUID();
+    const isHttp = exception instanceof HttpException;
+    const status = isHttp ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
     const errors = this.normalizeErrors(exception);
 
-    const cause = (exception as any)?.cause;
-    const logPayload = {
-      status,
-      errors,
-      response: exception instanceof HttpException ? exception.getResponse() : undefined,
-      cause: cause
-        ? {
-            name: cause?.name ?? "Error",
-            message: String(cause?.message ?? cause),
-            stack: cause?.stack
-          }
-        : undefined
-    };
-    Logger.error(logPayload, (exception as any)?.stack, "HttpExceptionsFilter");
+    const ex = exception as any;
+    const cause = ex?.cause;
 
+    Logger.error(
+      {
+        requestId,
+        status,
+        method: req.method,
+        path: req.originalUrl,
+        errors,
+        exception: {
+          name: ex?.name,
+          message: ex?.message
+        },
+        cause: cause
+          ? {
+              name: cause?.name ?? "Error",
+              message: String(cause?.message ?? cause)
+            }
+          : undefined
+      },
+      ex?.stack,
+      "HttpExceptionsFilter"
+    );
+
+    res.setHeader("x-request-id", requestId);
     res.status(status).json({
       statusCode: status,
       errors,
+      requestId,
       timestamp: new Date().toISOString()
     });
   }
@@ -75,7 +94,6 @@ export class HttpExceptionsFilter implements ExceptionFilter {
           const m = (payload as any).message;
           if (Array.isArray(m))
             return m.filter((x): x is string => typeof x === "string").map(msg => ({ code: baseCode, message: msg }));
-
           if (typeof m === "string") return [{ code: baseCode, message: m }];
         }
 
@@ -91,14 +109,9 @@ export class HttpExceptionsFilter implements ExceptionFilter {
     }
 
     if (exception instanceof Error) {
-      return [
-        {
-          code: toCode(exception.name, "ERROR"),
-          message: exception.message || "Internal server error"
-        }
-      ];
+      return [{ code: "INTERNAL_SERVER_ERROR", message: "Internal server error" }];
     }
 
-    return [{ code: "HTTP_ERROR", message: "Internal server error" }];
+    return [{ code: "INTERNAL_SERVER_ERROR", message: "Internal server error" }];
   }
 }

@@ -17,8 +17,7 @@
       "@infrastructure/*": ["./src/infrastructure/*"],
       "@registries/*": ["./src/registries/*"],
       "@shared/*": ["./src/shared/*"],
-      "@config/*": ["./src/config/*"],
-      "@docs/*": ["./src/docs/*"]
+      "@config/*": ["./src/config/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
@@ -26,6 +25,7 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "esModuleInterop": true
   }
 }

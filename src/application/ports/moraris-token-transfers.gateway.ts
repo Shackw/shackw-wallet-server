@@ -4,10 +4,6 @@ import type { MorarisTokenTransfersResponseSchema } from "@/shared/validations/s
 import type * as v from "valibot";
 import type { Address } from "viem";
 
-export interface MorarisTokenTransfersGateway {
-  fetch(query: MorarisTokenTransfersQuery): Promise<MorarisTokenTransfersResult>;
-}
-
 export const CHIAN_TO_MORARIS_CHAIN = {
   mainnet: "eth",
   base: "base",
@@ -16,6 +12,10 @@ export const CHIAN_TO_MORARIS_CHAIN = {
   baseSepolia: "base sepolia",
   polygonAmoy: "polygon amoy"
 } as const satisfies Record<Chain, string>;
+
+export type MorarisTokenTransfersContract = v.InferOutput<typeof MorarisTokenTransfersResponseSchema>;
+
+export type MorarisTokenTransferItemContract = MorarisTokenTransfersContract["result"][number];
 
 export type MorarisTokenTransfersQuery = {
   chain: Chain;
@@ -27,6 +27,6 @@ export type MorarisTokenTransfersQuery = {
   cursor?: string;
 };
 
-export type MorarisTokenTransferItem = MorarisTokenTransfersResult["result"][number];
-
-export type MorarisTokenTransfersResult = v.InferOutput<typeof MorarisTokenTransfersResponseSchema>;
+export interface MorarisTokenTransfersGateway {
+  fetch(query: MorarisTokenTransfersQuery): Promise<MorarisTokenTransfersContract>;
+}

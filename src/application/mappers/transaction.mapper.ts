@@ -1,16 +1,16 @@
 import type { Chain } from "@/config/chain.config";
-import type { TransactionModel, TransferDirection } from "@/domain/entities/transaction";
+import type { TransactionEntity, TransferDirection } from "@/domain/entities/transaction";
 import { ADDRESS_TO_TOKEN, TOKEN_REGISTRY } from "@/registries/token-chain.registry";
 
-import type { MorarisTokenTransferItem } from "../ports/moraris-token-transfers.gateway";
-import type { ThirdwebContranctEventItem } from "../ports/thirdweb-contract-events.gateway";
+import type { MorarisTokenTransferItemContract } from "../ports/moraris-token-transfers.gateway";
+import type { ThirdwebContranctEventItemContract } from "../ports/thirdweb-contract-events.gateway";
 import type { Address, Hex } from "viem";
 
 export const thirdwebContractEventToTransaction = (
   chain: Chain,
   wallet: Address,
-  event: ThirdwebContranctEventItem
-): TransactionModel => {
+  event: ThirdwebContranctEventItemContract
+): TransactionEntity => {
   const tokenSymbol = ADDRESS_TO_TOKEN[chain][event.address.toLowerCase()];
   const tokenMeta = TOKEN_REGISTRY[tokenSymbol];
 
@@ -51,8 +51,8 @@ export const thirdwebContractEventToTransaction = (
 export const morarisTokenTransfersToTransaction = (
   chain: Chain,
   wallet: Address,
-  transfer: MorarisTokenTransferItem
-): TransactionModel => {
+  transfer: MorarisTokenTransferItemContract
+): TransactionEntity => {
   const tokenSymbol = ADDRESS_TO_TOKEN[chain][transfer.address.toLowerCase()];
   const tokenMeta = TOKEN_REGISTRY[tokenSymbol];
 
