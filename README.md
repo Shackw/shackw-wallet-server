@@ -1,9 +1,13 @@
 # Shackw Wallet API
+
 Wallet-to-Wallet stablecoin transfers using **Account Abstraction (EIP-7702)**
 
-This API powers **Shackw Wallet**, a stablecoin-focused payment system designed to enable **low-volatility, gas-abstracted transfers** over supported EVM chains.
+This API powers **Shackw Wallet**, a stablecoin-focused payment system designed to enable
+**low-volatility, gas-abstracted transfers** over supported EVM chains.
 
-This document describes the **environment-agnostic API architecture**, including the supported concepts, endpoints, request flow, and usage guidelines.
+This document describes the **API architecture and design principles**,
+focusing on concepts, responsibilities, and security boundaries rather than
+concrete endpoint specifications.
 
 ---
 
@@ -11,237 +15,168 @@ This document describes the **environment-agnostic API architecture**, including
 
 The **Shackw Wallet API** provides:
 
-- Stablecoin transfers with fixed per-chain transaction fees
-- EIP-7702–based authorization signing (no private key exposure to backend)
-- Token metadata, fee metadata, and contract metadata endpoints
-- Quote → Authorization → Transfer execution flow
-- Server-side validation of minimum transferable amounts and fixed fees
+- Stablecoin transfers with fixed, predictable transaction fees
+- EIP-7702–based authorization (no private key exposure to backend)
+- Dynamic exposure of chain-, token-, and fee-dependent metadata
+- A quote → authorization → execution transfer model
+- Server-side validation for fees and minimum transferable amounts
 
 The backend does **not** store user private keys.
-Authorization is signed locally by the user wallet and verified on-chain via EIP-7702 delegation.
+All authorizations are signed locally by the user wallet and verified on-chain
+via EIP-7702 delegation.
 
 ---
 
-# 2. Supported Concepts
+# 2. Core Concepts
 
-## 2.1 Supported Tokens
-The API supports multiple stablecoins.
-Each token definition includes:
+## 2.1 Stablecoin-Centric Design
+
+The API is designed exclusively for **stablecoin transfers**.
+Volatile assets and native gas tokens are intentionally excluded.
+
+Each supported token is defined by:
 
 - `symbol`
 - `decimals`
-- `address[chain]`
-- `fixedFeeAmountUnits[chain]`
-- `minTransferAmountUnits[chain]`
+- contract address per chain
+- fixed fee per chain
+- minimum transferable amount per chain
 
-Token availability may differ per chain, but the API exposes this dynamically at:
-
-```
-GET /meta/tokens
-```
+Token availability may differ per chain and environment, but all information is
+exposed dynamically via metadata endpoints.
 
 ---
 
-## 2.2 Supported Chains
-Supported chains vary per environment (Testnet / Mainnet), but the API exposes available chains and contracts dynamically via:
+## 2.2 Chain and Environment Abstraction
 
-```
-GET /meta/contracts
-GET /meta/fees
-GET /meta/min-transfer
-```
+The API avoids hardcoding chain- or environment-specific values.
+
+Instead:
+
+- Supported chains
+- Contract addresses
+- Fixed fees
+- Minimum transfer amounts
+
+are all retrieved dynamically through metadata endpoints.
+
+This allows clients to remain environment-agnostic while relying on the server
+as the source of truth.
 
 ---
 
 # 3. Fixed Fee Policy
 
 The Shackw Wallet API uses **fixed fees per chain and token**.
-Each fee entry includes:
 
-- `symbol`
-- `chain`
-- `fixedFeeAmountUnits`
-- `fixedFeeAmountDisplay`
+Key characteristics:
 
-Clients use:
+- Fees are deterministic and known in advance
+- No gas estimation is required on the client side
+- Fee values are validated server-side before execution
 
-```
-GET /meta/fees
-```
-
-to retrieve the applicable fee table.
+Clients retrieve fee information via metadata endpoints rather than hardcoding
+values locally.
 
 ---
 
 # 4. Minimum Transfer Amounts
 
-Transfers must satisfy a **minimum token amount**, defined per chain and token.
+Each chain and token combination defines a **minimum transferable amount**.
 
-Example fields:
+This prevents:
 
-- `symbol`
-- `chain`
-- `minUnits`
-- `display`
+- Dust transfers
+- Transfers that cannot safely cover fixed fees
+- UX inconsistencies caused by near-zero balances
 
-Retrieve via:
-
-```
-GET /meta/min-transfer
-```
+Minimum values are enforced server-side and exposed via metadata endpoints for
+client-side validation.
 
 ---
 
-# 5. Contract Addresses
+# 5. Contract Address Exposure
 
 The API exposes the contract addresses used for:
 
-- Delegation Contract (EIP-7702)
-- Registry Contract
-- Sponsor Contract
+- Delegation (EIP-7702)
+- Registry
+- Sponsor / relayer logic
 
-Retrieve via:
+These values differ by chain and environment and are **intentionally not embedded**
+in this document.
 
-```
-GET /meta/contracts
-```
-
-These values differ between environments and are **intentionally not hard-coded in this README**.
+Clients are expected to retrieve all contract addresses dynamically from metadata
+endpoints.
 
 ---
 
 # 6. Metadata Endpoints
 
-The `/meta` endpoints provide all chain- and token-dependent metadata:
+The `/meta` endpoints expose all environment- and chain-dependent information.
 
 | Endpoint | Description |
 |---------|-------------|
-| `GET /meta/summary` | Full metadata bundle (tokens, fees, min-transfer, contracts) |
-| `GET /meta/tokens` | Supported tokens and their addresses |
-| `GET /meta/fees` | Fixed fees per chain & token |
+| `GET /meta/summary` | Full metadata bundle |
+| `GET /meta/tokens` | Supported tokens and addresses |
+| `GET /meta/fees` | Fixed fees per chain and token |
 | `GET /meta/min-transfer` | Minimum transferable amounts |
 | `GET /meta/contracts` | Delegate / Registry / Sponsor addresses |
 
-These responses are environment-dependent but **require no environment information in the README**.
+This design ensures that clients never rely on hardcoded constants.
 
 ---
 
-# 7. How to Use (End-to-End Flow)
+# 7. Transfer Flow (Conceptual)
 
-This is the core flow for performing a **token transfer with fixed fee** using Shackw Wallet + EIP-7702.
+Token transfers follow a three-step conceptual flow:
 
----
+1. **Quote issuance**  
+   The server issues a signed, time-limited quote describing the intended transfer.
 
-## **Step 1 — Request a Quote Token**
+2. **Client-side authorization signing**  
+   The user wallet signs an EIP-7702 authorization binding the allowed call,
+   expiry, nonce, chain, and wallet address.
 
-Call:
+3. **Transaction relay and execution**  
+   The server verifies the quote and authorization, then relays the transaction
+   on-chain.
 
-```
-POST /api/quotes
-```
-
-with the parameters:
-
-- `chain`
-- `token.symbol`
-- `amountMinUnits`
-- `sender`
-- `recipient`
-
-The API returns a **quoteToken**, which is a signed piece of data required for the final transfer.
-
-Example fields returned:
-
-- `quoteToken` (opaque string)
-- `chain`
-- `token`
-- `feeToken`
-- `fee`
-- `expiresAt`
+Concrete endpoint names and request formats are intentionally omitted from this
+document.
 
 ---
 
-## **Step 2 — Sign Authorization (EIP-7702)**
+# 8. Security Notes
 
-Use **viem**’s `signAuthorization` to produce an authorization signature:
+- User private keys are never sent to the backend
+- Authorization uses EIP-7702 messages signed by the user wallet
+- The backend only verifies authorizations and relays transactions
+- Fee and minimum transfer validation is enforced server-side
 
-Docs:
-https://viem.sh/docs/eip7702/signAuthorization
-
-The authorization binds:
-
-- delegated account
-- expiry
-- allowed call(s)
-- nonce
-- chain
-- wallet address
-
-This signature **never reaches the backend** until the user explicitly submits the transfer.
+The API is designed so that the backend cannot act on behalf of users without
+explicit, cryptographically signed authorization.
 
 ---
 
-## **Step 3 — Execute the Transfer**
+# 9. Development Notes
 
-Call:
-
-```
-POST /api/tokens:transfer
-```
-
-with:
-
-- `quoteToken` (from Step 1)
-- `authorization` (from Step 2)
-
-If:
-
-- quote is valid
-- EIP-7702 signature is valid
-- minimum transfer amount is satisfied
-- the sender has sufficient balance for the fixed fee
-
-…then the server relays the transaction.
+- All chain-, token-, and environment-dependent values must be retrieved via
+  metadata endpoints
+- Clients should not embed contract addresses, decimals, or fee values
+- This document intentionally avoids environment-specific constants to prevent
+  accidental desynchronization
 
 ---
 
-# 8. Error Handling
+# 10. License
 
-The API uses structured exceptions such as:
+This repository is provided for reference purposes only.
 
-- `BadRequestWithCodeException`
-- `ChainMismatch`
-- `InsufficientFeeBalance`
-- `MinTransferAmountViolation`
-- `TokenBalanceFetchFailed`
-
-Errors always include:
-
-- machine-readable code
-- human-readable message
+No license is granted for use, modification, or redistribution
+unless explicitly stated otherwise.
 
 ---
-
-# 9. Security Notes
-
-- User private keys are never sent to the backend.
-- Signing uses EIP-7702 Authorization Messages.
-- Backend does not hold or issue keys; it only verifies authorizations.
-- All fee and minimum transfer validation is performed server-side.
-
----
-
-# 10. Development Notes
-
-- All chain- and environment-dependent values (addresses, decimals, fees) should be retrieved via `/meta/**`, not hardcoded.
-- This README intentionally avoids embedding environment-specific constants.
-
----
-
-# 11. License
-
-Internal use only unless otherwise specified.
-
 
 ## Author
 
