@@ -13,7 +13,7 @@ const AuthorizationCommonShape = {
     v.minValue(0, "nonce must be >= 0.")
   ),
   r: hex64Validator("authorization.r"),
-  s: hex64Validator("authorization.r")
+  s: hex64Validator("authorization.s")
 };
 
 export const AuthorizationShape = v.union(

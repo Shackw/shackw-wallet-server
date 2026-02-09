@@ -4,6 +4,7 @@ import type { TokenInfoEntity } from "./common/token-info.entity";
 import type { Address, Hex } from "viem";
 
 export type QuoteEntity = {
+  nonce: bigint;
   quoteToken: string;
   expiresAt: Date;
   chainId: number;

@@ -61,7 +61,7 @@ Instead:
 are all retrieved dynamically through metadata endpoints.
 
 This allows clients to remain environment-agnostic while relying on the server
-as the source of truth.
+as the authoritative source for quoting and execution policies.
 
 ---
 
@@ -132,7 +132,7 @@ This design ensures that clients never rely on hardcoded constants.
 Token transfers follow a three-step conceptual flow:
 
 1. **Quote issuance**  
-   The server issues a signed, time-limited quote describing the intended transfer.
+   The server issues a cryptographically authenticated, time-limited quote describing the intended transfer.
 
 2. **Client-side authorization signing**  
    The user wallet signs an EIP-7702 authorization binding the allowed call,

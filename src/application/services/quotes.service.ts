@@ -77,6 +77,7 @@ export class QuotesService {
       const quoteToken = this.buildQuoteToken(dto, nonce, callHash, fee.minUnits, expiresAtSec);
 
       return {
+        nonce,
         quoteToken,
         expiresAt,
         chainId: CHAINS[chain].id,
