@@ -3,7 +3,7 @@ import eslint from "@eslint/js";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import globals from "globals";
 import tseslint from "typescript-eslint";
-import eslintPluginImportX from "eslint-plugin-import-x";
+import pluginImportX from "eslint-plugin-import-x";
 import unusedImports from "eslint-plugin-unused-imports";
 
 export default [
@@ -31,7 +31,7 @@ export default [
     },
 
     plugins: {
-      "import-x": eslintPluginImportX,
+      "import-x": pluginImportX,
       "unused-imports": unusedImports
     },
 

@@ -1,22 +1,23 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Address } from "viem";
 
-import {
+import type {
   ThirdwebContranctEventItemContract,
   ThirdwebContranctEventsBaseQuery,
   ThirdwebContranctEventsGateway,
   ThirdwebContranctEventsQuery
-} from "@/application/ports/thirdweb-contract-events.gateway";
+} from "@/application/ports/thirdweb-contract-events.port";
 import { CHAINS, Chain } from "@/config/chain.config";
 import { TransactionEntity } from "@/domain/entities/transaction";
 import { SearchTransactionsRequestDto } from "@/interfaces/dto/transactions.dto";
 import { resolveTokenAddress } from "@/registries/token-chain.registry";
 
 import { morarisTokenTransfersToTransaction, thirdwebContractEventToTransaction } from "../mappers/transaction.mapper";
-import {
+
+import type {
   MorarisTokenTransferItemContract,
   MorarisTokenTransfersGateway
-} from "../ports/moraris-token-transfers.gateway";
+} from "../ports/moraris-token-transfers.port";
 
 @Injectable()
 export class TransactionsService {
