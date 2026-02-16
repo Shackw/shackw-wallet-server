@@ -1,9 +1,9 @@
 import { Controller, UseFilters, Post, UsePipes, Body, UseGuards } from "@nestjs/common";
 
-import { TokenService } from "@/application/services/token.service";
+import { TokenService } from "@/application/services/tokens";
 import { TransferTokenEntity } from "@/domain/entities/token.entity";
 
-import { TransferTokenDtoSchema, TransferTokenRequestDto } from "../dto/token.dto";
+import { TransferTokenRequestDtoSchema, TransferTokenRequestDto } from "../dto/token.dto";
 import { HttpExceptionsFilter } from "../filters/http-exception.filter";
 import { AppCheckGuard } from "../guards/app-check.guard";
 import { ValibotPipe } from "../pipes/valibot.pipe";
@@ -15,8 +15,15 @@ export class TokensController {
   constructor(private readonly tokenService: TokenService) {}
 
   @Post("tokens\\:transfer")
-  @UsePipes(new ValibotPipe(TransferTokenDtoSchema))
-  async transfer(@Body() body: TransferTokenRequestDto): Promise<TransferTokenEntity> {
-    return await this.tokenService.transferToken(body);
+  @UsePipes(new ValibotPipe(TransferTokenRequestDtoSchema))
+  async transfer(@Body() dto: TransferTokenRequestDto): Promise<TransferTokenEntity> {
+    const entity = await this.tokenService.transferToken({
+      chainKey: dto.chain,
+      quoteToken: dto.quoteToken,
+      authorization: dto.authorization,
+      notify: dto.notify
+    });
+
+    return entity;
   }
 }

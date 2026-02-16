@@ -4,6 +4,8 @@ import { randomUUID } from "crypto";
 
 import { Catch, ExceptionFilter, ArgumentsHost, HttpException, HttpStatus, Logger } from "@nestjs/common";
 
+import { isApplicationError } from "@/application/errors";
+
 import type { Request, Response } from "express";
 
 type ErrorItem = { code: string; message: string };
@@ -37,8 +39,11 @@ export class HttpExceptionsFilter implements ExceptionFilter {
     const req = ctx.getRequest<Request>();
 
     const requestId = randomUUID();
+
+    const isApp = isApplicationError(exception);
     const isHttp = exception instanceof HttpException;
-    const status = isHttp ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    const status = isApp ? exception.httpStatus : isHttp ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
     const errors = this.normalizeErrors(exception);
 
@@ -77,6 +82,10 @@ export class HttpExceptionsFilter implements ExceptionFilter {
   }
 
   private normalizeErrors(exception: unknown): ErrorItem[] {
+    if (isApplicationError(exception)) {
+      return [{ code: exception.code, message: exception.message }];
+    }
+
     if (exception instanceof HttpException) {
       const payload = exception.getResponse();
 
@@ -92,9 +101,12 @@ export class HttpExceptionsFilter implements ExceptionFilter {
       if (isRecord(payload)) {
         if ("message" in payload) {
           const m = (payload as any).message;
-          if (Array.isArray(m))
+          if (Array.isArray(m)) {
             return m.filter((x): x is string => typeof x === "string").map(msg => ({ code: baseCode, message: msg }));
-          if (typeof m === "string") return [{ code: baseCode, message: m }];
+          }
+          if (typeof m === "string") {
+            return [{ code: baseCode, message: m }];
+          }
         }
 
         const msg =
@@ -102,14 +114,11 @@ export class HttpExceptionsFilter implements ExceptionFilter {
           (typeof (payload as any).message === "string" && (payload as any).message) ||
           (exception as any).message ||
           "Internal server error";
+
         return [{ code: baseCode, message: msg }];
       }
 
       return [{ code: baseCode, message: (exception as any).message || "Internal server error" }];
-    }
-
-    if (exception instanceof Error) {
-      return [{ code: "INTERNAL_SERVER_ERROR", message: "Internal server error" }];
     }
 
     return [{ code: "INTERNAL_SERVER_ERROR", message: "Internal server error" }];

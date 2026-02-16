@@ -1,5 +1,5 @@
 import type { Chain } from "@/config/chain.config";
-import type { NotifyWebhook } from "@/shared/validations/shapes/notify.shape";
+import type { NotifyWebhook } from "@/interfaces/dto/shapes/notify.shape";
 
 import type { Hex } from "viem";
 

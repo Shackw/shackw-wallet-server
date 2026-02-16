@@ -1,11 +1,11 @@
-import { Controller, UseFilters, Post, UsePipes, Body, UseGuards } from "@nestjs/common";
+import { Controller, UseFilters, Post, Body, UseGuards } from "@nestjs/common";
 
-import { QuotesService } from "@/application/services/quotes.service";
-import { QuoteEntity } from "@/domain/entities/quote.entity";
+import { QuotesService } from "@/application/services/quotes";
 
-import { CreateQuoteRequestDtoSchema, CreateQuoteRequestDto } from "../dto/quotes.dto";
+import { CreateQuoteRequestDtoSchema, CreateQuoteRequestDto, CreateQuoteResponseDto } from "../dto/quotes.dto";
 import { HttpExceptionsFilter } from "../filters/http-exception.filter";
 import { AppCheckGuard } from "../guards/app-check.guard";
+import { toCreateQuoteResponseDto } from "../mappers/quote.entity-to-response";
 import { ValibotPipe } from "../pipes/valibot.pipe";
 
 @Controller()
@@ -15,8 +15,18 @@ export class QuotesController {
   constructor(private readonly quotesService: QuotesService) {}
 
   @Post("quotes")
-  @UsePipes(new ValibotPipe(CreateQuoteRequestDtoSchema))
-  async create(@Body() body: CreateQuoteRequestDto): Promise<QuoteEntity> {
-    return await this.quotesService.createQuote(body);
+  async create(
+    @Body(new ValibotPipe(CreateQuoteRequestDtoSchema)) dto: CreateQuoteRequestDto
+  ): Promise<CreateQuoteResponseDto> {
+    const entity = await this.quotesService.createQuote({
+      chainKey: dto.chain,
+      sender: dto.sender,
+      recipient: dto.recipient,
+      tokenSymbol: dto.token.symbol,
+      feeTokenSymbol: dto.token.symbol,
+      amountMinUnits: dto.amountMinUnits
+    });
+
+    return toCreateQuoteResponseDto(entity);
   }
 }

@@ -1,0 +1,46 @@
+import * as v from "valibot";
+import { getAddress, pad } from "viem";
+
+import type {
+  ThirdwebContranctEventsGateway,
+  ThirdwebContranctEventsQuery,
+  ThirdwebContranctEventsContract
+} from "@/application/ports/thirdweb-contract-events.gateway.port";
+
+import { ThirdwebContractEventsResponseSchema } from "../schemas/http-thirdweb-contract-events.schema";
+
+import type { HttpClient } from "../client/http.client";
+
+export class HttpThirdwebContractEventsGateway implements ThirdwebContranctEventsGateway {
+  constructor(
+    private readonly client: HttpClient,
+    private readonly baseUrl: string,
+    private readonly apiKey: string
+  ) {}
+
+  async fetch(query: ThirdwebContranctEventsQuery): Promise<ThirdwebContranctEventsContract> {
+    const { chainId, tokenAddress, timestampGte, timestampLte, limit, page } = query;
+
+    const url = new URL(`/v1/contracts/${chainId}/${tokenAddress}/events`, this.baseUrl);
+
+    url.searchParams.set("filterBlockTimestampGte", String(timestampGte));
+    url.searchParams.set("filterBlockTimestampLte", String(timestampLte));
+    url.searchParams.set("sortOrder", "desc");
+    url.searchParams.set("limit", String(limit));
+    url.searchParams.set("page", String(page));
+
+    url.searchParams.set("filterTopic0", "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef");
+    if ("fromAddress" in query) url.searchParams.set("filterTopic1", pad(getAddress(query.fromAddress), { size: 32 }));
+    if ("toAddress" in query) url.searchParams.set("filterTopic2", pad(getAddress(query.toAddress), { size: 32 }));
+
+    const headers: Record<string, string> = {
+      accept: "application/json",
+      "x-secret-key": this.apiKey
+    };
+
+    const fetched = await this.client.get(url.toString(), { headers });
+    const parsed = v.parse(ThirdwebContractEventsResponseSchema, fetched);
+
+    return parsed;
+  }
+}

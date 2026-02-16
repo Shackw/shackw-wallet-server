@@ -2,8 +2,8 @@ import * as v from "valibot";
 
 import type { Chain } from "@/config/chain.config";
 import { CHAIN_KEYS } from "@/config/chain.config";
-import { SUPPORT_CHAIN_TO_TOKEN, TOKENS } from "@/registries/token-chain.registry";
-import { SearchTransferByChainSchemas } from "@/shared/validations/shapes/transaction-floor.shape";
+import { SUPPORT_CHAIN_TO_TOKEN, TOKENS } from "@/config/token.config";
+import { SearchTransferByChainSchemas } from "@/interfaces/dto/shapes/transaction-floor.shape";
 
 export const SearchTransactionsDtoSchema = v.variant("chain", Object.values(SearchTransferByChainSchemas), issue => {
   const input = issue.input as { chain?: string } | undefined;

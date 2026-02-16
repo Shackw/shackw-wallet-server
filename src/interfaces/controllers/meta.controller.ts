@@ -1,49 +1,66 @@
-import { Controller, Get, UseFilters } from "@nestjs/common";
+import { Controller, Get, UseFilters, UseGuards } from "@nestjs/common";
 
-import { MetaService } from "@/application/services/meta.service";
-import type {
-  MetaSummaryEntity,
-  ChainMetaEntity,
-  TokenMetaEntity,
-  FeeMetaEntity,
-  MinTransferMetaEntity,
-  ContractsMetaEntity
-} from "@/domain/entities/meta.entity";
+import { MetaService } from "@/application/services/meta";
 
 import { HttpExceptionsFilter } from "../filters/http-exception.filter";
+import { AppCheckGuard } from "../guards/app-check.guard";
+import {
+  toGeFeeMetaResponseDto,
+  toGetChainMetaResponseDto,
+  toGetContractsMetaResponseDto,
+  toGetMetaSummaryResponseDto,
+  toGetMinTransferMetaResponseDto,
+  toGetTokenMetaResponseDto
+} from "../mappers/meta.entity-to-response";
+
+import type {
+  GetMetaSummaryResponseDto,
+  GetChainMetaResponseDto,
+  GetTokenMetaResponseDto,
+  GeFeeMetaResponseDto,
+  GetMinTransferMetaResponseDto,
+  GetContractsMetaResponseDto
+} from "../dto/meta.dto";
 
 @Controller("meta")
+@UseGuards(AppCheckGuard)
 @UseFilters(HttpExceptionsFilter)
 export class MetaController {
   constructor(private readonly metaService: MetaService) {}
 
   @Get("summary")
-  summary(): MetaSummaryEntity {
-    return this.metaService.buildSummary();
+  summary(): GetMetaSummaryResponseDto {
+    const entity = this.metaService.getMetaSummary();
+    return toGetMetaSummaryResponseDto(entity);
   }
 
   @Get("chains")
-  chains(): ChainMetaEntity[] {
-    return this.metaService.buildChains();
+  chains(): GetChainMetaResponseDto {
+    const entities = this.metaService.getChainsMeta();
+    return toGetChainMetaResponseDto(entities);
   }
 
   @Get("tokens")
-  tokens(): TokenMetaEntity[] {
-    return this.metaService.buildTokens();
+  tokens(): GetTokenMetaResponseDto {
+    const entities = this.metaService.getTokensMeta();
+    return toGetTokenMetaResponseDto(entities);
   }
 
   @Get("fees")
-  fees(): FeeMetaEntity[] {
-    return this.metaService.buildFees();
+  fees(): GeFeeMetaResponseDto {
+    const entities = this.metaService.getFeesMeta();
+    return toGeFeeMetaResponseDto(entities);
   }
 
   @Get("min-transfers")
-  minTransfer(): MinTransferMetaEntity[] {
-    return this.metaService.buildMinTransfers();
+  minTransfer(): GetMinTransferMetaResponseDto {
+    const entities = this.metaService.getMinTransfersMeta();
+    return toGetMinTransferMetaResponseDto(entities);
   }
 
   @Get("contracts")
-  contracts(): ContractsMetaEntity {
-    return this.metaService.buildContracts();
+  contracts(): GetContractsMetaResponseDto {
+    const entity = this.metaService.getContractsMeta();
+    return toGetContractsMetaResponseDto(entity);
   }
 }

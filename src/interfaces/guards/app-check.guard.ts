@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 
-import { AppCheckService } from "@/application/services/app-check.service";
+import { AppCheckService } from "@/application/services/app-check";
 
 @Injectable()
 export class AppCheckGuard implements CanActivate {

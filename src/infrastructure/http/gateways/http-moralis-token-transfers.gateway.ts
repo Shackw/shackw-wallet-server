@@ -1,0 +1,47 @@
+import * as v from "valibot";
+
+import type {
+  MoralisTokenTransfersGateway,
+  MoralisTokenTransfersQuery,
+  MoralisTokenTransfersContract
+} from "@/application/ports/moralis-token-transfers.gateway.port";
+import { CHIAN_TO_MORARIS_CHAIN } from "@/application/ports/moralis-token-transfers.gateway.port";
+
+import { MorarisTokenTransfersResponseSchema } from "../schemas/http-moraris-token-transfer.shema";
+
+import type { HttpClient } from "../client/http.client";
+
+export class HttpMoralisTokenTransfersGateway implements MoralisTokenTransfersGateway {
+  constructor(
+    private readonly client: HttpClient,
+    private readonly baseUrl: string,
+    private readonly apiKey: string
+  ) {}
+
+  async fetch(query: MoralisTokenTransfersQuery): Promise<MoralisTokenTransfersContract> {
+    const { chain, wallet, fromDate, toDate, tokenAddresses, limit, cursor } = query;
+
+    const url = new URL(`/api/v2.2/${wallet}/erc20/transfers`, this.baseUrl);
+
+    url.searchParams.set("chain", CHIAN_TO_MORARIS_CHAIN[chain]);
+    url.searchParams.set("from_date", String(fromDate));
+    url.searchParams.set("to_date", String(toDate));
+    url.searchParams.set("order", "DESC");
+    url.searchParams.set("limit", String(limit));
+    if (cursor) url.searchParams.set("cursor", String(cursor));
+
+    tokenAddresses.forEach((addr, i) => {
+      url.searchParams.set(`contract_addresses[${i}]`, addr);
+    });
+
+    const headers: Record<string, string> = {
+      accept: "application/json",
+      "X-API-Key": this.apiKey
+    };
+
+    const fetched = await this.client.get(url.toString(), { headers });
+    const parsed = v.parse(MorarisTokenTransfersResponseSchema, fetched);
+
+    return parsed;
+  }
+}

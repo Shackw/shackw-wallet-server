@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { AppCheckService } from "@/application/services/app-check.service";
+import { AppCheckService } from "@/application/services/app-check";
 import { AppCheckGuard } from "@/interfaces/guards/app-check.guard";
 
 @Module({

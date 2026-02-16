@@ -1,17 +1,23 @@
 import * as v from "valibot";
 
-import { chainValidator } from "@/shared/validations/rules/chain.validator";
-import { AuthorizationShape } from "@/shared/validations/shapes/authorization.shape";
-import { NotifyShape } from "@/shared/validations/shapes/notify.shape";
-import { QuoteTokenShape } from "@/shared/validations/shapes/quote-token.shape";
+import { AuthorizationShape } from "@/interfaces/dto/shapes/authorization.shape";
+import { NotifyShape } from "@/interfaces/dto/shapes/notify.shape";
+import { chainKeyValidator } from "@/shared/validations/rules/chain.validator";
+import { quoteTokenValidator } from "@/shared/validations/rules/string.validator";
 
-export const TransferTokenDtoSchema = v.object(
+// === Request Schemas ====
+export const TransferTokenRequestDtoSchema = v.object(
   {
-    chain: chainValidator("chain"),
-    quoteToken: QuoteTokenShape,
+    chain: chainKeyValidator("chain"),
+    quoteToken: quoteTokenValidator("quoteToken"),
     authorization: AuthorizationShape,
     notify: v.optional(NotifyShape)
   },
   issue => `${issue.expected} is required`
 );
-export type TransferTokenRequestDto = v.InferOutput<typeof TransferTokenDtoSchema>;
+
+// === Response Schemas ====
+export const TransferTokenResponseDtoSchema = v.object({});
+
+// === Request DTOs ====
+export type TransferTokenRequestDto = v.InferOutput<typeof TransferTokenRequestDtoSchema>;

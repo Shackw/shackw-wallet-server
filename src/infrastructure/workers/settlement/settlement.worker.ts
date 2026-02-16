@@ -3,7 +3,7 @@
 import { Logger } from "@nestjs/common";
 
 import { CHAINS } from "@/config/chain.config";
-import { httpClient } from "@/infrastructure/clients/http.client";
+import { httpClient } from "@/infrastructure/http/client/http.client";
 import { VIEM_PUBLIC_CLIENTS } from "@/registries/viem.registry";
 
 import type { StartSettlementWebhookJobInput, SettlementWebhookJobPayload } from "./settlement.worker.interface";

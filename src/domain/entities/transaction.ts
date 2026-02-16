@@ -1,5 +1,5 @@
-import type { AmountUnitEntity } from "./common/amount-unit.entity";
-import type { TokenInfoEntity } from "./common/token-info.entity";
+import type { TokenAmountValueObject } from "../value-objects/token-amount.value-object";
+import type { TokenDescriptorValueObject } from "../value-objects/token-descriptor.value-object";
 import type { Address, Hex } from "viem";
 
 export const TRANSACTION_DIRECTIONS = ["in", "out", "self"] as const;
@@ -9,9 +9,9 @@ export type TransactionEntity = {
   txHash: Hex;
   blockNumber: bigint;
   logIndex: number;
-  token: TokenInfoEntity;
+  token: TokenDescriptorValueObject;
   direction: TransferDirection;
-  value: AmountUnitEntity;
+  value: TokenAmountValueObject;
   counterparty: {
     address: Address;
   };
