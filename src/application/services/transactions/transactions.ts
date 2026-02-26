@@ -11,6 +11,7 @@ import { CHAINS, Chain } from "@/config/chain.config";
 import { resolveTokenAddress } from "@/config/token.config";
 import { TransactionEntity } from "@/domain/entities/transaction";
 import { SearchTransactionsRequestDto } from "@/interfaces/dto/transactions.dto";
+import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
 import { morarisTokenTransfersToTransaction, thirdwebContractEventToTransaction } from "../mappers/transaction.mapper";
 
@@ -22,10 +23,10 @@ import type {
 @Injectable()
 export class TransactionsService {
   constructor(
-    @Inject("ThirdwebContractEventsGateway")
+    @Inject(DI_TOKENS.THIRDWEB_CONTRACT_EVENTS_GATEWAY)
     private readonly contranctEventsGateway: ThirdwebContranctEventsGateway,
 
-    @Inject("MorarisTokenTransfersGateway")
+    @Inject(DI_TOKENS.MORALIS_TOKEN_TRANSFERS_GATEWAY)
     private readonly tokenTransfersGateway: MoralisTokenTransfersGateway
   ) {}
 
