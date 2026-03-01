@@ -2,7 +2,11 @@ import { Controller, UseFilters, Post, Body, UseGuards } from "@nestjs/common";
 
 import { QuotesService } from "@/application/services/quotes";
 
-import { CreateQuoteRequestDtoSchema, CreateQuoteRequestDto, CreateQuoteResponseDto } from "../dto/quotes.dto";
+import {
+  CreateQuoteRequestDtoSchema,
+  type CreateQuoteRequestDto,
+  type CreateQuoteResponseDto
+} from "../dto/quotes.dto";
 import { HttpExceptionsFilter } from "../filters/http-exception.filter";
 import { AppCheckGuard } from "../guards/app-check.guard";
 import { toCreateQuoteResponseDto } from "../mappers/quote.entity-to-response";

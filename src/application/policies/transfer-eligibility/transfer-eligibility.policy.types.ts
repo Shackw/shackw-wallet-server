@@ -1,7 +1,8 @@
-import type { TokenDeploymentContract } from "@/application/ports/token-deployment.repository.port";
+import type { TokenDeploymentContract } from "@/application/ports/config/token-deployment.repository.port";
 import type { Chain } from "@/config/chain.config";
 import type { Token } from "@/config/token.config";
 
+// === Input ===
 export type TransferEligibilityInput = Readonly<{
   chainKey: Chain;
   tokenSymbol: Token;
@@ -9,6 +10,7 @@ export type TransferEligibilityInput = Readonly<{
   amountMinUnits: bigint;
 }>;
 
+// === Output ===
 export type TransferEligibilityOutput = {
   chain: TokenDeploymentContract["chain"];
   tokenDep: Pick<TokenDeploymentContract, "token" | "fixedFeeAmountUnits">;

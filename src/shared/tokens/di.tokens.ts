@@ -1,9 +1,8 @@
 export const DI_TOKENS = {
-  HTTP_CLIENT: Symbol("HttpClient"),
-  THIRDWEB_CONTRACT_EVENTS_GATEWAY: Symbol("ThirdwebContractEventsGateway"),
-  MORALIS_TOKEN_TRANSFERS_GATEWAY: Symbol("MoralisTokenTransfersGateway"),
-  TOKEN_DEPLOYMENT_REPOSITORY: Symbol("TokenDeploymentRepository"),
+  THIRDWEB_API_GATEWAY: Symbol("ThirdwebApiGateway"),
+  MORALIS_API_GATEWAY: Symbol("MoralisApiGateway"),
   ERC20_ADAPTER: Symbol("Erc20Adapter"),
   REGISTRY_ADAPTER: Symbol("RegistryAdapter"),
-  SPONSOR_ADAPTER: Symbol("SponsorAdapter")
+  SPONSOR_ADAPTER: Symbol("SponsorAdapter"),
+  TOKEN_DEPLOYMENT_REPOSITORY: Symbol("TokenDeploymentRepository")
 } as const;

@@ -1,10 +1,10 @@
-import type { DelegateExecuteQuery, SponsorAdapter } from "@/application/ports/sponsor.adapter.port";
+import type { DelegateExecuteQuery, SponsorAdapter } from "@/application/ports/evm/sponsor.adapter.port";
 import { ENV } from "@/config/env.config";
 
 import { DELEGATE_ABI } from "../abis/delegate.abi";
 
-import type { SponsorWalletClientFactory } from "../client/sponsor-client.factory";
-import type { ViemPublicClientFactory } from "../client/viem-public-client.factory";
+import type { SponsorWalletClientFactory } from "../clients/sponsor-client.factory";
+import type { ViemPublicClientFactory } from "../clients/viem-public-client.factory";
 import type { Hex } from "viem";
 
 export class ViemSponsorAdapter implements SponsorAdapter {

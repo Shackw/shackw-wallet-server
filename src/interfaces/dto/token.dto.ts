@@ -2,6 +2,7 @@ import * as v from "valibot";
 
 import { AuthorizationShape } from "@/interfaces/dto/shapes/authorization.shape";
 import { NotifyShape } from "@/interfaces/dto/shapes/notify.shape";
+import { hex64Validator } from "@/shared/validations/rules/address.validator";
 import { chainKeyValidator } from "@/shared/validations/rules/chain.validator";
 import { quoteTokenValidator } from "@/shared/validations/rules/string.validator";
 
@@ -17,7 +18,14 @@ export const TransferTokenRequestDtoSchema = v.object(
 );
 
 // === Response Schemas ====
-export const TransferTokenResponseDtoSchema = v.object({});
+export const TransferTokenResponseDtoSchema = v.object({
+  status: v.literal("submitted"),
+  txHash: hex64Validator("txHash"),
+  notify: v.optional(NotifyShape)
+});
 
 // === Request DTOs ====
 export type TransferTokenRequestDto = v.InferOutput<typeof TransferTokenRequestDtoSchema>;
+
+// === Response DTOs ====
+export type TransferTokenResponseDto = v.InferOutput<typeof TransferTokenResponseDtoSchema>;

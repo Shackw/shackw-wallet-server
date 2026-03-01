@@ -9,7 +9,7 @@ export const stringBigintValidator = (field: string) =>
     v.transform(s => BigInt(s))
   );
 
-export const isoDateValidator = (field: string = "date") =>
+export const isoDateStringValidator = (field: string) =>
   v.pipe(
     v.string(`${field} must be a string.`),
     v.regex(

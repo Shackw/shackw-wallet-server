@@ -1,8 +1,8 @@
 import { getContract, erc20Abi } from "viem";
 
-import type { Erc20Adapter, GetBalanceQuery } from "@/application/ports/erc20.adapter.port";
+import type { Erc20Adapter, GetBalanceQuery } from "@/application/ports/evm/erc20.adapter.port";
 
-import type { ViemPublicClientFactory } from "../client/viem-public-client.factory";
+import type { ViemPublicClientFactory } from "../clients/viem-public-client.factory";
 
 export class ViemErc20Adapter implements Erc20Adapter {
   constructor(private readonly publicClientFactor: ViemPublicClientFactory) {}

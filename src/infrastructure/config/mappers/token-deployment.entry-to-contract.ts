@@ -2,7 +2,7 @@ import type {
   ChainMasterContract,
   TokenDeploymentContract,
   TokenMasterContract
-} from "@/application/ports/token-deployment.repository.port";
+} from "@/application/ports/config/token-deployment.repository.port";
 import type { Chain } from "@/config/chain.config";
 import type { Token } from "@/config/token.config";
 

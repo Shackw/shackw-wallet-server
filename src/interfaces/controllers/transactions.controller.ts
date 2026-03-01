@@ -1,11 +1,15 @@
-import { Body, Controller, Post, UseFilters, UseGuards, UsePipes } from "@nestjs/common";
+import { Body, Controller, Post, UseFilters, UseGuards } from "@nestjs/common";
 
 import { TransactionsService } from "@/application/services/transactions";
-import { TransactionEntity } from "@/domain/entities/transaction";
 
-import { SearchTransactionsDtoSchema, SearchTransactionsRequestDto } from "../dto/transactions.dto";
+import {
+  SearchTransactionsRequestDtoSchema,
+  type SearchTransactionsRequestDto,
+  type SearchTransactionsResponseDto
+} from "../dto/transactions.dto";
 import { HttpExceptionsFilter } from "../filters/http-exception.filter";
 import { AppCheckGuard } from "../guards/app-check.guard";
+import { toSearchTransactionsResponseDto } from "../mappers/transaction.entity-to-response";
 import { ValibotPipe } from "../pipes/valibot.pipe";
 
 @Controller()
@@ -15,8 +19,19 @@ export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
   @Post("transactions\\:search")
-  @UsePipes(new ValibotPipe(SearchTransactionsDtoSchema))
-  async searchTransactions(@Body() body: SearchTransactionsRequestDto): Promise<TransactionEntity[]> {
-    return await this.transactionsService.searchTransactions(body);
+  async searchTransactions(
+    @Body(new ValibotPipe(SearchTransactionsRequestDtoSchema)) dto: SearchTransactionsRequestDto
+  ): Promise<SearchTransactionsResponseDto[]> {
+    const entities = await this.transactionsService.searchTransactions({
+      chainKey: dto.chain,
+      tokenSymbols: dto.tokens.map(token => token.symbol),
+      walletAddress: dto.wallet,
+      timestampGte: dto.timestampGte,
+      timestampLte: dto.timestampLte,
+      searchDirection: dto.direction,
+      limit: dto.limit
+    });
+
+    return entities.map(toSearchTransactionsResponseDto);
   }
 }

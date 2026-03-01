@@ -1,11 +1,11 @@
 import { getContract } from "viem";
 
-import type { GetNextNonceQuery, RegistryAdapter } from "@/application/ports/registry.adapter.port";
+import type { GetNextNonceQuery, RegistryAdapter } from "@/application/ports/evm/registry.adapter.port";
 import { CHAIN_MASTER } from "@/infrastructure/config/sources/chain.master";
 
 import { REGISTRY_ABI } from "../abis/registry.abi";
 
-import type { ViemPublicClientFactory } from "../client/viem-public-client.factory";
+import type { ViemPublicClientFactory } from "../clients/viem-public-client.factory";
 
 export class ViemRegistryAdapter implements RegistryAdapter {
   constructor(private readonly publicClientFactor: ViemPublicClientFactory) {}

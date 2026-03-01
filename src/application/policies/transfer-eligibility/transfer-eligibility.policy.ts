@@ -1,37 +1,21 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { formatUnits } from "viem";
 
 import { ApplicationError } from "@/application/errors";
-import { TokenDeploymentRepository } from "@/application/ports/token-deployment.repository.port";
-import { DI_TOKENS } from "@/shared/tokens/di.tokens";
+
+import { ChainToTokenSupport } from "../chain-to-token-support";
 
 import type { TransferEligibilityInput, TransferEligibilityOutput } from "./transfer-eligibility.policy.types";
 
 @Injectable()
 export class TransferEligibilityPolicy {
-  constructor(
-    @Inject(DI_TOKENS.TOKEN_DEPLOYMENT_REPOSITORY)
-    private readonly tokenDeploymentRepository: TokenDeploymentRepository
-  ) {}
+  constructor(private readonly chainToTokenSupport: ChainToTokenSupport) {}
 
   execute(input: TransferEligibilityInput): TransferEligibilityOutput {
     const { chainKey, tokenSymbol, feeTokenSymbol, amountMinUnits } = input;
 
-    const tokenDep = this.tokenDeploymentRepository.findTokenDeployment({ chainKey, tokenSymbol });
-    if (!tokenDep) {
-      throw new ApplicationError({
-        code: "UNSUPPORTED_TOKEN_FOR_CHAIN",
-        message: `Token ${tokenSymbol} is not supported on chain ${chainKey}.`
-      });
-    }
-
-    const feeTokenDep = this.tokenDeploymentRepository.findTokenDeployment({ chainKey, tokenSymbol: feeTokenSymbol });
-    if (!feeTokenDep) {
-      throw new ApplicationError({
-        code: "UNSUPPORTED_TOKEN_FOR_CHAIN",
-        message: `Token ${feeTokenSymbol} is not supported on chain ${chainKey}.`
-      });
-    }
+    const tokenDep = this.chainToTokenSupport.execute({ chainKey, tokenSymbol });
+    const feeTokenDep = this.chainToTokenSupport.execute({ chainKey, tokenSymbol: feeTokenSymbol });
 
     if (amountMinUnits < tokenDep.minTransferAmountUnits)
       throw new ApplicationError({

@@ -3,9 +3,9 @@ import { verifyAuthorization } from "viem/utils";
 
 import { ApplicationError } from "@/application/errors";
 import { BalanceSufficiencyPolicy } from "@/application/policies/balance-sufficiency";
-import { RegistryAdapter } from "@/application/ports/registry.adapter.port";
-import { SponsorAdapter } from "@/application/ports/sponsor.adapter.port";
-import { TokenDeploymentRepository } from "@/application/ports/token-deployment.repository.port";
+import { TokenDeploymentRepository } from "@/application/ports/config/token-deployment.repository.port";
+import { RegistryAdapter } from "@/application/ports/evm/registry.adapter.port";
+import { SponsorAdapter } from "@/application/ports/evm/sponsor.adapter.port";
 import { buildExcutionIntent } from "@/application/protocols/execution-intent";
 import { decodeQuoteToken } from "@/application/protocols/quote-token";
 import { ENV } from "@/config/env.config";

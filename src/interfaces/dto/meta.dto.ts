@@ -7,7 +7,7 @@ import { tokenSymbolValidator } from "@/shared/validations/rules/token.validator
 // === Response Schemas ====
 export const GetChainMetaResponseDtoSchema = v.array(
   v.object({
-    key: chainKeyValidator(),
+    key: chainKeyValidator("chain.key"),
     id: v.number(),
     testnet: v.boolean()
   })
@@ -15,16 +15,16 @@ export const GetChainMetaResponseDtoSchema = v.array(
 
 export const GetTokenMetaResponseDtoSchema = v.array(
   v.object({
-    symbol: tokenSymbolValidator(),
-    address: v.record(chainKeyValidator(), v.optional(addressValidator("token.address"))),
+    symbol: tokenSymbolValidator("token.symbol"),
+    address: v.record(chainKeyValidator("chain.key"), v.optional(addressValidator("token.address"))),
     decimals: v.number()
   })
 );
 
 export const GetFeeMetaResponseDtoSchema = v.array(
   v.object({
-    chainKey: chainKeyValidator(),
-    tokenSymbol: tokenSymbolValidator(),
+    chainKey: chainKeyValidator("chain.key"),
+    tokenSymbol: tokenSymbolValidator("token.symbol"),
     fixedFeeAmountUnits: v.bigint(),
     fixedFeeAmountDisplay: v.number()
   })
@@ -32,16 +32,16 @@ export const GetFeeMetaResponseDtoSchema = v.array(
 
 export const GetMinTransferMetaResponseDtoSchema = v.array(
   v.object({
-    chainKey: chainKeyValidator(),
-    tokenSymbol: tokenSymbolValidator(),
+    chainKey: chainKeyValidator("chain.key"),
+    tokenSymbol: tokenSymbolValidator("token.symbol"),
     minTransferAmountUnits: v.bigint(),
     minTransferAmountDisplay: v.number()
   })
 );
 
 export const GetContractsMetaResponseDtoSchema = v.object({
-  delegate: v.record(chainKeyValidator(), addressValidator("contracts.delegate")),
-  registry: v.record(chainKeyValidator(), addressValidator("contracts.registry")),
+  delegate: v.record(chainKeyValidator("chain.key"), addressValidator("contracts.delegate")),
+  registry: v.record(chainKeyValidator("chain.key"), addressValidator("contracts.registry")),
   sponsor: addressValidator("contracts.sponsor")
 });
 

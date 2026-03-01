@@ -7,11 +7,11 @@ import pluginImportX from "eslint-plugin-import-x";
 import unusedImports from "eslint-plugin-unused-imports";
 
 const barrelPatterns = [
-  { group: ["@/application/errors/*"], message: "Use errors barrel (index.ts) only." },
-  { group: ["@/application/policies/*/*"], message: "Use policy barrel (index.ts) only." },
-  { group: ["@/application/protocols/*/*"], message: "Use protocol barrel (index.ts) only." },
-  { group: ["@/application/services/*/*"], message: "Use service barrel (index.ts) only." },
-  { group: ["@/application/mappers/*"], message: "Use mapper barrel (index.ts) only." }
+  { group: ["@/application/errors/*"], message: "Use application/errors barrel (index.ts) only." },
+  { group: ["@/application/policies/*/*"], message: "Use application/policies barrel (index.ts) only." },
+  { group: ["@/application/protocols/*/*"], message: "Use application/protocols barrel (index.ts) only." },
+  { group: ["@/application/services/*/*"], message: "Use application/services barrel (index.ts) only." },
+  { group: ["@/application/mappers/*"], message: "Use application/mappers barrel (index.ts) only." }
 ];
 
 export default [
@@ -62,11 +62,17 @@ export default [
         { prefer: "type-imports", disallowTypeAnnotations: false }
       ],
 
-      "unused-imports/no-unused-imports": "error",
-      "unused-imports/no-unused-vars": [
-        "warn",
-        { vars: "all", varsIgnorePattern: "^_", args: "after-used", argsIgnorePattern: "^_" }
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          vars: "all",
+          varsIgnorePattern: "^_",
+          args: "after-used",
+          argsIgnorePattern: "^_"
+        }
       ],
+
+      "unused-imports/no-unused-imports": "error",
 
       "import-x/order": [
         "warn",

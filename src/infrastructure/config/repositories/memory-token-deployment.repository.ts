@@ -6,7 +6,7 @@ import type {
   TokenDeploymentContract,
   TokenDeploymentRepository,
   TokenMasterContract
-} from "@/application/ports/token-deployment.repository.port";
+} from "@/application/ports/config/token-deployment.repository.port";
 
 import {
   toChainMasterContract,

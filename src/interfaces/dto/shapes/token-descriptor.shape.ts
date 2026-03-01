@@ -4,7 +4,7 @@ import { addressValidator } from "@/shared/validations/rules/address.validator";
 import { tokenSymbolValidator } from "@/shared/validations/rules/token.validator";
 
 export const TokenDescriptorShape = v.object({
-  symbol: tokenSymbolValidator(),
+  symbol: tokenSymbolValidator("token.symbol"),
   address: addressValidator("address"),
   decimals: v.number()
 });
