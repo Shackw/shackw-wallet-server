@@ -1,2 +1,2 @@
 export { QuotesService } from "./quotes.service";
-export { CreateQuoteInput } from "./quotes.service.type";
+export { CreateQuoteInput } from "./quotes.service.types";

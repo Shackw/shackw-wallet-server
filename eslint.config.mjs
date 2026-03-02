@@ -7,11 +7,23 @@ import pluginImportX from "eslint-plugin-import-x";
 import unusedImports from "eslint-plugin-unused-imports";
 
 const barrelPatterns = [
-  { group: ["@/application/errors/*"], message: "Use application/errors barrel (index.ts) only." },
+  { group: ["@/interfaces/features/*/*"], message: "Use interfaces/features barrel (index.ts) only." },
   { group: ["@/application/policies/*/*"], message: "Use application/policies barrel (index.ts) only." },
   { group: ["@/application/protocols/*/*"], message: "Use application/protocols barrel (index.ts) only." },
   { group: ["@/application/services/*/*"], message: "Use application/services barrel (index.ts) only." },
-  { group: ["@/application/mappers/*"], message: "Use application/mappers barrel (index.ts) only." }
+  { group: ["@/application/usecases/*/*"], message: "Use application/usecases barrel (index.ts) only." },
+  {
+    group: ["@/infrastructure/adapters/viem/*/*"],
+    message: "Use infrastructure/adapters/viem barrel (index.ts) only."
+  },
+  {
+    group: ["@/infrastructure/gateways/http/*/*"],
+    message: "Use infrastructure/gateways/http barrel (index.ts) only."
+  },
+  {
+    group: ["@/infrastructure/repositories/memory/*/*"],
+    message: "Use infrastructure/repositories/memory barrel (index.ts) only."
+  }
 ];
 
 export default [
@@ -30,8 +42,7 @@ export default [
         sourceType: "module"
       },
       globals: {
-        ...globals.node,
-        ...globals.jest
+        ...globals.node
       }
     },
     plugins: {

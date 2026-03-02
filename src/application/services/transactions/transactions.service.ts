@@ -2,22 +2,22 @@ import { Inject, Injectable } from "@nestjs/common";
 import { Address, isAddressEqual } from "viem";
 
 import { ChainToTokenSupport } from "@/application/policies/chain-to-token-support";
-import { TokenMasterContract } from "@/application/ports/config/token-deployment.repository.port";
-import { MoralisApiGateway } from "@/application/ports/http/moralis-api.gateway.port";
-import { ThirdwebApiGateway } from "@/application/ports/http/thirdweb-api.gateway.por";
-import { TransactionEntity } from "@/domain/entities/transaction";
+import { MoralisGateway } from "@/application/ports/gateways/moralis.gateway.port";
+import { ThirdwebGateway } from "@/application/ports/gateways/thirdweb.gateway.port";
+import { TokenMasterContract } from "@/application/ports/repositories/token-deployment.repository.port";
+import { TransactionEntity } from "@/domain/entities/transaction.entity";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
-import { SearchTransactionsInput } from "./transactions.service.type";
+import { SearchTransactionsInput } from "./transactions.service.types";
 
 @Injectable()
 export class TransactionsService {
   constructor(
-    @Inject(DI_TOKENS.THIRDWEB_API_GATEWAY)
-    private readonly thirdwebApiGateway: ThirdwebApiGateway,
+    @Inject(DI_TOKENS.THIRDWEB_GATEWAY)
+    private readonly thirdwebApiGateway: ThirdwebGateway,
 
-    @Inject(DI_TOKENS.MORALIS_API_GATEWAY)
-    private readonly moralisApiGateway: MoralisApiGateway,
+    @Inject(DI_TOKENS.MORALIS_GATEWAY)
+    private readonly moralisApiGateway: MoralisGateway,
 
     private readonly chainToTokenSupport: ChainToTokenSupport
   ) {}

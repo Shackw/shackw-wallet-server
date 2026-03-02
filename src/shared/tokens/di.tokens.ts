@@ -1,6 +1,6 @@
 export const DI_TOKENS = {
-  THIRDWEB_API_GATEWAY: Symbol("ThirdwebApiGateway"),
-  MORALIS_API_GATEWAY: Symbol("MoralisApiGateway"),
+  THIRDWEB_GATEWAY: Symbol("ThirdwebGateway"),
+  MORALIS_GATEWAY: Symbol("MoralisGateway"),
   ERC20_ADAPTER: Symbol("Erc20Adapter"),
   REGISTRY_ADAPTER: Symbol("RegistryAdapter"),
   SPONSOR_ADAPTER: Symbol("SponsorAdapter"),

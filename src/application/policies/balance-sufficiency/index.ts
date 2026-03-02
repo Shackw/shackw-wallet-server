@@ -1,2 +1,2 @@
 export { BalanceSufficiencyPolicy } from "./balance-sufficiency.policy";
-export { EnsureSufficientBalanceInput } from "./balance-sufficiency.policy.type";
+export { EnsureSufficientBalanceInput } from "./balance-sufficiency.policy.types";

@@ -3,16 +3,16 @@ import { verifyAuthorization } from "viem/utils";
 
 import { ApplicationError } from "@/application/errors";
 import { BalanceSufficiencyPolicy } from "@/application/policies/balance-sufficiency";
-import { TokenDeploymentRepository } from "@/application/ports/config/token-deployment.repository.port";
-import { RegistryAdapter } from "@/application/ports/evm/registry.adapter.port";
-import { SponsorAdapter } from "@/application/ports/evm/sponsor.adapter.port";
+import { RegistryAdapter } from "@/application/ports/adapters/registry.adapter.port";
+import { SponsorAdapter } from "@/application/ports/adapters/sponsor.adapter.port";
+import { TokenDeploymentRepository } from "@/application/ports/repositories/token-deployment.repository.port";
 import { buildExcutionIntent } from "@/application/protocols/execution-intent";
 import { decodeQuoteToken } from "@/application/protocols/quote-token";
 import { ENV } from "@/config/env.config";
 import { TransferTokenEntity } from "@/domain/entities/token.entity";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
-import { TransferTokenInput } from "./tokens.service.type";
+import { TransferTokenInput } from "./tokens.service.types";
 
 @Injectable()
 export class TokenService {

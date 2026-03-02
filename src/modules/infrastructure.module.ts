@@ -2,14 +2,14 @@ import { Module } from "@nestjs/common";
 import axios from "axios";
 
 import { ENV } from "@/config/env.config";
-import { MemoryTokenDeploymentRepository } from "@/infrastructure/config/repositories/memory-token-deployment.repository";
-import { ViemErc20Adapter } from "@/infrastructure/evm/adapters/viem-erc20.adapter";
-import { ViemRegistryAdapter } from "@/infrastructure/evm/adapters/viem-registry.adapter";
-import { ViemSponsorAdapter } from "@/infrastructure/evm/adapters/viem-sponsor.adapter";
-import { SponsorWalletClientFactory } from "@/infrastructure/evm/clients/sponsor-client.factory";
-import { ViemPublicClientFactory } from "@/infrastructure/evm/clients/viem-public-client.factory";
-import { HttpMoralisApiGateway } from "@/infrastructure/http/gateways/http-moralis-api.gateway";
-import { HttpThirdwebApiGateway } from "@/infrastructure/http/gateways/http-thirdweb-api.gateway";
+import { ViemErc20Adapter } from "@/infrastructure/adapters/viem/erc20";
+import { ViemRegistryAdapter } from "@/infrastructure/adapters/viem/registry";
+import { ViemSponsorAdapter } from "@/infrastructure/adapters/viem/sponsor";
+import { ViemPublicClientFactory } from "@/infrastructure/adapters/viem/viem-public-client.factory";
+import { ViemSponsorWalletClientFactory } from "@/infrastructure/adapters/viem/viem-sponsor-client.factory";
+import { HttpMoralisGateway } from "@/infrastructure/gateways/http/moralis";
+import { HttpThirdwebApiGateway } from "@/infrastructure/gateways/http/thirdweb";
+import { MemoryTokenDeploymentRepository } from "@/infrastructure/repositories/memory/token-deployment";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
 const THIRDWEB_BASE_URL = "https://api.thirdweb.com";
@@ -19,11 +19,11 @@ const MORALIS_BASE_URL = "https://deep-index.moralis.io";
   providers: [
     // factories
     ViemPublicClientFactory,
-    SponsorWalletClientFactory,
+    ViemSponsorWalletClientFactory,
 
     // gateways
     {
-      provide: DI_TOKENS.THIRDWEB_API_GATEWAY,
+      provide: DI_TOKENS.THIRDWEB_GATEWAY,
       useFactory: () => {
         const client = axios.create({
           baseURL: THIRDWEB_BASE_URL,
@@ -38,7 +38,7 @@ const MORALIS_BASE_URL = "https://deep-index.moralis.io";
       }
     },
     {
-      provide: DI_TOKENS.MORALIS_API_GATEWAY,
+      provide: DI_TOKENS.MORALIS_GATEWAY,
       useFactory: () => {
         const client = axios.create({
           baseURL: MORALIS_BASE_URL,
@@ -49,7 +49,7 @@ const MORALIS_BASE_URL = "https://deep-index.moralis.io";
             "X-API-Key": ENV.MORALIS_API_SECRET
           }
         });
-        return new HttpMoralisApiGateway(client);
+        return new HttpMoralisGateway(client);
       }
     },
 
@@ -62,8 +62,8 @@ const MORALIS_BASE_URL = "https://deep-index.moralis.io";
     { provide: DI_TOKENS.TOKEN_DEPLOYMENT_REPOSITORY, useClass: MemoryTokenDeploymentRepository }
   ],
   exports: [
-    DI_TOKENS.THIRDWEB_API_GATEWAY,
-    DI_TOKENS.MORALIS_API_GATEWAY,
+    DI_TOKENS.THIRDWEB_GATEWAY,
+    DI_TOKENS.MORALIS_GATEWAY,
     DI_TOKENS.TOKEN_DEPLOYMENT_REPOSITORY,
     DI_TOKENS.ERC20_ADAPTER,
     DI_TOKENS.REGISTRY_ADAPTER,

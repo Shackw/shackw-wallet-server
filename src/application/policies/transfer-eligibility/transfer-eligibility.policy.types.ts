@@ -1,4 +1,4 @@
-import type { TokenDeploymentContract } from "@/application/ports/config/token-deployment.repository.port";
+import type { TokenDeploymentContract } from "@/application/ports/repositories/token-deployment.repository.port";
 import type { Chain } from "@/config/chain.config";
 import type { Token } from "@/config/token.config";
 

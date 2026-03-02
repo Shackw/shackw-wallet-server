@@ -4,14 +4,14 @@ import dayjs from "dayjs";
 import { ApplicationError } from "@/application/errors";
 import { BalanceSufficiencyPolicy } from "@/application/policies/balance-sufficiency";
 import { TransferEligibilityPolicy } from "@/application/policies/transfer-eligibility";
-import { RegistryAdapter } from "@/application/ports/evm/registry.adapter.port";
+import { RegistryAdapter } from "@/application/ports/adapters/registry.adapter.port";
 import { buildExcutionIntent } from "@/application/protocols/execution-intent";
 import { encodeQuoteToken } from "@/application/protocols/quote-token";
 import { ENV } from "@/config/env.config";
 import type { QuoteEntity } from "@/domain/entities/quote.entity";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
-import { CreateQuoteInput } from "./quotes.service.type";
+import { CreateQuoteInput } from "./quotes.service.types";
 
 export class QuotesService {
   constructor(

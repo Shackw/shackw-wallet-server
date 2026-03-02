@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 
-import { FeesController } from "@/interfaces/controllers/fees.controller";
-import { MetaController } from "@/interfaces/controllers/meta.controller";
-import { QuotesController } from "@/interfaces/controllers/quotes.controller";
-import { TokensController } from "@/interfaces/controllers/tokens.controller";
-import { TransactionsController } from "@/interfaces/controllers/transactions.controller";
+import { FeesController } from "@/interfaces/features/fees";
+import { MetaController } from "@/interfaces/features/meta";
+import { QuotesController } from "@/interfaces/features/quotes";
+import { TokensController } from "@/interfaces/features/tokens";
+import { TransactionsController } from "@/interfaces/features/transactions";
 
 import { AppCheckModule } from "./app-check.module";
 import { ApplicationModule } from "./application.module";

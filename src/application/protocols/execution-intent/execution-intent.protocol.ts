@@ -9,7 +9,7 @@ import type {
   BuildErc20TransferCallInput,
   BuildExecutionIntentInput,
   BuildExecutionIntentOutput
-} from "./execution-intent.protocol.type";
+} from "./execution-intent.protocol.types";
 
 export function buildExcutionIntent(input: BuildExecutionIntentInput): BuildExecutionIntentOutput {
   // Build ERC20 transfer call (recipient payment)

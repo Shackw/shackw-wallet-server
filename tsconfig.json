@@ -7,7 +7,9 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "target": "ES2023",
+    "types": ["node"],
     "sourceMap": true,
+    "rootDir": "./",
     "outDir": "./dist",
     "paths": {
       "@/*": ["./src/*"],

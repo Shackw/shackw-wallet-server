@@ -1,10 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
 
 import { ApplicationError } from "@/application/errors";
-import { TokenDeploymentRepository } from "@/application/ports/config/token-deployment.repository.port";
+import { TokenDeploymentRepository } from "@/application/ports/repositories/token-deployment.repository.port";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
-import { ChainToTokenSupportInput, ChainToTokenSupportOutput } from "./chain-to-token-support.policy.type";
+import type { ChainToTokenSupportInput, ChainToTokenSupportOutput } from "./chain-to-token-support.policy.types";
 
 @Injectable()
 export class ChainToTokenSupport {

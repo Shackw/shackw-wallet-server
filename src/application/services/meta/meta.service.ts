@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Address, formatUnits } from "viem";
 
-import { TokenDeploymentRepository } from "@/application/ports/config/token-deployment.repository.port";
+import { TokenDeploymentRepository } from "@/application/ports/repositories/token-deployment.repository.port";
 import { Chain } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
 import { Token } from "@/config/token.config";
