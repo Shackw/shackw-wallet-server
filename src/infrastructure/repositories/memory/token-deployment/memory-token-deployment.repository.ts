@@ -7,10 +7,9 @@ import type {
   TokenDeploymentRepository,
   TokenMasterContract
 } from "@/application/ports/repositories/token-deployment.repository.port";
-
-import { CHAIN_MASTER } from "../../../config/masters/chain.master";
-import { TOKEN_DEPLOYMENT } from "../../../config/masters/token-deployment.master";
-import { TOKEN_MASTER } from "../../../config/masters/token.master";
+import { CHAIN_MASTER } from "@/infrastructure/config/masters/chain.master";
+import { TOKEN_DEPLOYMENT } from "@/infrastructure/config/masters/token-deployment.master";
+import { TOKEN_MASTER } from "@/infrastructure/config/masters/token.master";
 
 import {
   toChainMasterContract,

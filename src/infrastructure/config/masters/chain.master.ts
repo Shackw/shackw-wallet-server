@@ -1,6 +1,4 @@
-import { mainnet, base, polygon, sepolia, baseSepolia, polygonAmoy } from "viem/chains";
-
-import type { Chain } from "@/config/chain.config";
+import { CHAIN_KEY_TO_VIEM_CHAIN, type Chain } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
 
 import type { Address } from "viem";
@@ -26,7 +24,7 @@ export const CHAIN_MASTER = {
       delegate: ENV.ETH_MAIN_DELEGATE_ADDRESS,
       registry: ENV.ETH_MAIN_REGISTRY_ADDRESS
     },
-    viem: mainnet
+    viem: CHAIN_KEY_TO_VIEM_CHAIN.mainnet
   },
   base: {
     id: 8453,
@@ -35,7 +33,7 @@ export const CHAIN_MASTER = {
       delegate: ENV.BASE_MAIN_DELEGATE_ADDRESS,
       registry: ENV.BASE_MAIN_REGISTRY_ADDRESS
     },
-    viem: base
+    viem: CHAIN_KEY_TO_VIEM_CHAIN.base
   },
   polygon: {
     id: 137,
@@ -44,7 +42,7 @@ export const CHAIN_MASTER = {
       delegate: ENV.POLYGON_MAIN_DELEGATE_ADDRESS,
       registry: ENV.POLYGON_MAIN_REGISTRY_ADDRESS
     },
-    viem: polygon
+    viem: CHAIN_KEY_TO_VIEM_CHAIN.polygon
   },
   sepolia: {
     id: 11155111,
@@ -53,7 +51,7 @@ export const CHAIN_MASTER = {
       delegate: ENV.ETH_SEPOLIA_DELEGATE_ADDRESS,
       registry: ENV.ETH_SEPOLIA_REGISTRY_ADDRESS
     },
-    viem: sepolia
+    viem: CHAIN_KEY_TO_VIEM_CHAIN.sepolia
   },
   baseSepolia: {
     id: 84532,
@@ -62,7 +60,7 @@ export const CHAIN_MASTER = {
       delegate: ENV.BASE_SEPOLIA_DELEGATE_ADDRESS,
       registry: ENV.BASE_SEPOLIA_REGISTRY_ADDRESS
     },
-    viem: baseSepolia
+    viem: CHAIN_KEY_TO_VIEM_CHAIN.baseSepolia
   },
   polygonAmoy: {
     id: 80002,
@@ -71,6 +69,6 @@ export const CHAIN_MASTER = {
       delegate: ENV.POLYGON_AMOY_DELEGATE_ADDRESS,
       registry: ENV.POLYGON_AMOY_REGISTRY_ADDRESS
     },
-    viem: polygonAmoy
+    viem: CHAIN_KEY_TO_VIEM_CHAIN.polygonAmoy
   }
 } as const satisfies ChainMaster;

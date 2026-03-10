@@ -11,7 +11,8 @@ export default defineConfig({
     testTimeout: 30_000,
     coverage: {
       provider: "v8",
-      reporter: ["text", "html", "lcov"]
+      reporter: ["text", "html", "lcov"],
+      include: ["src/application/policies", "src/application/protocols", "src/application/services"]
     }
   }
 });
