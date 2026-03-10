@@ -14,7 +14,7 @@ import { BalanceSufficiencyPolicy } from "./balance-sufficiency.policy";
 
 import type { EnsureSufficientBalanceInput } from "./balance-sufficiency.policy.types";
 
-describe("balance-sufficiency", () => {
+describe("BalanceSufficiencyPolicy.ensure", () => {
   it("should throw TOKEN_ADDRESS_UNKNOWN when token address is not registered", async () => {
     // arrange
     class TestTokenDepRepo extends StubTokenDeploymentRepository {
@@ -27,7 +27,7 @@ describe("balance-sufficiency", () => {
 
     const testTokenDepRepo = new TestTokenDepRepo();
     const stubViemErc20Adap = new StubViemErc20Adap();
-    const balSuffPol = new BalanceSufficiencyPolicy(testTokenDepRepo, stubViemErc20Adap);
+    const balanceSufficiency = new BalanceSufficiencyPolicy(testTokenDepRepo, stubViemErc20Adap);
 
     const input: EnsureSufficientBalanceInput = {
       chainKey: "mainnet",
@@ -39,9 +39,10 @@ describe("balance-sufficiency", () => {
     };
 
     // act & assert
-    await expect(balSuffPol.ensure(input)).rejects.toThrowError(
-      new ApplicationError({ code: "TOKEN_ADDRESS_UNKNOWN", message: "Unknown token address: 0xNullAddress" })
-    );
+    await expect(balanceSufficiency.ensure(input)).rejects.toMatchObject({
+      code: "TOKEN_ADDRESS_UNKNOWN",
+      message: "Unknown token address: 0xNullAddress"
+    });
   });
 
   it("should throw TOKEN_ADDRESS_UNKNOWN when fee token address is not registered", async () => {

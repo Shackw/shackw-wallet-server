@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 
 import { BalanceSufficiencyPolicy } from "@/application/policies/balance-sufficiency";
-import { ChainToTokenSupport } from "@/application/policies/chain-to-token-support";
+import { ChainToTokenSupportPolicy } from "@/application/policies/chain-to-token-support";
 import { TransferEligibilityPolicy } from "@/application/policies/transfer-eligibility";
 import { FeesService } from "@/application/services/fees";
 import { MetaService } from "@/application/services/meta";
@@ -19,7 +19,7 @@ import { InfrastructureModule } from "./infrastructure.module";
     TokenService,
     TransactionsService,
     MetaService,
-    ChainToTokenSupport,
+    ChainToTokenSupportPolicy,
     TransferEligibilityPolicy,
     BalanceSufficiencyPolicy
   ],
@@ -29,7 +29,7 @@ import { InfrastructureModule } from "./infrastructure.module";
     TokenService,
     TransactionsService,
     MetaService,
-    ChainToTokenSupport,
+    ChainToTokenSupportPolicy,
     TransferEligibilityPolicy,
     BalanceSufficiencyPolicy
   ]

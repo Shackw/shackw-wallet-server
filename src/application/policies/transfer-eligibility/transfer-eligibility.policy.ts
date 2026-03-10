@@ -3,13 +3,13 @@ import { formatUnits } from "viem";
 
 import { ApplicationError } from "@/application/errors";
 
-import { ChainToTokenSupport } from "../chain-to-token-support";
+import { ChainToTokenSupportPolicy } from "../chain-to-token-support";
 
 import type { TransferEligibilityInput, TransferEligibilityOutput } from "./transfer-eligibility.policy.types";
 
 @Injectable()
 export class TransferEligibilityPolicy {
-  constructor(private readonly chainToTokenSupport: ChainToTokenSupport) {}
+  constructor(private readonly chainToTokenSupport: ChainToTokenSupportPolicy) {}
 
   execute(input: TransferEligibilityInput): TransferEligibilityOutput {
     const { chainKey, tokenSymbol, feeTokenSymbol, amountMinUnits } = input;

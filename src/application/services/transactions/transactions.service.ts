@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Address, isAddressEqual } from "viem";
 
-import { ChainToTokenSupport } from "@/application/policies/chain-to-token-support";
+import { ChainToTokenSupportPolicy } from "@/application/policies/chain-to-token-support";
 import { MoralisGateway } from "@/application/ports/gateways/moralis.gateway.port";
 import { ThirdwebGateway } from "@/application/ports/gateways/thirdweb.gateway.port";
 import { TokenMasterContract } from "@/application/ports/repositories/token-deployment.repository.port";
@@ -19,7 +19,7 @@ export class TransactionsService {
     @Inject(DI_TOKENS.MORALIS_GATEWAY)
     private readonly moralisApiGateway: MoralisGateway,
 
-    private readonly chainToTokenSupport: ChainToTokenSupport
+    private readonly chainToTokenSupport: ChainToTokenSupportPolicy
   ) {}
 
   async searchTransactions(input: SearchTransactionsInput): Promise<TransactionEntity[]> {

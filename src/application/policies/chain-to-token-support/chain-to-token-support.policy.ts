@@ -7,7 +7,7 @@ import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 import type { ChainToTokenSupportInput, ChainToTokenSupportOutput } from "./chain-to-token-support.policy.types";
 
 @Injectable()
-export class ChainToTokenSupport {
+export class ChainToTokenSupportPolicy {
   constructor(
     @Inject(DI_TOKENS.TOKEN_DEPLOYMENT_REPOSITORY)
     private readonly tokenDeploymentRepository: TokenDeploymentRepository
