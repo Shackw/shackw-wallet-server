@@ -7,22 +7,17 @@ import pluginImportX from "eslint-plugin-import-x";
 import unusedImports from "eslint-plugin-unused-imports";
 
 const barrelPatterns = [
-  { group: ["@/interfaces/features/*/*"], message: "Use interfaces/features barrel (index.ts) only." },
-  { group: ["@/application/policies/*/*"], message: "Use application/policies barrel (index.ts) only." },
-  { group: ["@/application/protocols/*/*"], message: "Use application/protocols barrel (index.ts) only." },
-  { group: ["@/application/services/*/*"], message: "Use application/services barrel (index.ts) only." },
-  { group: ["@/application/usecases/*/*"], message: "Use application/usecases barrel (index.ts) only." },
   {
-    group: ["@/infrastructure/adapters/viem/*/*"],
-    message: "Use infrastructure/adapters/viem barrel (index.ts) only."
+    group: ["@/interfaces/features/*/*"],
+    message: "Use interfaces/features barrel (index.ts) only."
   },
   {
-    group: ["@/infrastructure/gateways/http/*/*"],
-    message: "Use infrastructure/gateways/http barrel (index.ts) only."
+    group: ["@/application/*/*/*", "!@/application/ports/*/*"],
+    message: "Import application modules only via barrel (index.ts)."
   },
   {
-    group: ["@/infrastructure/repositories/memory/*/*"],
-    message: "Use infrastructure/repositories/memory barrel (index.ts) only."
+    group: ["@/infrastructure/*/*/*/*"],
+    message: "Import infrastructure modules only via barrel (index.ts)."
   }
 ];
 

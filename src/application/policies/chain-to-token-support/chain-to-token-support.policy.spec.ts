@@ -7,7 +7,7 @@ import type {
   FindTokenDeploymentQuery,
   TokenDeploymentContract
 } from "@/application/ports/repositories/token-deployment.repository.port";
-import { CHAIN_KEY_TO_VIEM_CHAIN } from "@/config/chain.config";
+import { CHAIN_KEY_TO_VIEM_CHAIN } from "@/domain/constants/chain.constant";
 
 import { ChainToTokenSupportPolicy } from "./chain-to-token-support.policy";
 

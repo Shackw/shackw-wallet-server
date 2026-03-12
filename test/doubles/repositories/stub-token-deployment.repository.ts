@@ -7,7 +7,7 @@ import type {
   TokenDeploymentRepository,
   TokenMasterContract
 } from "@/application/ports/repositories/token-deployment.repository.port";
-import { CHAIN_KEY_TO_VIEM_CHAIN } from "@/config/chain.config";
+import { CHAIN_KEY_TO_VIEM_CHAIN } from "@/domain/constants/chain.constant";
 
 export class StubTokenDeploymentRepository implements TokenDeploymentRepository {
   findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): TokenMasterContract | null {

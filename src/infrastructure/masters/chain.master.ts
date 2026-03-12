@@ -1,5 +1,5 @@
-import { CHAIN_KEY_TO_VIEM_CHAIN, type Chain } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
+import { CHAIN_KEY_TO_VIEM_CHAIN, type Chain } from "@/domain/constants/chain.constant";
 
 import type { Address } from "viem";
 import type { Chain as ViemChain } from "viem/chains";

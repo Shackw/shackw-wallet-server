@@ -1,4 +1,4 @@
-import type { Chain } from "@/config/chain.config";
+import type { Chain } from "@/domain/constants/chain.constant";
 
 export type FeePolicyValueObject = {
   method: "fixed_by_chain";

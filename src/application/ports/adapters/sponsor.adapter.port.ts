@@ -1,4 +1,4 @@
-import type { Chain } from "@/config/chain.config";
+import type { Chain } from "@/domain/constants/chain.constant";
 import type { EvmCallValueObject } from "@/domain/value-objects/evm-call.value-object";
 
 import type { Address, Authorization, Hex } from "viem";

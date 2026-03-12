@@ -3,12 +3,12 @@ import type {
   TokenDeploymentContract,
   TokenMasterContract
 } from "@/application/ports/repositories/token-deployment.repository.port";
-import type { Chain } from "@/config/chain.config";
-import type { Token } from "@/config/token.config";
+import type { Chain } from "@/domain/constants/chain.constant";
+import type { Token } from "@/domain/constants/token.constant";
+import type { ChainMasterEntry } from "@/infrastructure/masters/chain.master";
+import type { TokenDeploymentMasterEntry } from "@/infrastructure/masters/token-deployment.master";
+import type { TokenMasterEntry } from "@/infrastructure/masters/token.master";
 
-import type { ChainMasterEntry } from "../../../config/masters/chain.master";
-import type { TokenDeploymentMasterEntry } from "../../../config/masters/token-deployment.master";
-import type { TokenMasterEntry } from "../../../config/masters/token.master";
 import type { Address } from "viem";
 
 export const toTokenMasterContract = ([key, entry]: [string, TokenMasterEntry]): TokenMasterContract => {

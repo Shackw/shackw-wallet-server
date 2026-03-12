@@ -1,6 +1,6 @@
 import type { TokenDeploymentContract } from "@/application/ports/repositories/token-deployment.repository.port";
-import type { Chain } from "@/config/chain.config";
-import type { Token } from "@/config/token.config";
+import type { Chain } from "@/domain/constants/chain.constant";
+import type { Token } from "@/domain/constants/token.constant";
 
 // === Input ===
 export type TransferEligibilityInput = Readonly<{

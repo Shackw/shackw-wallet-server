@@ -1,5 +1,5 @@
-import type { Chain } from "@/config/chain.config";
-import type { Token } from "@/config/token.config";
+import type { Chain } from "@/domain/constants/chain.constant";
+import type { Token } from "@/domain/constants/token.constant";
 
 export type EstimateFeeInput = Readonly<{
   chainKey: Chain;

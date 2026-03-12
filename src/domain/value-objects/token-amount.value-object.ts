@@ -1,4 +1,4 @@
-import type { Token } from "@/config/token.config";
+import type { Token } from "@/domain/constants/token.constant";
 
 export type TokenAmountValueObject = {
   symbol: Token;

@@ -1,4 +1,5 @@
-import type { Currency, Token } from "@/config/token.config";
+import type { Currency } from "@/domain/constants/currency.constant";
+import type { Token } from "@/domain/constants/token.constant";
 
 export type TokenMasterEntry = {
   currency: Currency;

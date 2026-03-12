@@ -1,9 +1,9 @@
 import { createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
-import type { Chain } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
-import { CHAIN_MASTER } from "@/infrastructure/config/masters/chain.master";
+import type { Chain } from "@/domain/constants/chain.constant";
+import { CHAIN_MASTER } from "@/infrastructure/masters/chain.master";
 
 import type { Transport, WalletClient, Chain as ViemChain, Account } from "viem";
 

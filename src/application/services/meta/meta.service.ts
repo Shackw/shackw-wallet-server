@@ -2,9 +2,9 @@ import { Inject, Injectable } from "@nestjs/common";
 import { Address, formatUnits } from "viem";
 
 import { TokenDeploymentRepository } from "@/application/ports/repositories/token-deployment.repository.port";
-import { Chain } from "@/config/chain.config";
 import { ENV } from "@/config/env.config";
-import { Token } from "@/config/token.config";
+import { Chain } from "@/domain/constants/chain.constant";
+import { Token } from "@/domain/constants/token.constant";
 import type {
   ChainMetaEntity,
   TokenMetaEntity,

@@ -1,7 +1,12 @@
 import { Module } from "@nestjs/common";
 import axios from "axios";
+import { App, cert, getApp, getApps, initializeApp } from "firebase-admin/app";
+import { getAppCheck } from "firebase-admin/app-check";
 
 import { ENV } from "@/config/env.config";
+import { FIREBASE_CREDENTIAL } from "@/config/firebase.config";
+import { MORALIS_BASE_URL, THIRDWEB_BASE_URL } from "@/config/url.config";
+import { FirebaseAppCheckAdapter } from "@/infrastructure/adapters/firebase/app-check";
 import { ViemErc20Adapter } from "@/infrastructure/adapters/viem/erc20";
 import { ViemRegistryAdapter } from "@/infrastructure/adapters/viem/registry";
 import { ViemSponsorAdapter } from "@/infrastructure/adapters/viem/sponsor";
@@ -12,16 +17,32 @@ import { HttpThirdwebApiGateway } from "@/infrastructure/gateways/http/thirdweb"
 import { MemoryTokenDeploymentRepository } from "@/infrastructure/repositories/memory/token-deployment";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
-const THIRDWEB_BASE_URL = "https://api.thirdweb.com";
-const MORALIS_BASE_URL = "https://deep-index.moralis.io";
-
 @Module({
   providers: [
     // factories
     ViemPublicClientFactory,
     ViemSponsorWalletClientFactory,
 
+    // clients
+    {
+      provide: DI_TOKENS.FIREBASE_CLIENT,
+      useValue:
+        getApps().length > 0
+          ? getApp()
+          : initializeApp({
+              credential: cert(FIREBASE_CREDENTIAL)
+            })
+    },
+
     // gateways
+    {
+      provide: DI_TOKENS.APP_CHECK_ADAPTER,
+      useFactory: (app: App) => {
+        const appCheck = getAppCheck(app);
+        return new FirebaseAppCheckAdapter(appCheck);
+      },
+      inject: [DI_TOKENS.FIREBASE_CLIENT]
+    },
     {
       provide: DI_TOKENS.THIRDWEB_GATEWAY,
       useFactory: () => {

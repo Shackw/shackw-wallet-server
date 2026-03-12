@@ -3,7 +3,7 @@ import { describe, it, expect } from "vitest";
 import { StubTokenDeploymentRepository } from "@test/doubles/repositories/stub-token-deployment.repository";
 
 import { ApplicationError } from "@/application/errors";
-import { CHAIN_KEY_TO_VIEM_CHAIN } from "@/config/chain.config";
+import { CHAIN_KEY_TO_VIEM_CHAIN } from "@/domain/constants/chain.constant";
 
 import { ChainToTokenSupportPolicy } from "../chain-to-token-support";
 

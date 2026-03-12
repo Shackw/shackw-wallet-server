@@ -1,7 +1,7 @@
 import * as v from "valibot";
 
-import { CHAIN_KEYS } from "@/config/chain.config";
-import { TOKENS } from "@/config/token.config";
+import { CHAIN_KEYS } from "@/domain/constants/chain.constant";
+import { TOKENS } from "@/domain/constants/token.constant";
 import { FeePolicyShape } from "@/interfaces/common/shapes/fee-policy.shape";
 import { TokenAmountShape } from "@/interfaces/common/shapes/token-amount.shape";
 import { TokenDescriptorShape } from "@/interfaces/common/shapes/token-descriptor.shape";

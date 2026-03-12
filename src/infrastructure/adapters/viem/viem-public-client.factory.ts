@@ -1,7 +1,7 @@
 import { createPublicClient, http } from "viem";
 
-import type { Chain } from "@/config/chain.config";
-import { CHAIN_MASTER } from "@/infrastructure/config/masters/chain.master";
+import type { Chain } from "@/domain/constants/chain.constant";
+import { CHAIN_MASTER } from "@/infrastructure/masters/chain.master";
 
 import type { PublicClient } from "viem";
 

@@ -1,13 +1,19 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 
 import { ApplicationError } from "@/application/errors";
-import { firebaseAppCheck } from "@/config/firebase.config";
+import { AppCheckAdapter } from "@/application/ports/adapters/app-check.adapter.port";
+import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
 @Injectable()
 export class AppCheckService {
+  constructor(
+    @Inject(DI_TOKENS.APP_CHECK_ADAPTER)
+    private readonly appCheckAdapter: AppCheckAdapter
+  ) {}
+
   async verifyToken(token: string) {
     try {
-      return await firebaseAppCheck.verifyToken(token);
+      return await this.appCheckAdapter.verifyToken({ token });
     } catch (e) {
       throw new ApplicationError({
         code: "UNAUTHORIZED",

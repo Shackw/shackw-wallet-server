@@ -1,5 +1,6 @@
-import type { Chain } from "@/config/chain.config";
-import type { Currency, Token } from "@/config/token.config";
+import type { Chain } from "@/domain/constants/chain.constant";
+import type { Currency } from "@/domain/constants/currency.constant";
+import type { Token } from "@/domain/constants/token.constant";
 
 import type { Address, Chain as ViemChain } from "viem";
 

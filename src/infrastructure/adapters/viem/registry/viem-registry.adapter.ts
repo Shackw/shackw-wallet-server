@@ -1,7 +1,7 @@
 import { getContract } from "viem";
 
 import type { GetNextNonceQuery, RegistryAdapter } from "@/application/ports/adapters/registry.adapter.port";
-import { CHAIN_MASTER } from "@/infrastructure/config/masters/chain.master";
+import { CHAIN_MASTER } from "@/infrastructure/masters/chain.master";
 
 import { REGISTRY_ABI } from "./viem-registry.abi";
 

@@ -1,7 +1,7 @@
 import * as v from "valibot";
 
 import type { MoralisSearchTransfersQuery } from "@/application/ports/gateways/moralis.gateway.port";
-import type { Chain } from "@/config/chain.config";
+import type { Chain } from "@/domain/constants/chain.constant";
 import { addressValidator, hex32Validator } from "@/shared/validations/rules/address.validator";
 import {
   isoDateStringValidator,
