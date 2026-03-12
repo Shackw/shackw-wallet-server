@@ -30,9 +30,9 @@ export type MinTransferMetaEntity = {
 };
 
 export type ContractsMetaEntity = {
+  sponsor: Record<Chain, Address>;
   delegate: Record<Chain, Address>;
   registry: Record<Chain, Address>;
-  sponsor: Address;
 };
 
 export type MetaSummaryEntity = {

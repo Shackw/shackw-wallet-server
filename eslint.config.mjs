@@ -111,6 +111,11 @@ export default [
               target: ["./src/application", "!./src/application/ports"],
               from: "./src/infrastructure",
               message: "application must not depend on infrastructure"
+            },
+            {
+              target: ["./src/application"],
+              from: "./src/config",
+              message: "application must not depend on config"
             }
           ]
         }

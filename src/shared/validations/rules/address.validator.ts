@@ -1,21 +1,21 @@
 import * as v from "valibot";
-import { isAddress, zeroAddress } from "viem";
+import { getAddress, isAddress, zeroAddress } from "viem";
 
-import type { Address, Hex } from "viem";
+import type { Hex } from "viem";
 
 export const addressValidator = (field: string) =>
   v.pipe(
     v.string(`${field} must be a string.`),
     v.transform(s => s.trim()),
     v.custom(
-      s => isAddress(s as string),
+      s => isAddress(s as string, { strict: false }),
       () => `${field} must be a valid EVM address.`
     ),
+    v.transform(s => getAddress(s)),
     v.custom(
-      s => (s as string).toLowerCase() !== zeroAddress,
+      s => s !== zeroAddress,
       () => `${field} must not be the zero address.`
-    ),
-    v.transform(s => s.toLowerCase() as Address)
+    )
   );
 
 export const hex32Validator = (field: string) =>

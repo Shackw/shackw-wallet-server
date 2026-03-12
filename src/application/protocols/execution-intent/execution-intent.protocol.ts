@@ -1,4 +1,4 @@
-import { encodeFunctionData, encodeAbiParameters, keccak256, erc20Abi, type Hex } from "viem";
+import { encodeFunctionData, encodeAbiParameters, keccak256, erc20Abi, type Hex, getAddress } from "viem";
 
 import type { EvmCallValueObject } from "@/domain/value-objects/evm-call.value-object";
 import type { ExecutionIntentValueObject } from "@/domain/value-objects/execution-intent.value-object";
@@ -40,12 +40,12 @@ export function buildExcutionIntent(input: BuildExecutionIntentInput): BuildExec
 
 function erc20TransferCall(input: BuildErc20TransferCallInput): EvmCallValueObject {
   return {
-    to: input.token,
+    to: getAddress(input.token),
     value: 0n,
     data: encodeFunctionData({
       abi: erc20Abi,
       functionName: "transfer",
-      args: [input.to, input.amountMinUnits]
+      args: [getAddress(input.to), input.amountMinUnits]
     })
   };
 }
@@ -53,7 +53,7 @@ function erc20TransferCall(input: BuildErc20TransferCallInput): EvmCallValueObje
 function hashExecutionIntent(input: ExecutionIntentValueObject): Hex {
   const encoded = encodeAbiParameters(EXECUTION_INTENT_ENCODING_TYPES, [
     BigInt(input.chainId),
-    input.sender,
+    getAddress(input.sender),
     input.calls,
     input.expiresAtSec,
     input.nonce

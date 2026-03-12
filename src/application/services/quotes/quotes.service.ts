@@ -1,5 +1,6 @@
 import { Inject } from "@nestjs/common";
 import dayjs from "dayjs";
+import { Hex } from "viem";
 
 import { ApplicationError } from "@/application/errors";
 import { BalanceSufficiencyPolicy } from "@/application/policies/balance-sufficiency";
@@ -7,7 +8,6 @@ import { TransferEligibilityPolicy } from "@/application/policies/transfer-eligi
 import { RegistryAdapter } from "@/application/ports/adapters/registry.adapter.port";
 import { buildExcutionIntent } from "@/application/protocols/execution-intent";
 import { encodeQuoteToken } from "@/application/protocols/quote-token";
-import { ENV } from "@/config/env.config";
 import type { QuoteEntity } from "@/domain/entities/quote.entity";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
@@ -15,6 +15,9 @@ import { CreateQuoteInput } from "./quotes.service.types";
 
 export class QuotesService {
   constructor(
+    @Inject(DI_TOKENS.QUOTE_TOKEN_SECRET)
+    private readonly quoteTokenSecret: Hex,
+
     @Inject(DI_TOKENS.REGISTRY_ADAPTER)
     private readonly registryAdapter: RegistryAdapter,
 
@@ -65,7 +68,7 @@ export class QuotesService {
       token: tokenDep.token.address,
       amountMinUnits,
       feeToken: feeTokenDep.token.address,
-      sponsor: ENV.SPONSOR_ADDRESS,
+      sponsor: contracts.sponsor,
       feeMinUnits: feeTokenDep.fixedFeeAmountUnits,
       nonce,
       expiresAtSec
@@ -82,12 +85,12 @@ export class QuotesService {
         amountMinUnits,
         feeMinUnits: feeTokenDep.fixedFeeAmountUnits,
         delegate: contracts.delegate,
-        sponsor: ENV.SPONSOR_ADDRESS,
+        sponsor: contracts.sponsor,
         expiresAt: expiresAtSec,
         callHash,
         nonce
       },
-      ENV.QUOTE_TOKEN_SECRET
+      this.quoteTokenSecret
     );
 
     return {
@@ -97,7 +100,7 @@ export class QuotesService {
       serverTime: now.toDate(),
       chainId: chain.id,
       delegate: contracts.delegate,
-      sponsor: ENV.SPONSOR_ADDRESS,
+      sponsor: contracts.sponsor,
       sender,
       recipient,
       token: {

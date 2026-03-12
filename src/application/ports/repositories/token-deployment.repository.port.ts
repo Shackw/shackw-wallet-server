@@ -17,6 +17,7 @@ export type ChainMasterContract = {
   rpcUrl: string;
   viem: ViemChain;
   contracts: {
+    sponsor: Address;
     delegate: Address;
     registry: Address;
   };
@@ -26,6 +27,7 @@ export type TokenDeploymentContract = {
   token: { address: Address } & TokenMasterContract;
   chain: Pick<ChainMasterContract, "key" | "id" | "rpcUrl" | "viem">;
   contracts: {
+    sponsor: Address;
     delegate: Address;
     registry: Address;
   };

@@ -1,4 +1,5 @@
 export const DI_TOKENS = {
+  QUOTE_TOKEN_SECRET: Symbol("QUOTE_TOKEN_SECRET"),
   FIREBASE_CLIENT: Symbol("FirebaseClient"),
   APP_CHECK_ADAPTER: Symbol("AppCheckAdapter"),
   ERC20_ADAPTER: Symbol("Erc20Adapter"),

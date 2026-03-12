@@ -2,7 +2,6 @@ import { Inject, Injectable } from "@nestjs/common";
 import { Address, formatUnits } from "viem";
 
 import { TokenDeploymentRepository } from "@/application/ports/repositories/token-deployment.repository.port";
-import { ENV } from "@/config/env.config";
 import { Chain } from "@/domain/constants/chain.constant";
 import { Token } from "@/domain/constants/token.constant";
 import type {
@@ -75,17 +74,16 @@ export class MetaService {
   getContractsMeta(): ContractsMetaEntity {
     const chains = this.deploymentRepository.listChainMasters();
 
-    const contracts = chains.reduce<Record<"delegate" | "registry", Record<Chain, Address>>>(
+    return chains.reduce<Record<"sponsor" | "delegate" | "registry", Record<Chain, Address>>>(
       (acc, chain) => {
+        acc.delegate[chain.key] = chain.contracts.sponsor;
         acc.delegate[chain.key] = chain.contracts.delegate;
         acc.registry[chain.key] = chain.contracts.registry;
 
         return acc;
       },
-      { delegate: {}, registry: {} } as Record<"delegate" | "registry", Record<Chain, Address>>
+      { sponsor: {}, delegate: {}, registry: {} } as Record<"sponsor" | "delegate" | "registry", Record<Chain, Address>>
     );
-
-    return { ...contracts, sponsor: ENV.SPONSOR_ADDRESS };
   }
 
   getMetaSummary(): MetaSummaryEntity {

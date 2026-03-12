@@ -25,8 +25,9 @@ export class StubTokenDeploymentRepository implements TokenDeploymentRepository 
       rpcUrl: "",
       viem: CHAIN_KEY_TO_VIEM_CHAIN[query.chainKey],
       contracts: {
-        delegate: "0x",
-        registry: "0x"
+        sponsor: "0xSponsor",
+        delegate: "0xDelegate",
+        registry: "0xRegistry"
       }
     };
   }

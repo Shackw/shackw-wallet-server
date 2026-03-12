@@ -9,8 +9,6 @@ import type { ChainMasterEntry } from "@/infrastructure/masters/chain.master";
 import type { TokenDeploymentMasterEntry } from "@/infrastructure/masters/token-deployment.master";
 import type { TokenMasterEntry } from "@/infrastructure/masters/token.master";
 
-import type { Address } from "viem";
-
 export const toTokenMasterContract = ([key, entry]: [string, TokenMasterEntry]): TokenMasterContract => {
   return {
     symbol: key as Token,
@@ -25,8 +23,9 @@ export const toChainMasterContract = ([key, entry]: [string, ChainMasterEntry]):
     id: entry.id,
     rpcUrl: entry.rpcUrl,
     contracts: {
-      delegate: entry.contracts.delegate.toLowerCase() as Address,
-      registry: entry.contracts.registry.toLowerCase() as Address
+      sponsor: entry.contracts.sponsor,
+      delegate: entry.contracts.delegate,
+      registry: entry.contracts.registry
     },
     viem: entry.viem
   };
@@ -39,15 +38,16 @@ export const toTokenDeploymentContract = (
 ): TokenDeploymentContract => {
   return {
     token: {
-      address: depEntry.tokenAddress.toLowerCase() as Address,
+      address: depEntry.tokenAddress,
       symbol: depEntry.tokenSymbol,
       currency: tokenEntry.currency,
       decimals: tokenEntry.decimals
     },
     chain: { key: depEntry.chainKey, id: chainEntry.id, rpcUrl: chainEntry.rpcUrl, viem: chainEntry.viem },
     contracts: {
-      delegate: chainEntry.contracts.delegate.toLowerCase() as Address,
-      registry: chainEntry.contracts.registry.toLowerCase() as Address
+      sponsor: chainEntry.contracts.sponsor,
+      delegate: chainEntry.contracts.delegate,
+      registry: chainEntry.contracts.registry
     },
     minTransferAmountUnits: depEntry.minTransferAmountUnits,
     fixedFeeAmountUnits: depEntry.fixedFeeAmountUnits

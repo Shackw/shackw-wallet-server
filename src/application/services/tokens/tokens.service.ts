@@ -1,4 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
+import { Hex } from "viem";
 import { verifyAuthorization } from "viem/utils";
 
 import { ApplicationError } from "@/application/errors";
@@ -8,7 +9,6 @@ import { SponsorAdapter } from "@/application/ports/adapters/sponsor.adapter.por
 import { TokenDeploymentRepository } from "@/application/ports/repositories/token-deployment.repository.port";
 import { buildExcutionIntent } from "@/application/protocols/execution-intent";
 import { decodeQuoteToken } from "@/application/protocols/quote-token";
-import { ENV } from "@/config/env.config";
 import { TransferTokenEntity } from "@/domain/entities/token.entity";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
@@ -17,6 +17,9 @@ import { TransferTokenInput } from "./tokens.service.types";
 @Injectable()
 export class TokenService {
   constructor(
+    @Inject(DI_TOKENS.QUOTE_TOKEN_SECRET)
+    private readonly quoteTokenSecret: Hex,
+
     @Inject(DI_TOKENS.TOKEN_DEPLOYMENT_REPOSITORY)
     private readonly tokenDeploymentRepository: TokenDeploymentRepository,
 
@@ -46,7 +49,7 @@ export class TokenService {
       expiresAt,
       nonce,
       callHash
-    } = decodeQuoteToken(quoteToken, ENV.QUOTE_TOKEN_SECRET);
+    } = decodeQuoteToken(quoteToken, this.quoteTokenSecret);
 
     // 2a)
     const nowSec = BigInt(Math.floor(Date.now() / 1000));
@@ -71,10 +74,10 @@ export class TokenService {
         message: `Delegate mismatch: expected ${chainMaster.contracts.delegate}, got ${delegate}.`
       });
 
-    if (sponsor !== ENV.SPONSOR_ADDRESS)
+    if (sponsor !== chainMaster.contracts.sponsor)
       throw new ApplicationError({
         code: "QUOTE_TOKEN_SPONSOR_MISMATCH",
-        message: `Sponsor mismatch: expected ${ENV.SPONSOR_ADDRESS}, got ${sponsor}.`
+        message: `Sponsor mismatch: expected ${chainMaster.contracts.sponsor}, got ${sponsor}.`
       });
 
     // 3) Rebuild calls and recompute callHash to ensure integrity

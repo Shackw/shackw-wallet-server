@@ -2,7 +2,7 @@ import { timingSafeEqual } from "crypto";
 
 import { hmac } from "@noble/hashes/hmac";
 import { sha256 } from "@noble/hashes/sha2";
-import { encodeAbiParameters, decodeAbiParameters, hexToBytes, bytesToHex } from "viem";
+import { encodeAbiParameters, decodeAbiParameters, hexToBytes, bytesToHex, getAddress } from "viem";
 
 import { ApplicationError } from "@/application/errors";
 import type { QuoteTokenValueObject } from "@/domain/value-objects/quote-token.value-object";
@@ -18,14 +18,14 @@ export function encodeQuoteToken(p: QuoteTokenValueObject, secret: Hex): string 
   const encodedHex = encodeAbiParameters(QUOTE_TOKEN_ENCODING_TYPES as any, [
     p.v,
     BigInt(p.chainId),
-    p.sender,
-    p.recipient,
-    p.token,
-    p.feeToken,
+    getAddress(p.sender),
+    getAddress(p.recipient),
+    getAddress(p.token),
+    getAddress(p.feeToken),
     p.amountMinUnits,
     p.feeMinUnits,
-    p.delegate,
-    p.sponsor,
+    getAddress(p.delegate),
+    getAddress(p.sponsor),
     p.expiresAt,
     p.nonce,
     p.callHash
