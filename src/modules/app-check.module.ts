@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 
-import { AppCheckService } from "@/application/services/app-check";
+import { AppCheckPolicy } from "@/application/policies/app-check";
 import { AppCheckGuard } from "@/interfaces/common/guards/app-check.guard";
 
 @Module({
-  providers: [AppCheckService, AppCheckGuard],
-  exports: [AppCheckService, AppCheckGuard]
+  providers: [AppCheckPolicy, AppCheckGuard],
+  exports: [AppCheckPolicy, AppCheckGuard]
 })
 export class AppCheckModule {}

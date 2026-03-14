@@ -33,7 +33,7 @@ describe("ChainToTokenSupportPolicy", () => {
       };
 
       // act & assert
-      expect(() => chainToTokenSupport.execute(input)).toThrowError(
+      expect(() => chainToTokenSupport.execute(input)).toThrow(
         new ApplicationError({
           code: "UNSUPPORTED_TOKEN_FOR_CHAIN",
           message: "Token JPYC is not supported on chain base."

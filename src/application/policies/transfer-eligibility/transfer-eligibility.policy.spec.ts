@@ -65,7 +65,7 @@ describe("TransferEligibilityPolicy", () => {
       };
 
       // act & assert
-      expect(() => transferEligibility.execute(input)).toThrowError(
+      expect(() => transferEligibility.execute(input)).toThrow(
         new ApplicationError({
           code: "TRANSFER_AMOUNT_BELOW_MINIMUM",
           message: "Minimum transferable amount for JPYC is 1000 JPYC (1000000000000000000000 minimal units)."
