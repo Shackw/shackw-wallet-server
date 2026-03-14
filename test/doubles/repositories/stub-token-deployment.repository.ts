@@ -22,7 +22,7 @@ export class StubTokenDeploymentRepository implements TokenDeploymentRepository 
     return {
       key: query.chainKey,
       id: CHAIN_KEY_TO_VIEM_CHAIN[query.chainKey].id,
-      rpcUrl: "",
+      rpcUrl: "https://test-rpc.com",
       viem: CHAIN_KEY_TO_VIEM_CHAIN[query.chainKey],
       contracts: {
         sponsor: "0xSponsor",

@@ -76,7 +76,7 @@ export class MetaService {
 
     return chains.reduce<Record<"sponsor" | "delegate" | "registry", Record<Chain, Address>>>(
       (acc, chain) => {
-        acc.delegate[chain.key] = chain.contracts.sponsor;
+        acc.sponsor[chain.key] = chain.contracts.sponsor;
         acc.delegate[chain.key] = chain.contracts.delegate;
         acc.registry[chain.key] = chain.contracts.registry;
 

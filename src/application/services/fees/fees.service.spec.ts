@@ -21,11 +21,11 @@ describe("FeesService", () => {
             chain: {
               key: input.chainKey,
               id: CHAIN_KEY_TO_VIEM_CHAIN[input.chainKey].id,
-              rpcUrl: "",
+              rpcUrl: "https://test-rpc.com",
               viem: CHAIN_KEY_TO_VIEM_CHAIN[input.chainKey]
             },
             tokenDep: {
-              token: { symbol: "JPYC", address: "0xTokenAddress", currency: "JPY", decimals: 16 },
+              token: { symbol: "JPYC", address: "0xTokenAddress", currency: "JPY", decimals: 18 },
               fixedFeeAmountUnits: 100000000000000000000n
             },
             feeTokenDep: {
@@ -63,9 +63,9 @@ describe("FeesService", () => {
 
       // assert
       expect(fee).toEqual({
-        token: { symbol: "JPYC", address: "0xTokenAddress", decimals: 16 },
+        token: { symbol: "JPYC", address: "0xTokenAddress", decimals: 18 },
         feeToken: { symbol: "USDC", address: "0xFeeTokenAddress", decimals: 6 },
-        amount: { symbol: "JPYC", minUnits: 5000000000000000000000n, decimals: 16 },
+        amount: { symbol: "JPYC", minUnits: 5000000000000000000000n, decimals: 18 },
         fee: { symbol: "USDC", minUnits: 1000000n, decimals: 6 },
         policy: { method: "fixed_by_chain", version: "v1", chainKey: "mainnet" }
       });
