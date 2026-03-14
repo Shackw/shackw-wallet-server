@@ -73,7 +73,7 @@ describe("TransferEligibilityPolicy", () => {
       );
     });
 
-    it("should succeed when the transfer amount is above the minimum", () => {
+    it("should return transfer eligibility when transfer amount is above the minimum", () => {
       // arrange
       class TestChainToTokenSupport extends ChainToTokenSupportPolicy {
         execute(input: ChainToTokenSupportInput): ChainToTokenSupportOutput {
