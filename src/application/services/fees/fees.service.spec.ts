@@ -12,7 +12,7 @@ describe("FeesService", () => {
   describe("estimateFee", () => {
     it("should return fee estimation when transfer eligibility is valid", () => {
       // arrange
-      class TestTransferEligibility extends TransferEligibilityPolicy {
+      class TestTransferEligibilityPolicy extends TransferEligibilityPolicy {
         execute(input: TransferEligibilityInput): TransferEligibilityOutput {
           return {
             chain: {
@@ -43,8 +43,8 @@ describe("FeesService", () => {
         }
       }
 
-      const testTransferEligibility = new TestTransferEligibility();
-      const feeService = new FeesService(testTransferEligibility);
+      const transferEligibility = new TestTransferEligibilityPolicy();
+      const fees = new FeesService(transferEligibility);
 
       const input: EstimateFeeInput = {
         chainKey: "mainnet",
@@ -54,7 +54,7 @@ describe("FeesService", () => {
       };
 
       // act
-      const fee = feeService.estimateFee(input);
+      const fee = fees.estimateFee(input);
 
       // assert
       expect(fee).toEqual({

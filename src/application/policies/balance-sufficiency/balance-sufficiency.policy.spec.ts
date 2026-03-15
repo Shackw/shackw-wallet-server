@@ -18,7 +18,7 @@ describe("BalanceSufficiencyPolicy", () => {
   describe("ensure", () => {
     it("should throw TOKEN_ADDRESS_UNKNOWN when token address is not registered", async () => {
       // arrange
-      class TestTokenDepRepo extends StubTokenDeploymentRepository {
+      class TestTokenDepRepository extends StubTokenDeploymentRepository {
         findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
           expect(query).toEqual({ chainKey: "mainnet", address: "0xNullAddress" });
 
@@ -26,9 +26,9 @@ describe("BalanceSufficiencyPolicy", () => {
         }
       }
 
-      const testTokenDepRepo = new TestTokenDepRepo();
-      const stubViemErc20Adap = new StubErc20Adap();
-      const balanceSufficiency = new DefaultBalanceSufficiencyPolicy(testTokenDepRepo, stubViemErc20Adap);
+      const tokenDepRepository = new TestTokenDepRepository();
+      const erc20Adapter = new StubErc20Adap();
+      const balanceSufficiency = new DefaultBalanceSufficiencyPolicy(tokenDepRepository, erc20Adapter);
 
       const input: EnsureSufficientBalanceInput = {
         chainKey: "mainnet",
@@ -48,7 +48,7 @@ describe("BalanceSufficiencyPolicy", () => {
 
     it("should throw TOKEN_ADDRESS_UNKNOWN when fee token address is not registered", async () => {
       // arrange
-      class TestTokenDepRepo extends StubTokenDeploymentRepository {
+      class TestTokenDepRepository extends StubTokenDeploymentRepository {
         findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
           if (query.address === "0xJpycAddress")
             return {
@@ -60,9 +60,9 @@ describe("BalanceSufficiencyPolicy", () => {
         }
       }
 
-      const testTokenDepRepo = new TestTokenDepRepo();
-      const stubViemErc20Adap = new StubErc20Adap();
-      const balSuffPol = new DefaultBalanceSufficiencyPolicy(testTokenDepRepo, stubViemErc20Adap);
+      const tokenDepRepository = new TestTokenDepRepository();
+      const erc20Adapter = new StubErc20Adap();
+      const balanceSufficiency = new DefaultBalanceSufficiencyPolicy(tokenDepRepository, erc20Adapter);
 
       const input: EnsureSufficientBalanceInput = {
         chainKey: "mainnet",
@@ -74,14 +74,14 @@ describe("BalanceSufficiencyPolicy", () => {
       };
 
       // act & assert
-      await expect(balSuffPol.ensure(input)).rejects.toThrow(
+      await expect(balanceSufficiency.ensure(input)).rejects.toThrow(
         new ApplicationError({ code: "TOKEN_ADDRESS_UNKNOWN", message: "Unknown feeToken address: 0xNullAddress" })
       );
     });
 
     it("should throw INSUFFICIENT_COMBINED_BALANCE when token and fee token are the same and balance is insufficient", async () => {
       // arrange
-      class TestTokenDepRepo extends StubTokenDeploymentRepository {
+      class TestTokenDepRepository extends StubTokenDeploymentRepository {
         findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
           return {
             symbol: "JPYC",
@@ -91,7 +91,7 @@ describe("BalanceSufficiencyPolicy", () => {
         }
       }
 
-      class TestErc20Adap extends StubErc20Adap {
+      class TestErc20Adapter extends StubErc20Adap {
         getBalance(query: GetBalanceQuery): Promise<bigint> {
           expect(query).toEqual({ chainKey: "mainnet", owner: "0xOwner", tokenAddress: "0xJpycAddress" });
 
@@ -99,9 +99,9 @@ describe("BalanceSufficiencyPolicy", () => {
         }
       }
 
-      const testTokenDepRepo = new TestTokenDepRepo();
-      const testErc20Adap = new TestErc20Adap();
-      const balSuffPol = new DefaultBalanceSufficiencyPolicy(testTokenDepRepo, testErc20Adap);
+      const tokenDepRepository = new TestTokenDepRepository();
+      const erc20Adapter = new TestErc20Adapter();
+      const balanceSufficiency = new DefaultBalanceSufficiencyPolicy(tokenDepRepository, erc20Adapter);
 
       const input: EnsureSufficientBalanceInput = {
         chainKey: "mainnet",
@@ -113,7 +113,7 @@ describe("BalanceSufficiencyPolicy", () => {
       };
 
       // act & assert
-      await expect(balSuffPol.ensure(input)).rejects.toThrow(
+      await expect(balanceSufficiency.ensure(input)).rejects.toThrow(
         new ApplicationError({
           code: "INSUFFICIENT_COMBINED_BALANCE",
           message: "Insufficient JPYC balance: required 200 minimal units (amount 100 + fee 100), but sender has 50."
@@ -123,7 +123,7 @@ describe("BalanceSufficiencyPolicy", () => {
 
     it("should throw INSUFFICIENT_SEND_BALANCE when send token balance is insufficient", async () => {
       // arrange
-      class TestTokenDepRepo extends StubTokenDeploymentRepository {
+      class TestTokenDepRepository extends StubTokenDeploymentRepository {
         findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
           if (query.address === "0xJpycAddress")
             return {
@@ -141,7 +141,7 @@ describe("BalanceSufficiencyPolicy", () => {
         }
       }
 
-      class TestErc20Adap extends StubErc20Adap {
+      class TestErc20Adapter extends StubErc20Adap {
         getBalance(query: GetBalanceQuery): Promise<bigint> {
           if (query.tokenAddress === "0xJpycAddress") return Promise.resolve(30n);
           else if (query.tokenAddress === "0xUsdcAddress") return Promise.resolve(30n);
@@ -149,9 +149,9 @@ describe("BalanceSufficiencyPolicy", () => {
         }
       }
 
-      const testTokenDepRepo = new TestTokenDepRepo();
-      const testErc20Adap = new TestErc20Adap();
-      const balSuffPol = new DefaultBalanceSufficiencyPolicy(testTokenDepRepo, testErc20Adap);
+      const tokenDepRepository = new TestTokenDepRepository();
+      const erc20Adapter = new TestErc20Adapter();
+      const balanceSufficiency = new DefaultBalanceSufficiencyPolicy(tokenDepRepository, erc20Adapter);
 
       const input: EnsureSufficientBalanceInput = {
         chainKey: "mainnet",
@@ -163,7 +163,7 @@ describe("BalanceSufficiencyPolicy", () => {
       };
 
       // act & assert
-      await expect(balSuffPol.ensure(input)).rejects.toThrow(
+      await expect(balanceSufficiency.ensure(input)).rejects.toThrow(
         new ApplicationError({
           code: "INSUFFICIENT_SEND_BALANCE",
           message: "Insufficient JPYC balance: required 100 minimal units, but sender has 30."
@@ -173,7 +173,7 @@ describe("BalanceSufficiencyPolicy", () => {
 
     it("should throw INSUFFICIENT_FEE_BALANCE when fee token balance is insufficient", async () => {
       // arrange
-      class TestTokenDepRepo extends StubTokenDeploymentRepository {
+      class TestTokenDepRepository extends StubTokenDeploymentRepository {
         findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
           if (query.address === "0xJpycAddress")
             return {
@@ -191,7 +191,7 @@ describe("BalanceSufficiencyPolicy", () => {
         }
       }
 
-      class TestErc20Adap extends StubErc20Adap {
+      class TestErc20Adapter extends StubErc20Adap {
         getBalance(query: GetBalanceQuery): Promise<bigint> {
           if (query.tokenAddress === "0xJpycAddress") return Promise.resolve(200n);
           else if (query.tokenAddress === "0xUsdcAddress") return Promise.resolve(45n);
@@ -199,9 +199,9 @@ describe("BalanceSufficiencyPolicy", () => {
         }
       }
 
-      const testTokenDepRepo = new TestTokenDepRepo();
-      const testErc20Adap = new TestErc20Adap();
-      const balSuffPol = new DefaultBalanceSufficiencyPolicy(testTokenDepRepo, testErc20Adap);
+      const tokenDepRepository = new TestTokenDepRepository();
+      const erc20Adapter = new TestErc20Adapter();
+      const balanceSufficiency = new DefaultBalanceSufficiencyPolicy(tokenDepRepository, erc20Adapter);
 
       const input: EnsureSufficientBalanceInput = {
         chainKey: "mainnet",
@@ -213,7 +213,7 @@ describe("BalanceSufficiencyPolicy", () => {
       };
 
       // act & assert
-      await expect(balSuffPol.ensure(input)).rejects.toThrow(
+      await expect(balanceSufficiency.ensure(input)).rejects.toThrow(
         new ApplicationError({
           code: "INSUFFICIENT_FEE_BALANCE",
           message: "Insufficient USDC balance for fee: required 500 minimal units, but sender has 45."
@@ -223,7 +223,7 @@ describe("BalanceSufficiencyPolicy", () => {
 
     it("should succeed when send token and fee token are the same and combined balance is sufficient", async () => {
       // arrange
-      class TestTokenDepRepo extends StubTokenDeploymentRepository {
+      class TestTokenDepRepository extends StubTokenDeploymentRepository {
         findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
           return {
             symbol: "JPYC",
@@ -233,15 +233,15 @@ describe("BalanceSufficiencyPolicy", () => {
         }
       }
 
-      class TestErc20Adap extends StubErc20Adap {
+      class TestErc20Adapter extends StubErc20Adap {
         getBalance(_query: GetBalanceQuery): Promise<bigint> {
           return Promise.resolve(1000n);
         }
       }
 
-      const testTokenDepRepo = new TestTokenDepRepo();
-      const testErc20Adap = new TestErc20Adap();
-      const balSuffPol = new DefaultBalanceSufficiencyPolicy(testTokenDepRepo, testErc20Adap);
+      const tokenDepRepository = new TestTokenDepRepository();
+      const erc20Adapter = new TestErc20Adapter();
+      const balanceSufficiency = new DefaultBalanceSufficiencyPolicy(tokenDepRepository, erc20Adapter);
 
       const input: EnsureSufficientBalanceInput = {
         chainKey: "mainnet",
@@ -253,12 +253,12 @@ describe("BalanceSufficiencyPolicy", () => {
       };
 
       // act & assert
-      await expect(balSuffPol.ensure(input)).resolves.toBeUndefined();
+      await expect(balanceSufficiency.ensure(input)).resolves.toBeUndefined();
     });
 
     it("should succeed when both token balance and fee balance are sufficient", async () => {
       // arrange
-      class TestTokenDepRepo extends StubTokenDeploymentRepository {
+      class TestTokenDepRepository extends StubTokenDeploymentRepository {
         findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
           if (query.address === "0xJpycAddress")
             return {
@@ -276,7 +276,7 @@ describe("BalanceSufficiencyPolicy", () => {
         }
       }
 
-      class TestErc20Adap extends StubErc20Adap {
+      class TestErc20Adapter extends StubErc20Adap {
         getBalance(query: GetBalanceQuery): Promise<bigint> {
           if (query.tokenAddress === "0xJpycAddress") return Promise.resolve(1000n);
           else if (query.tokenAddress === "0xUsdcAddress") return Promise.resolve(1000n);
@@ -284,9 +284,9 @@ describe("BalanceSufficiencyPolicy", () => {
         }
       }
 
-      const testTokenDepRepo = new TestTokenDepRepo();
-      const testErc20Adap = new TestErc20Adap();
-      const balSuffPol = new DefaultBalanceSufficiencyPolicy(testTokenDepRepo, testErc20Adap);
+      const tokenDepRepository = new TestTokenDepRepository();
+      const erc20Adapter = new TestErc20Adapter();
+      const balanceSufficiency = new DefaultBalanceSufficiencyPolicy(tokenDepRepository, erc20Adapter);
 
       const input: EnsureSufficientBalanceInput = {
         chainKey: "mainnet",
@@ -298,7 +298,7 @@ describe("BalanceSufficiencyPolicy", () => {
       };
 
       // act & assert
-      await expect(balSuffPol.ensure(input)).resolves.toBeUndefined();
+      await expect(balanceSufficiency.ensure(input)).resolves.toBeUndefined();
     });
   });
 });

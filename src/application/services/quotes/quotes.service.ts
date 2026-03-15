@@ -57,7 +57,6 @@ export class QuotesService {
       throw new ApplicationError({
         code: "FAILED_TO_FETCH_NEXT_NONCE",
         message: "Failed to fetch next nonce.",
-        httpStatus: 500,
         cause: e
       });
     });

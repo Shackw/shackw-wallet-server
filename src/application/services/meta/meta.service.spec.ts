@@ -11,57 +11,110 @@ import { CHAIN_KEY_TO_VIEM_CHAIN } from "@/domain/constants/chain.constant";
 import { MetaService } from "./meta.service";
 
 describe("MetaService", () => {
+  const chainMasterContracts: ChainMasterContract[] = [
+    {
+      key: "mainnet",
+      id: CHAIN_KEY_TO_VIEM_CHAIN.mainnet.id,
+      rpcUrl: "https://test-rpc.com/mainnet",
+      viem: CHAIN_KEY_TO_VIEM_CHAIN.mainnet,
+      contracts: {
+        sponsor: "0xMainnetSponsor",
+        delegate: "0xMainnetDelegate",
+        registry: "0xMainnetRegistry"
+      }
+    },
+    {
+      key: "base",
+      id: CHAIN_KEY_TO_VIEM_CHAIN.base.id,
+      rpcUrl: "https://test-rpc.com/base",
+      viem: { ...CHAIN_KEY_TO_VIEM_CHAIN.base, testnet: undefined },
+      contracts: {
+        sponsor: "0xBaseSponsor",
+        delegate: "0xBaseDelegate",
+        registry: "0xBaseRegistry"
+      }
+    },
+    {
+      key: "polygonAmoy",
+      id: CHAIN_KEY_TO_VIEM_CHAIN.polygonAmoy.id,
+      rpcUrl: "https://test-rpc.com/polygonAmoy",
+      viem: CHAIN_KEY_TO_VIEM_CHAIN.polygonAmoy,
+      contracts: {
+        sponsor: "0xPolygonAmoySponsor",
+        delegate: "0xPolygonAmoyDelegate",
+        registry: "0xPolygonAmoyRegistry"
+      }
+    }
+  ];
+
+  const tokenDeploymentContracts: TokenDeploymentContract[] = [
+    {
+      token: { symbol: "USDC", address: "0xBaseUsdcAddress", currency: "USD", decimals: 6 },
+      chain: {
+        key: "base",
+        id: CHAIN_KEY_TO_VIEM_CHAIN.base.id,
+        rpcUrl: "https://test-rpc.com/base",
+        viem: CHAIN_KEY_TO_VIEM_CHAIN.base
+      },
+      contracts: {
+        sponsor: "0xBaseSponsor",
+        delegate: "0xBaseDelegate",
+        registry: "0xBaseRegistry"
+      },
+      minTransferAmountUnits: 3000000n,
+      fixedFeeAmountUnits: 50000n
+    },
+    {
+      token: { symbol: "JPYC", address: "0xMainnetJpycAddress", currency: "JPY", decimals: 18 },
+      chain: {
+        key: "mainnet",
+        id: CHAIN_KEY_TO_VIEM_CHAIN.mainnet.id,
+        rpcUrl: "https://test-rpc.com/mainnet",
+        viem: CHAIN_KEY_TO_VIEM_CHAIN.mainnet
+      },
+      contracts: {
+        sponsor: "0xMainnetSponsor",
+        delegate: "0xMainnetDelegate",
+        registry: "0xMainnetRegistry"
+      },
+      minTransferAmountUnits: 1000000000000000000000n,
+      fixedFeeAmountUnits: 100000000000000000000n
+    },
+    {
+      token: { symbol: "JPYC", address: "0xPolygonJpycAddress", currency: "JPY", decimals: 18 },
+      chain: {
+        key: "polygon",
+        id: CHAIN_KEY_TO_VIEM_CHAIN.polygon.id,
+        rpcUrl: "https://test-rpc.com/polygon",
+        viem: CHAIN_KEY_TO_VIEM_CHAIN.polygon
+      },
+      contracts: {
+        sponsor: "0xPolygonSponsor",
+        delegate: "0xPolygonDelegate",
+        registry: "0xPolygonRegistry"
+      },
+      minTransferAmountUnits: 100000000000000000000n,
+      fixedFeeAmountUnits: 2000000000000000000n
+    }
+  ];
+
   describe("getChainsMeta", () => {
     it("should return chain metadata for all supported chains", () => {
       // arrange
-      class TestTokenDepRepo extends StubTokenDeploymentRepository {
+      class TestTokenDepRepository extends StubTokenDeploymentRepository {
         listChainMasters(): ChainMasterContract[] {
-          return [
-            {
-              key: "mainnet",
-              id: CHAIN_KEY_TO_VIEM_CHAIN.mainnet.id,
-              rpcUrl: "https://test-rpc.com/mainnet",
-              viem: CHAIN_KEY_TO_VIEM_CHAIN.mainnet,
-              contracts: {
-                sponsor: "0xMainnetSponsor",
-                delegate: "0xMainnetDelegate",
-                registry: "0xMainnetRegistry"
-              }
-            },
-            {
-              key: "base",
-              id: CHAIN_KEY_TO_VIEM_CHAIN.base.id,
-              rpcUrl: "https://test-rpc.com/base",
-              viem: { ...CHAIN_KEY_TO_VIEM_CHAIN.base, testnet: undefined },
-              contracts: {
-                sponsor: "0xBaseSponsor",
-                delegate: "0xBaseDelegate",
-                registry: "0xBaseRegistry"
-              }
-            },
-            {
-              key: "polygonAmoy",
-              id: CHAIN_KEY_TO_VIEM_CHAIN.polygonAmoy.id,
-              rpcUrl: "https://test-rpc.com/polygonAmoy",
-              viem: CHAIN_KEY_TO_VIEM_CHAIN.polygonAmoy,
-              contracts: {
-                sponsor: "0xPolygonAmoySponsor",
-                delegate: "0xPolygonAmoyDelegate",
-                registry: "0xPolygonAmoyRegistry"
-              }
-            }
-          ];
+          return chainMasterContracts;
         }
       }
 
-      const testTokenDepRepo = new TestTokenDepRepo();
-      const metaService = new MetaService(testTokenDepRepo);
+      const tokenDepRepository = new TestTokenDepRepository();
+      const meta = new MetaService(tokenDepRepository);
 
       // act
-      const meta = metaService.getChainsMeta();
+      const chainsMeta = meta.getChainsMeta();
 
       // assert
-      expect(meta).toEqual([
+      expect(chainsMeta).toEqual([
         { id: 1, key: "mainnet", testnet: false },
         { id: 8453, key: "base", testnet: false },
         { id: 80002, key: "polygonAmoy", testnet: true }
@@ -72,69 +125,20 @@ describe("MetaService", () => {
   describe("getTokensMeta", () => {
     it("should return token metadata for all supported tokens on every chain", () => {
       // arrange
-      class TestTokenDepRepo extends StubTokenDeploymentRepository {
+      class TestTokenDepRepository extends StubTokenDeploymentRepository {
         listTokenDeployment(): TokenDeploymentContract[] {
-          return [
-            {
-              token: { symbol: "USDC", address: "0xBaseUsdcAddress", currency: "USD", decimals: 6 },
-              chain: {
-                key: "base",
-                id: CHAIN_KEY_TO_VIEM_CHAIN.base.id,
-                rpcUrl: "https://test-rpc.com/base",
-                viem: CHAIN_KEY_TO_VIEM_CHAIN.base
-              },
-              contracts: {
-                sponsor: "0xBaseSponsor",
-                delegate: "0xBaseDelegate",
-                registry: "0xBaseRegistry"
-              },
-              minTransferAmountUnits: 3000000n,
-              fixedFeeAmountUnits: 50000n
-            },
-            {
-              token: { symbol: "JPYC", address: "0xMainnetJpycAddress", currency: "JPY", decimals: 18 },
-              chain: {
-                key: "mainnet",
-                id: CHAIN_KEY_TO_VIEM_CHAIN.mainnet.id,
-                rpcUrl: "https://test-rpc.com/mainnet",
-                viem: CHAIN_KEY_TO_VIEM_CHAIN.mainnet
-              },
-              contracts: {
-                sponsor: "0xMainnetSponsor",
-                delegate: "0xMainnetDelegate",
-                registry: "0xMainnetRegistry"
-              },
-              minTransferAmountUnits: 1000000000000000000000n,
-              fixedFeeAmountUnits: 100000000000000000000n
-            },
-            {
-              token: { symbol: "JPYC", address: "0xPolygonJpycAddress", currency: "JPY", decimals: 18 },
-              chain: {
-                key: "polygon",
-                id: CHAIN_KEY_TO_VIEM_CHAIN.polygon.id,
-                rpcUrl: "https://test-rpc.com/polygon",
-                viem: CHAIN_KEY_TO_VIEM_CHAIN.polygon
-              },
-              contracts: {
-                sponsor: "0xPolygonSponsor",
-                delegate: "0xPolygonDelegate",
-                registry: "0xPolygonRegistry"
-              },
-              minTransferAmountUnits: 100000000000000000000n,
-              fixedFeeAmountUnits: 2000000000000000000n
-            }
-          ];
+          return tokenDeploymentContracts;
         }
       }
 
-      const testTokenDepRepo = new TestTokenDepRepo();
-      const metaService = new MetaService(testTokenDepRepo);
+      const tokenDepRepository = new TestTokenDepRepository();
+      const meta = new MetaService(tokenDepRepository);
 
       // act
-      const meta = metaService.getTokensMeta();
+      const tokensMeta = meta.getTokensMeta();
 
       // assert
-      expect(meta).toEqual([
+      expect(tokensMeta).toEqual([
         { symbol: "USDC", decimals: 6, address: { base: "0xBaseUsdcAddress" } },
         {
           symbol: "JPYC",
@@ -148,69 +152,20 @@ describe("MetaService", () => {
   describe("getFeesMeta", () => {
     it("should return fee metadata for all supported tokens across all chains", () => {
       // arrange
-      class TestTokenDepRepo extends StubTokenDeploymentRepository {
+      class TestTokenDepRepository extends StubTokenDeploymentRepository {
         listTokenDeployment(): TokenDeploymentContract[] {
-          return [
-            {
-              token: { symbol: "USDC", address: "0xBaseUsdcAddress", currency: "USD", decimals: 6 },
-              chain: {
-                key: "base",
-                id: CHAIN_KEY_TO_VIEM_CHAIN.base.id,
-                rpcUrl: "https://test-rpc.com/base",
-                viem: CHAIN_KEY_TO_VIEM_CHAIN.base
-              },
-              contracts: {
-                sponsor: "0xBaseSponsor",
-                delegate: "0xBaseDelegate",
-                registry: "0xBaseRegistry"
-              },
-              minTransferAmountUnits: 3000000n,
-              fixedFeeAmountUnits: 50000n
-            },
-            {
-              token: { symbol: "JPYC", address: "0xMainnetJpycAddress", currency: "JPY", decimals: 18 },
-              chain: {
-                key: "mainnet",
-                id: CHAIN_KEY_TO_VIEM_CHAIN.mainnet.id,
-                rpcUrl: "https://test-rpc.com/mainnet",
-                viem: CHAIN_KEY_TO_VIEM_CHAIN.mainnet
-              },
-              contracts: {
-                sponsor: "0xMainnetSponsor",
-                delegate: "0xMainnetDelegate",
-                registry: "0xMainnetRegistry"
-              },
-              minTransferAmountUnits: 1000000000000000000000n,
-              fixedFeeAmountUnits: 100000000000000000000n
-            },
-            {
-              token: { symbol: "JPYC", address: "0xPolygonJpycAddress", currency: "JPY", decimals: 18 },
-              chain: {
-                key: "polygon",
-                id: CHAIN_KEY_TO_VIEM_CHAIN.polygon.id,
-                rpcUrl: "https://test-rpc.com/polygon",
-                viem: CHAIN_KEY_TO_VIEM_CHAIN.polygon
-              },
-              contracts: {
-                sponsor: "0xPolygonSponsor",
-                delegate: "0xPolygonDelegate",
-                registry: "0xPolygonRegistry"
-              },
-              minTransferAmountUnits: 100000000000000000000n,
-              fixedFeeAmountUnits: 2000000000000000000n
-            }
-          ];
+          return tokenDeploymentContracts;
         }
       }
 
-      const testTokenDepRepo = new TestTokenDepRepo();
-      const metaService = new MetaService(testTokenDepRepo);
+      const tokenDepRepository = new TestTokenDepRepository();
+      const meta = new MetaService(tokenDepRepository);
 
       // act
-      const meta = metaService.getFeesMeta();
+      const feesMeta = meta.getFeesMeta();
 
       // assert
-      expect(meta).toEqual([
+      expect(feesMeta).toEqual([
         {
           chainKey: "base",
           tokenSymbol: "USDC",
@@ -236,69 +191,20 @@ describe("MetaService", () => {
   describe("getMinTransfersMeta", () => {
     it("should return min transfers units metadata for all supported tokens across all chains", () => {
       // arrange
-      class TestTokenDepRepo extends StubTokenDeploymentRepository {
+      class TestTokenDepRepository extends StubTokenDeploymentRepository {
         listTokenDeployment(): TokenDeploymentContract[] {
-          return [
-            {
-              token: { symbol: "USDC", address: "0xBaseUsdcAddress", currency: "USD", decimals: 6 },
-              chain: {
-                key: "base",
-                id: CHAIN_KEY_TO_VIEM_CHAIN.base.id,
-                rpcUrl: "https://test-rpc.com/base",
-                viem: CHAIN_KEY_TO_VIEM_CHAIN.base
-              },
-              contracts: {
-                sponsor: "0xBaseSponsor",
-                delegate: "0xBaseDelegate",
-                registry: "0xBaseRegistry"
-              },
-              minTransferAmountUnits: 3000000n,
-              fixedFeeAmountUnits: 50000n
-            },
-            {
-              token: { symbol: "JPYC", address: "0xMainnetJpycAddress", currency: "JPY", decimals: 18 },
-              chain: {
-                key: "mainnet",
-                id: CHAIN_KEY_TO_VIEM_CHAIN.mainnet.id,
-                rpcUrl: "https://test-rpc.com/mainnet",
-                viem: CHAIN_KEY_TO_VIEM_CHAIN.mainnet
-              },
-              contracts: {
-                sponsor: "0xMainnetSponsor",
-                delegate: "0xMainnetDelegate",
-                registry: "0xMainnetRegistry"
-              },
-              minTransferAmountUnits: 1000000000000000000000n,
-              fixedFeeAmountUnits: 100000000000000000000n
-            },
-            {
-              token: { symbol: "JPYC", address: "0xPolygonJpycAddress", currency: "JPY", decimals: 18 },
-              chain: {
-                key: "polygon",
-                id: CHAIN_KEY_TO_VIEM_CHAIN.polygon.id,
-                rpcUrl: "https://test-rpc.com/polygon",
-                viem: CHAIN_KEY_TO_VIEM_CHAIN.polygon
-              },
-              contracts: {
-                sponsor: "0xPolygonSponsor",
-                delegate: "0xPolygonDelegate",
-                registry: "0xPolygonRegistry"
-              },
-              minTransferAmountUnits: 100000000000000000000n,
-              fixedFeeAmountUnits: 2000000000000000000n
-            }
-          ];
+          return tokenDeploymentContracts;
         }
       }
 
-      const testTokenDepRepo = new TestTokenDepRepo();
-      const metaService = new MetaService(testTokenDepRepo);
+      const tokenDepRepository = new TestTokenDepRepository();
+      const meta = new MetaService(tokenDepRepository);
 
       // act
-      const meta = metaService.getMinTransfersMeta();
+      const minTransfersMeta = meta.getMinTransfersMeta();
 
       // assert
-      expect(meta).toEqual([
+      expect(minTransfersMeta).toEqual([
         {
           chainKey: "base",
           tokenSymbol: "USDC",
@@ -324,54 +230,20 @@ describe("MetaService", () => {
   describe("getContractsMeta", () => {
     it("should return contracts addresses metadata for all supported chains", () => {
       // arrange
-      class TestTokenDepRepo extends StubTokenDeploymentRepository {
+      class TestTokenDepRepository extends StubTokenDeploymentRepository {
         listChainMasters(): ChainMasterContract[] {
-          return [
-            {
-              key: "mainnet",
-              id: CHAIN_KEY_TO_VIEM_CHAIN.mainnet.id,
-              rpcUrl: "https://test-rpc.com/mainnet",
-              viem: CHAIN_KEY_TO_VIEM_CHAIN.mainnet,
-              contracts: {
-                sponsor: "0xMainnetSponsor",
-                delegate: "0xMainnetDelegate",
-                registry: "0xMainnetRegistry"
-              }
-            },
-            {
-              key: "base",
-              id: CHAIN_KEY_TO_VIEM_CHAIN.base.id,
-              rpcUrl: "https://test-rpc.com/base",
-              viem: { ...CHAIN_KEY_TO_VIEM_CHAIN.base, testnet: undefined },
-              contracts: {
-                sponsor: "0xBaseSponsor",
-                delegate: "0xBaseDelegate",
-                registry: "0xBaseRegistry"
-              }
-            },
-            {
-              key: "polygonAmoy",
-              id: CHAIN_KEY_TO_VIEM_CHAIN.polygonAmoy.id,
-              rpcUrl: "https://test-rpc.com/polygonAmoy",
-              viem: CHAIN_KEY_TO_VIEM_CHAIN.polygonAmoy,
-              contracts: {
-                sponsor: "0xPolygonAmoySponsor",
-                delegate: "0xPolygonAmoyDelegate",
-                registry: "0xPolygonAmoyRegistry"
-              }
-            }
-          ];
+          return chainMasterContracts;
         }
       }
 
-      const testTokenDepRepo = new TestTokenDepRepo();
-      const metaService = new MetaService(testTokenDepRepo);
+      const tokenDepRepository = new TestTokenDepRepository();
+      const meta = new MetaService(tokenDepRepository);
 
       // act
-      const meta = metaService.getContractsMeta();
+      const contractsMeta = meta.getContractsMeta();
 
       // assert
-      expect(meta).toEqual({
+      expect(contractsMeta).toEqual({
         sponsor: {
           mainnet: "0xMainnetSponsor",
           base: "0xBaseSponsor",
@@ -394,11 +266,11 @@ describe("MetaService", () => {
   describe("getMetaSummary", () => {
     it("should return metadata summary for all supported chains", () => {
       // arrange
-      const stubTokenDepRepo = new StubTokenDeploymentRepository();
-      const metaService = new MetaService(stubTokenDepRepo);
+      const tokenDepRepository = new StubTokenDeploymentRepository();
+      const meta = new MetaService(tokenDepRepository);
 
       // act
-      const summary = metaService.getMetaSummary();
+      const summary = meta.getMetaSummary();
 
       // assert
       expect(summary).toEqual({

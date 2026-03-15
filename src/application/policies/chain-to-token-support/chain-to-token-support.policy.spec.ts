@@ -17,15 +17,15 @@ describe("ChainToTokenSupportPolicy", () => {
   describe("execute", () => {
     it("should throw UNSUPPORTED_TOKEN_FOR_CHAIN when token symbol is not supported on chain", () => {
       // arrange
-      class TestTokenDepRepo extends StubTokenDeploymentRepository {
+      class TestTokenDepRepository extends StubTokenDeploymentRepository {
         findTokenDeployment(query: FindTokenDeploymentQuery): TokenDeploymentContract | null {
           expect(query).toEqual({ chainKey: "base", tokenSymbol: "JPYC" });
           return null;
         }
       }
 
-      const testTokenDepRepo = new TestTokenDepRepo();
-      const chainToTokenSupport = new DefaultChainToTokenSupportPolicy(testTokenDepRepo);
+      const tokenDepRepository = new TestTokenDepRepository();
+      const chainToTokenSupport = new DefaultChainToTokenSupportPolicy(tokenDepRepository);
 
       const input: ChainToTokenSupportInput = {
         chainKey: "base",
@@ -43,7 +43,7 @@ describe("ChainToTokenSupportPolicy", () => {
 
     it("should succeed when token symbol is supported on chain", () => {
       // arrange
-      class TestTokenDepRepo extends StubTokenDeploymentRepository {
+      class TestTokenDepRepository extends StubTokenDeploymentRepository {
         findTokenDeployment(_query: FindTokenDeploymentQuery): TokenDeploymentContract | null {
           return {
             token: { address: "0xJpycAddress", symbol: "JPYC", currency: "JPY", decimals: 0 },
@@ -64,8 +64,8 @@ describe("ChainToTokenSupportPolicy", () => {
         }
       }
 
-      const testTokenDepRepo = new TestTokenDepRepo();
-      const chainToTokenSupport = new DefaultChainToTokenSupportPolicy(testTokenDepRepo);
+      const tokenDepRepository = new TestTokenDepRepository();
+      const chainToTokenSupport = new DefaultChainToTokenSupportPolicy(tokenDepRepository);
 
       const input: ChainToTokenSupportInput = {
         chainKey: "mainnet",

@@ -35,7 +35,7 @@ describe("QuoteTokenProtocol", () => {
       const result = encodeQuoteToken(baseInput, secret);
 
       // assert
-      expect(result).toEqual(assertToken);
+      expect(result).toBe(assertToken);
     });
 
     it("should succeed with lowercase addresses", () => {
@@ -54,7 +54,27 @@ describe("QuoteTokenProtocol", () => {
       const result = encodeQuoteToken(input, secret);
 
       // assert
-      expect(result).toEqual(assertToken);
+      expect(result).toBe(assertToken);
+    });
+
+    it("should produce different tokens for different sender addresses", () => {
+      // arrange
+      const input1: QuoteTokenValueObject = {
+        ...baseInput,
+        sender: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
+      };
+
+      const input2: QuoteTokenValueObject = {
+        ...baseInput,
+        sender: "0x9b7D6e4F3a2C1B0E5D8F7A6c4B3e2D1F0A9C8B7D"
+      };
+
+      // act
+      const result1 = encodeQuoteToken(input1, secret);
+      const result2 = encodeQuoteToken(input2, secret);
+
+      // assert
+      expect(result1).not.toBe(result2);
     });
   });
 
