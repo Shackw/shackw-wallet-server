@@ -4,19 +4,25 @@ import { ApplicationError } from "@/application/errors";
 import { TokenDeploymentRepository } from "@/application/ports/repositories/token-deployment.repository.port";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
-import type { ChainToTokenSupportInput, ChainToTokenSupportOutput } from "./chain-to-token-support.policy.types";
+import {
+  ChainToTokenSupportInput,
+  ChainToTokenSupportOutput,
+  ChainToTokenSupportPolicy
+} from "./chain-to-token-support.policy.types";
 
 @Injectable()
-export class ChainToTokenSupportPolicy {
+export class DefaultChainToTokenSupportPolicy extends ChainToTokenSupportPolicy {
   constructor(
     @Inject(DI_TOKENS.TOKEN_DEPLOYMENT_REPOSITORY)
-    private readonly tokenDeploymentRepository: TokenDeploymentRepository
-  ) {}
+    private readonly tokenDepRepository: TokenDeploymentRepository
+  ) {
+    super();
+  }
 
   execute(input: ChainToTokenSupportInput): ChainToTokenSupportOutput {
     const { chainKey, tokenSymbol } = input;
 
-    const tokenDep = this.tokenDeploymentRepository.findTokenDeployment({ chainKey, tokenSymbol });
+    const tokenDep = this.tokenDepRepository.findTokenDeployment({ chainKey, tokenSymbol });
     if (!tokenDep)
       throw new ApplicationError({
         code: "UNSUPPORTED_TOKEN_FOR_CHAIN",

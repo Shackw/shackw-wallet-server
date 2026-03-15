@@ -19,6 +19,7 @@ export class TransactionsService {
     @Inject(DI_TOKENS.MORALIS_GATEWAY)
     private readonly moralisApiGateway: MoralisGateway,
 
+    @Inject(DI_TOKENS.CHAIN_TO_TOKEN_SUPPORT_POLICY)
     private readonly chainToTokenSupport: ChainToTokenSupportPolicy
   ) {}
 

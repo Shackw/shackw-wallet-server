@@ -16,13 +16,13 @@ import { toSearchTransactionsResponseDto } from "./transactions.entity-to-respon
 @UseGuards(AppCheckGuard)
 @UseFilters(HttpExceptionsFilter)
 export class TransactionsController {
-  constructor(private readonly transactionsService: TransactionsService) {}
+  constructor(private readonly transactions: TransactionsService) {}
 
   @Post("transactions\\:search")
   async searchTransactions(
     @Body(new ValibotPipe(SearchTransactionsRequestDtoSchema)) dto: SearchTransactionsRequestDto
   ): Promise<SearchTransactionsResponseDto[]> {
-    const entities = await this.transactionsService.searchTransactions({
+    const entities = await this.transactions.searchTransactions({
       chainKey: dto.chain,
       tokenSymbols: dto.tokens.map(token => token.symbol),
       walletAddress: dto.wallet,

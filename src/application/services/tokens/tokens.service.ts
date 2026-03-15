@@ -15,13 +15,13 @@ import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 import { TransferTokenInput } from "./tokens.service.types";
 
 @Injectable()
-export class TokenService {
+export class TokensService {
   constructor(
     @Inject(DI_TOKENS.QUOTE_TOKEN_SECRET)
     private readonly quoteTokenSecret: Hex,
 
     @Inject(DI_TOKENS.TOKEN_DEPLOYMENT_REPOSITORY)
-    private readonly tokenDeploymentRepository: TokenDeploymentRepository,
+    private readonly tokenDepRepository: TokenDeploymentRepository,
 
     @Inject(DI_TOKENS.REGISTRY_ADAPTER)
     private readonly registryAdapter: RegistryAdapter,
@@ -29,7 +29,8 @@ export class TokenService {
     @Inject(DI_TOKENS.SPONSOR_ADAPTER)
     private readonly sponsorAdapter: SponsorAdapter,
 
-    private readonly balanceSufficiencyPolicy: BalanceSufficiencyPolicy
+    @Inject(DI_TOKENS.BALANCE_SUFFICIENCY_POLICY)
+    private readonly balanceSufficiency: BalanceSufficiencyPolicy
   ) {}
 
   async transferToken(input: TransferTokenInput): Promise<TransferTokenEntity> {
@@ -60,7 +61,7 @@ export class TokenService {
       });
 
     // 2b) Validate that the chain in the payload matches the chain used when issuing the quote.
-    const chainMaster = this.tokenDeploymentRepository.findChainMaster({ chainKey });
+    const chainMaster = this.tokenDepRepository.findChainMaster({ chainKey });
     if (chainMaster.id !== chainId)
       throw new ApplicationError({
         code: "QUOTE_TOKEN_CHAIN_MISMATCH",
@@ -135,7 +136,7 @@ export class TokenService {
       });
 
     // 6) Sender balance checks for token and feeToken
-    await this.balanceSufficiencyPolicy.ensure({
+    await this.balanceSufficiency.ensure({
       chainKey,
       owner: sender,
       tokenAddress: token,

@@ -1,15 +1,25 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { formatUnits } from "viem";
 
 import { ApplicationError } from "@/application/errors";
+import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
 import { ChainToTokenSupportPolicy } from "../chain-to-token-support";
 
-import type { TransferEligibilityInput, TransferEligibilityOutput } from "./transfer-eligibility.policy.types";
+import {
+  TransferEligibilityPolicy,
+  TransferEligibilityInput,
+  TransferEligibilityOutput
+} from "./transfer-eligibility.policy.types";
 
 @Injectable()
-export class TransferEligibilityPolicy {
-  constructor(private readonly chainToTokenSupport: ChainToTokenSupportPolicy) {}
+export class DefaultTransferEligibilityPolicy extends TransferEligibilityPolicy {
+  constructor(
+    @Inject(DI_TOKENS.CHAIN_TO_TOKEN_SUPPORT_POLICY)
+    private readonly chainToTokenSupport: ChainToTokenSupportPolicy
+  ) {
+    super();
+  }
 
   execute(input: TransferEligibilityInput): TransferEligibilityOutput {
     const { chainKey, tokenSymbol, feeTokenSymbol, amountMinUnits } = input;

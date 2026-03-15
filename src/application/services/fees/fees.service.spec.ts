@@ -1,8 +1,5 @@
 import { describe, it, expect } from "vitest";
 
-import { StubTokenDeploymentRepository } from "@test/doubles/repositories/stub-token-deployment.repository";
-
-import { ChainToTokenSupportPolicy } from "@/application/policies/chain-to-token-support";
 import type { TransferEligibilityInput, TransferEligibilityOutput } from "@/application/policies/transfer-eligibility";
 import { TransferEligibilityPolicy } from "@/application/policies/transfer-eligibility";
 import { CHAIN_KEY_TO_VIEM_CHAIN } from "@/domain/constants/chain.constant";
@@ -46,9 +43,7 @@ describe("FeesService", () => {
         }
       }
 
-      const stubTokenDepRepo = new StubTokenDeploymentRepository();
-      const chainToTokenSupport = new ChainToTokenSupportPolicy(stubTokenDepRepo);
-      const testTransferEligibility = new TestTransferEligibility(chainToTokenSupport);
+      const testTransferEligibility = new TestTransferEligibility();
       const feeService = new FeesService(testTransferEligibility);
 
       const input: EstimateFeeInput = {

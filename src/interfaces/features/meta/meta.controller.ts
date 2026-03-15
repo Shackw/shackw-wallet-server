@@ -26,41 +26,41 @@ import type {
 @UseGuards(AppCheckGuard)
 @UseFilters(HttpExceptionsFilter)
 export class MetaController {
-  constructor(private readonly metaService: MetaService) {}
+  constructor(private readonly meta: MetaService) {}
 
   @Get("summary")
   summary(): GetMetaSummaryResponseDto {
-    const entity = this.metaService.getMetaSummary();
+    const entity = this.meta.getMetaSummary();
     return toGetMetaSummaryResponseDto(entity);
   }
 
   @Get("chains")
   chains(): GetChainMetaResponseDto {
-    const entities = this.metaService.getChainsMeta();
+    const entities = this.meta.getChainsMeta();
     return toGetChainMetaResponseDto(entities);
   }
 
   @Get("tokens")
   tokens(): GetTokenMetaResponseDto {
-    const entities = this.metaService.getTokensMeta();
+    const entities = this.meta.getTokensMeta();
     return toGetTokenMetaResponseDto(entities);
   }
 
   @Get("fees")
   fees(): GeFeeMetaResponseDto {
-    const entities = this.metaService.getFeesMeta();
+    const entities = this.meta.getFeesMeta();
     return toGeFeeMetaResponseDto(entities);
   }
 
   @Get("min-transfers")
   minTransfer(): GetMinTransferMetaResponseDto {
-    const entities = this.metaService.getMinTransfersMeta();
+    const entities = this.meta.getMinTransfersMeta();
     return toGetMinTransferMetaResponseDto(entities);
   }
 
   @Get("contracts")
   contracts(): GetContractsMetaResponseDto {
-    const entity = this.metaService.getContractsMeta();
+    const entity = this.meta.getContractsMeta();
     return toGetContractsMetaResponseDto(entity);
   }
 }

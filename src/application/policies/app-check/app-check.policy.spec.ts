@@ -5,7 +5,7 @@ import { StubAppCheckAdapter } from "@test/doubles/adapters/stub-app-check.adpte
 import { ApplicationError } from "@/application/errors";
 import type { AppCheckVerifyTokenQuery } from "@/application/ports/adapters/app-check.adapter.port";
 
-import { AppCheckPolicy } from "./app-check.policy";
+import { DefaultAppCheckPolicy } from "./app-check.policy";
 
 import type { VerifyAppCheckTokenInput } from "./app-check.policy.type";
 
@@ -20,7 +20,7 @@ describe("AppCheckPolicy", () => {
       }
 
       const testAppCheckAdap = new TestAppCheckAdap();
-      const appCheckPol = new AppCheckPolicy(testAppCheckAdap);
+      const appCheckPol = new DefaultAppCheckPolicy(testAppCheckAdap);
 
       const input: VerifyAppCheckTokenInput = {
         token: "app-check-token"
@@ -46,7 +46,7 @@ describe("AppCheckPolicy", () => {
       }
 
       const testAppCheckAdap = new TestAppCheckAdap();
-      const appCheckPol = new AppCheckPolicy(testAppCheckAdap);
+      const appCheckPol = new DefaultAppCheckPolicy(testAppCheckAdap);
 
       const input: VerifyAppCheckTokenInput = {
         token: "app-check-token"

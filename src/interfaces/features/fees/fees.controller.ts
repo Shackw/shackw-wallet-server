@@ -12,11 +12,11 @@ import { toEstimateFeeResponseDto } from "./fees.entity-to-response";
 @UseGuards(AppCheckGuard)
 @UseFilters(HttpExceptionsFilter)
 export class FeesController {
-  constructor(private readonly feesService: FeesService) {}
+  constructor(private readonly fees: FeesService) {}
 
   @Post("fees\\:estimate")
   estimate(@Body(new ValibotPipe(EstimateFeeRequestDtoSchema)) dto: EstimateFeeRequestDto): EstimateFeeResponseDto {
-    const entity = this.feesService.estimateFee({
+    const entity = this.fees.estimateFee({
       chainKey: dto.chain,
       tokenSymbol: dto.token.symbol,
       feeTokenSymbol: dto.feeToken.symbol,

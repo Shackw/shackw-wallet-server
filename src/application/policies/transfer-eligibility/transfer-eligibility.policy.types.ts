@@ -2,6 +2,11 @@ import type { TokenDeploymentContract } from "@/application/ports/repositories/t
 import type { Chain } from "@/domain/constants/chain.constant";
 import type { Token } from "@/domain/constants/token.constant";
 
+// === Abstract ===
+export abstract class TransferEligibilityPolicy {
+  abstract execute(input: TransferEligibilityInput): TransferEligibilityOutput;
+}
+
 // === Input ===
 export type TransferEligibilityInput = Readonly<{
   chainKey: Chain;

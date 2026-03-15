@@ -10,7 +10,7 @@ import type {
   TokenMasterContract
 } from "@/application/ports/repositories/token-deployment.repository.port";
 
-import { BalanceSufficiencyPolicy } from "./balance-sufficiency.policy";
+import { DefaultBalanceSufficiencyPolicy } from "./balance-sufficiency.policy";
 
 import type { EnsureSufficientBalanceInput } from "./balance-sufficiency.policy.types";
 
@@ -28,7 +28,7 @@ describe("BalanceSufficiencyPolicy", () => {
 
       const testTokenDepRepo = new TestTokenDepRepo();
       const stubViemErc20Adap = new StubErc20Adap();
-      const balanceSufficiency = new BalanceSufficiencyPolicy(testTokenDepRepo, stubViemErc20Adap);
+      const balanceSufficiency = new DefaultBalanceSufficiencyPolicy(testTokenDepRepo, stubViemErc20Adap);
 
       const input: EnsureSufficientBalanceInput = {
         chainKey: "mainnet",
@@ -62,7 +62,7 @@ describe("BalanceSufficiencyPolicy", () => {
 
       const testTokenDepRepo = new TestTokenDepRepo();
       const stubViemErc20Adap = new StubErc20Adap();
-      const balSuffPol = new BalanceSufficiencyPolicy(testTokenDepRepo, stubViemErc20Adap);
+      const balSuffPol = new DefaultBalanceSufficiencyPolicy(testTokenDepRepo, stubViemErc20Adap);
 
       const input: EnsureSufficientBalanceInput = {
         chainKey: "mainnet",
@@ -101,7 +101,7 @@ describe("BalanceSufficiencyPolicy", () => {
 
       const testTokenDepRepo = new TestTokenDepRepo();
       const testErc20Adap = new TestErc20Adap();
-      const balSuffPol = new BalanceSufficiencyPolicy(testTokenDepRepo, testErc20Adap);
+      const balSuffPol = new DefaultBalanceSufficiencyPolicy(testTokenDepRepo, testErc20Adap);
 
       const input: EnsureSufficientBalanceInput = {
         chainKey: "mainnet",
@@ -151,7 +151,7 @@ describe("BalanceSufficiencyPolicy", () => {
 
       const testTokenDepRepo = new TestTokenDepRepo();
       const testErc20Adap = new TestErc20Adap();
-      const balSuffPol = new BalanceSufficiencyPolicy(testTokenDepRepo, testErc20Adap);
+      const balSuffPol = new DefaultBalanceSufficiencyPolicy(testTokenDepRepo, testErc20Adap);
 
       const input: EnsureSufficientBalanceInput = {
         chainKey: "mainnet",
@@ -201,7 +201,7 @@ describe("BalanceSufficiencyPolicy", () => {
 
       const testTokenDepRepo = new TestTokenDepRepo();
       const testErc20Adap = new TestErc20Adap();
-      const balSuffPol = new BalanceSufficiencyPolicy(testTokenDepRepo, testErc20Adap);
+      const balSuffPol = new DefaultBalanceSufficiencyPolicy(testTokenDepRepo, testErc20Adap);
 
       const input: EnsureSufficientBalanceInput = {
         chainKey: "mainnet",
@@ -241,7 +241,7 @@ describe("BalanceSufficiencyPolicy", () => {
 
       const testTokenDepRepo = new TestTokenDepRepo();
       const testErc20Adap = new TestErc20Adap();
-      const balSuffPol = new BalanceSufficiencyPolicy(testTokenDepRepo, testErc20Adap);
+      const balSuffPol = new DefaultBalanceSufficiencyPolicy(testTokenDepRepo, testErc20Adap);
 
       const input: EnsureSufficientBalanceInput = {
         chainKey: "mainnet",
@@ -286,7 +286,7 @@ describe("BalanceSufficiencyPolicy", () => {
 
       const testTokenDepRepo = new TestTokenDepRepo();
       const testErc20Adap = new TestErc20Adap();
-      const balSuffPol = new BalanceSufficiencyPolicy(testTokenDepRepo, testErc20Adap);
+      const balSuffPol = new DefaultBalanceSufficiencyPolicy(testTokenDepRepo, testErc20Adap);
 
       const input: EnsureSufficientBalanceInput = {
         chainKey: "mainnet",

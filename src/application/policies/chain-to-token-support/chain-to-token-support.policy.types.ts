@@ -2,6 +2,11 @@ import type { TokenDeploymentContract } from "@/application/ports/repositories/t
 import type { Chain } from "@/domain/constants/chain.constant";
 import type { Token } from "@/domain/constants/token.constant";
 
+// === Abstract ===
+export abstract class ChainToTokenSupportPolicy {
+  abstract execute(input: ChainToTokenSupportInput): ChainToTokenSupportOutput;
+}
+
 // === Input ===
 export type ChainToTokenSupportInput = Readonly<{
   chainKey: Chain;

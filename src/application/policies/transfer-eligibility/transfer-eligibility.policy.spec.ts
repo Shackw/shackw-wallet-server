@@ -5,9 +5,9 @@ import { StubTokenDeploymentRepository } from "@test/doubles/repositories/stub-t
 import { ApplicationError } from "@/application/errors";
 import { CHAIN_KEY_TO_VIEM_CHAIN } from "@/domain/constants/chain.constant";
 
-import { ChainToTokenSupportPolicy } from "../chain-to-token-support";
+import { ChainToTokenSupportPolicy, DefaultChainToTokenSupportPolicy } from "../chain-to-token-support";
 
-import { TransferEligibilityPolicy } from "./transfer-eligibility.policy";
+import { DefaultTransferEligibilityPolicy } from "./transfer-eligibility.policy";
 
 import type { TransferEligibilityInput } from "./transfer-eligibility.policy.types";
 import type { ChainToTokenSupportInput, ChainToTokenSupportOutput } from "../chain-to-token-support";
@@ -16,7 +16,7 @@ describe("TransferEligibilityPolicy", () => {
   describe("execute", () => {
     it("should throw TRANSFER_AMOUNT_BELOW_MINIMUM when the transfer amount is below the minimum", () => {
       // arrange
-      class TestChainToTokenSupport extends ChainToTokenSupportPolicy {
+      class TestChainToTokenSupport extends DefaultChainToTokenSupportPolicy {
         execute(input: ChainToTokenSupportInput): ChainToTokenSupportOutput {
           const common = {
             chain: {
@@ -55,7 +55,7 @@ describe("TransferEligibilityPolicy", () => {
 
       const stubTokenDepRepo = new StubTokenDeploymentRepository();
       const testChainToTokenSupport = new TestChainToTokenSupport(stubTokenDepRepo);
-      const transferEligibility = new TransferEligibilityPolicy(testChainToTokenSupport);
+      const transferEligibility = new DefaultTransferEligibilityPolicy(testChainToTokenSupport);
 
       const input: TransferEligibilityInput = {
         chainKey: "mainnet",
@@ -110,9 +110,8 @@ describe("TransferEligibilityPolicy", () => {
         }
       }
 
-      const stubTokenDepRepo = new StubTokenDeploymentRepository();
-      const testChainToTokenSupport = new TestChainToTokenSupport(stubTokenDepRepo);
-      const transferEligibility = new TransferEligibilityPolicy(testChainToTokenSupport);
+      const testChainToTokenSupport = new TestChainToTokenSupport();
+      const transferEligibility = new DefaultTransferEligibilityPolicy(testChainToTokenSupport);
 
       const input: TransferEligibilityInput = {
         chainKey: "mainnet",

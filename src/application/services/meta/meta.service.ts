@@ -18,17 +18,17 @@ import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 export class MetaService {
   constructor(
     @Inject(DI_TOKENS.TOKEN_DEPLOYMENT_REPOSITORY)
-    private readonly deploymentRepository: TokenDeploymentRepository
+    private readonly tokenDepRepository: TokenDeploymentRepository
   ) {}
 
   getChainsMeta(): ChainMetaEntity[] {
-    const chians = this.deploymentRepository.listChainMasters();
+    const chians = this.tokenDepRepository.listChainMasters();
 
     return chians.map(chain => ({ id: chain.id, key: chain.key, testnet: chain.viem.testnet ?? false }));
   }
 
   getTokensMeta(): TokenMetaEntity[] {
-    const deps = this.deploymentRepository.listTokenDeployment();
+    const deps = this.tokenDepRepository.listTokenDeployment();
 
     const tokenByEntity = deps.reduce<Record<Token, TokenMetaEntity>>(
       (acc, dep) => {
@@ -50,7 +50,7 @@ export class MetaService {
   }
 
   getFeesMeta(): FeeMetaEntity[] {
-    const deps = this.deploymentRepository.listTokenDeployment();
+    const deps = this.tokenDepRepository.listTokenDeployment();
 
     return deps.map(dep => ({
       chainKey: dep.chain.key,
@@ -61,7 +61,7 @@ export class MetaService {
   }
 
   getMinTransfersMeta(): MinTransferMetaEntity[] {
-    const deps = this.deploymentRepository.listTokenDeployment();
+    const deps = this.tokenDepRepository.listTokenDeployment();
 
     return deps.map(dep => ({
       chainKey: dep.chain.key,
@@ -72,7 +72,7 @@ export class MetaService {
   }
 
   getContractsMeta(): ContractsMetaEntity {
-    const chains = this.deploymentRepository.listChainMasters();
+    const chains = this.tokenDepRepository.listChainMasters();
 
     return chains.reduce<Record<"sponsor" | "delegate" | "registry", Record<Chain, Address>>>(
       (acc, chain) => {

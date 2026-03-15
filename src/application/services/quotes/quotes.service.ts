@@ -21,9 +21,11 @@ export class QuotesService {
     @Inject(DI_TOKENS.REGISTRY_ADAPTER)
     private readonly registryAdapter: RegistryAdapter,
 
-    private readonly eligibilityPolicy: TransferEligibilityPolicy,
+    @Inject(DI_TOKENS.TRANSFER_ELIGIBILITY_POLICY)
+    private readonly transferEligibility: TransferEligibilityPolicy,
 
-    private readonly balanceSufficiencyPolicy: BalanceSufficiencyPolicy
+    @Inject(DI_TOKENS.BALANCE_SUFFICIENCY_POLICY)
+    private readonly balanceSufficiency: BalanceSufficiencyPolicy
   ) {}
 
   async createQuote(input: CreateQuoteInput): Promise<QuoteEntity> {
@@ -34,7 +36,7 @@ export class QuotesService {
     const expiresAtSec = BigInt(Math.floor(expiresAt.getTime() / 1000));
 
     // Eligibility transfer (support + min amount + fee policy)
-    const { chain, tokenDep, feeTokenDep, contracts, feePolicy } = this.eligibilityPolicy.execute({
+    const { chain, tokenDep, feeTokenDep, contracts, feePolicy } = this.transferEligibility.execute({
       chainKey,
       tokenSymbol,
       feeTokenSymbol,
@@ -42,7 +44,7 @@ export class QuotesService {
     });
 
     // Sender balance checks for token and feeToken
-    await this.balanceSufficiencyPolicy.ensure({
+    await this.balanceSufficiency.ensure({
       chainKey,
       owner: sender,
       tokenAddress: tokenDep.token.address,

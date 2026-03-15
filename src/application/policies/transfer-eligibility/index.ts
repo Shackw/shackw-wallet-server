@@ -1,2 +1,6 @@
-export { TransferEligibilityPolicy } from "./transfer-eligibility.policy";
-export type { TransferEligibilityInput, TransferEligibilityOutput } from "./transfer-eligibility.policy.types";
+export { DefaultTransferEligibilityPolicy } from "./transfer-eligibility.policy";
+export {
+  TransferEligibilityPolicy,
+  TransferEligibilityInput,
+  TransferEligibilityOutput
+} from "./transfer-eligibility.policy.types";

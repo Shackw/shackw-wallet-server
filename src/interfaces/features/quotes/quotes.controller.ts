@@ -12,13 +12,13 @@ import { toCreateQuoteResponseDto } from "./quotes.entity-to-response";
 @UseGuards(AppCheckGuard)
 @UseFilters(HttpExceptionsFilter)
 export class QuotesController {
-  constructor(private readonly quotesService: QuotesService) {}
+  constructor(private readonly quotes: QuotesService) {}
 
   @Post("quotes")
   async create(
     @Body(new ValibotPipe(CreateQuoteRequestDtoSchema)) dto: CreateQuoteRequestDto
   ): Promise<CreateQuoteResponseDto> {
-    const entity = await this.quotesService.createQuote({
+    const entity = await this.quotes.createQuote({
       chainKey: dto.chain,
       sender: dto.sender,
       recipient: dto.recipient,

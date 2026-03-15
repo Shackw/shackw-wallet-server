@@ -1,15 +1,21 @@
+import { Inject } from "@nestjs/common";
+
 import type { TransferEligibilityPolicy } from "@/application/policies/transfer-eligibility";
 import type { FeeEntity } from "@/domain/entities/fee.entity";
+import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
 import type { EstimateFeeInput } from "./fees.service.types";
 
 export class FeesService {
-  constructor(private readonly eligibilityPolicy: TransferEligibilityPolicy) {}
+  constructor(
+    @Inject(DI_TOKENS.TRANSFER_ELIGIBILITY_POLICY)
+    private readonly transferEligibility: TransferEligibilityPolicy
+  ) {}
 
   estimateFee(input: EstimateFeeInput): FeeEntity {
     const { chainKey, tokenSymbol, feeTokenSymbol, amountMinUnits } = input;
 
-    const { tokenDep, feeTokenDep, feePolicy } = this.eligibilityPolicy.execute({
+    const { tokenDep, feeTokenDep, feePolicy } = this.transferEligibility.execute({
       chainKey,
       tokenSymbol,
       feeTokenSymbol,

@@ -1,10 +1,10 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 
-import { AppCheckPolicy } from "@/application/policies/app-check";
+import { DefaultAppCheckPolicy } from "@/application/policies/app-check";
 
 @Injectable()
 export class AppCheckGuard implements CanActivate {
-  constructor(private readonly appCheckService: AppCheckPolicy) {}
+  constructor(private readonly appCheckService: DefaultAppCheckPolicy) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request & { appCheck?: any }>();

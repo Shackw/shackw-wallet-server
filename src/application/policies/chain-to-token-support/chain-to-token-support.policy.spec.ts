@@ -9,7 +9,7 @@ import type {
 } from "@/application/ports/repositories/token-deployment.repository.port";
 import { CHAIN_KEY_TO_VIEM_CHAIN } from "@/domain/constants/chain.constant";
 
-import { ChainToTokenSupportPolicy } from "./chain-to-token-support.policy";
+import { DefaultChainToTokenSupportPolicy } from "./chain-to-token-support.policy";
 
 import type { ChainToTokenSupportInput } from "./chain-to-token-support.policy.types";
 
@@ -25,7 +25,7 @@ describe("ChainToTokenSupportPolicy", () => {
       }
 
       const testTokenDepRepo = new TestTokenDepRepo();
-      const chainToTokenSupport = new ChainToTokenSupportPolicy(testTokenDepRepo);
+      const chainToTokenSupport = new DefaultChainToTokenSupportPolicy(testTokenDepRepo);
 
       const input: ChainToTokenSupportInput = {
         chainKey: "base",
@@ -65,7 +65,7 @@ describe("ChainToTokenSupportPolicy", () => {
       }
 
       const testTokenDepRepo = new TestTokenDepRepo();
-      const chainToTokenSupport = new ChainToTokenSupportPolicy(testTokenDepRepo);
+      const chainToTokenSupport = new DefaultChainToTokenSupportPolicy(testTokenDepRepo);
 
       const input: ChainToTokenSupportInput = {
         chainKey: "mainnet",

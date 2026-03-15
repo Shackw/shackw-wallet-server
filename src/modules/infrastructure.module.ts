@@ -36,14 +36,6 @@ import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
     // gateways
     {
-      provide: DI_TOKENS.APP_CHECK_ADAPTER,
-      useFactory: (app: App) => {
-        const appCheck = getAppCheck(app);
-        return new FirebaseAppCheckAdapter(appCheck);
-      },
-      inject: [DI_TOKENS.FIREBASE_CLIENT]
-    },
-    {
       provide: DI_TOKENS.THIRDWEB_GATEWAY,
       useFactory: () => {
         const client = axios.create({
@@ -75,6 +67,14 @@ import { DI_TOKENS } from "@/shared/tokens/di.tokens";
     },
 
     // adapters
+    {
+      provide: DI_TOKENS.APP_CHECK_ADAPTER,
+      useFactory: (app: App) => {
+        const appCheck = getAppCheck(app);
+        return new FirebaseAppCheckAdapter(appCheck);
+      },
+      inject: [DI_TOKENS.FIREBASE_CLIENT]
+    },
     { provide: DI_TOKENS.ERC20_ADAPTER, useClass: ViemErc20Adapter },
     { provide: DI_TOKENS.REGISTRY_ADAPTER, useClass: ViemRegistryAdapter },
     { provide: DI_TOKENS.SPONSOR_ADAPTER, useClass: ViemSponsorAdapter },
@@ -85,10 +85,11 @@ import { DI_TOKENS } from "@/shared/tokens/di.tokens";
   exports: [
     DI_TOKENS.THIRDWEB_GATEWAY,
     DI_TOKENS.MORALIS_GATEWAY,
-    DI_TOKENS.TOKEN_DEPLOYMENT_REPOSITORY,
+    DI_TOKENS.APP_CHECK_ADAPTER,
     DI_TOKENS.ERC20_ADAPTER,
     DI_TOKENS.REGISTRY_ADAPTER,
-    DI_TOKENS.SPONSOR_ADAPTER
+    DI_TOKENS.SPONSOR_ADAPTER,
+    DI_TOKENS.TOKEN_DEPLOYMENT_REPOSITORY
   ]
 })
 export class InfrastructureModule {}
