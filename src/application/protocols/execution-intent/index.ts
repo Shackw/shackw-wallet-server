@@ -1,2 +1,2 @@
 export { buildExcutionIntent } from "./execution-intent.protocol";
-export { BuildExecutionIntentInput } from "./execution-intent.protocol.types";
+export { BuildExecutionIntentInput, BuildExecutionIntentOutput } from "./execution-intent.protocol.types";

@@ -52,7 +52,7 @@ export class TokensService {
       callHash
     } = decodeQuoteToken(quoteToken, this.quoteTokenSecret);
 
-    // 2a)
+    // 2a) Check quote token expiration (with 15s grace)
     const nowSec = BigInt(Math.floor(Date.now() / 1000));
     if (nowSec > expiresAt + 15n)
       throw new ApplicationError({
@@ -102,7 +102,13 @@ export class TokensService {
       });
 
     // 4) Replay protection: ensure nonce is fresh
-    const expectedNonce = await this.registryAdapter.getNextNonce({ chainKey, owner: sender });
+    const expectedNonce = await this.registryAdapter.getNextNonce({ chainKey, owner: sender }).catch(e => {
+      throw new ApplicationError({
+        code: "FAILED_TO_FETCH_NEXT_NONCE",
+        message: "Failed to fetch next nonce.",
+        cause: e
+      });
+    });
     if (nonce !== expectedNonce)
       throw new ApplicationError({
         code: "QUOTE_TOKEN_NONCE_STALE",

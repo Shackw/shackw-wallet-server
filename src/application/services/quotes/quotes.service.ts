@@ -32,8 +32,8 @@ export class QuotesService {
     const { chainKey, sender, recipient, tokenSymbol, feeTokenSymbol, amountMinUnits } = input;
 
     const now = dayjs();
-    const expiresAt = now.add(2, "minute").toDate();
-    const expiresAtSec = BigInt(Math.floor(expiresAt.getTime() / 1000));
+    const expiresAt = now.add(2, "minute");
+    const expiresAtSec = BigInt(expiresAt.unix());
 
     // Eligibility transfer (support + min amount + fee policy)
     const { chain, tokenDep, feeTokenDep, contracts, feePolicy } = this.transferEligibility.execute({
@@ -97,7 +97,7 @@ export class QuotesService {
     return {
       nonce,
       quoteToken,
-      expiresAt,
+      expiresAt: expiresAt.toDate(),
       serverTime: now.toDate(),
       chainId: chain.id,
       delegate: contracts.delegate,

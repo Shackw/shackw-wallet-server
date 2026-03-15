@@ -79,7 +79,7 @@ describe("BalanceSufficiencyPolicy", () => {
       );
     });
 
-    it("should throw INSUFFICIENT_COMBINED_BALANCE when token and fee token are the same and balance is insufficient", async () => {
+    it("should throw FAILED_TO_FETCH_TOKEN_BALANCE when fetching the send token balance fails", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
         findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
@@ -95,6 +95,47 @@ describe("BalanceSufficiencyPolicy", () => {
         getBalance(query: GetBalanceQuery): Promise<bigint> {
           expect(query).toEqual({ chainKey: "mainnet", owner: "0xOwner", tokenAddress: "0xJpycAddress" });
 
+          return Promise.reject(new Error("on error when fetching send token balance"));
+        }
+      }
+
+      const tokenDepRepository = new TestTokenDepRepository();
+      const erc20Adapter = new TestErc20Adapter();
+      const balanceSufficiency = new DefaultBalanceSufficiencyPolicy(tokenDepRepository, erc20Adapter);
+
+      const input: EnsureSufficientBalanceInput = {
+        chainKey: "mainnet",
+        owner: "0xOwner",
+        tokenAddress: "0xJpycAddress",
+        tokenRequiredMinUnits: 0n,
+        feeTokenAddress: "0xNullAddress",
+        feeRequiredMinUnits: 0n
+      };
+
+      // act & assert
+      await expect(balanceSufficiency.ensure(input)).rejects.toThrow(
+        new ApplicationError({
+          code: "FAILED_TO_FETCH_TOKEN_BALANCE",
+          message: "Failed to fetch send token balance.",
+          cause: new Error("on error when fetching send token balance")
+        })
+      );
+    });
+
+    it("should throw INSUFFICIENT_COMBINED_BALANCE when token and fee token are the same and balance is insufficient", async () => {
+      // arrange
+      class TestTokenDepRepository extends StubTokenDeploymentRepository {
+        findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
+          return {
+            symbol: "JPYC",
+            currency: "JPY",
+            decimals: 0
+          };
+        }
+      }
+
+      class TestErc20Adapter extends StubErc20Adap {
+        getBalance(_query: GetBalanceQuery): Promise<bigint> {
           return Promise.resolve(50n);
         }
       }
@@ -117,6 +158,58 @@ describe("BalanceSufficiencyPolicy", () => {
         new ApplicationError({
           code: "INSUFFICIENT_COMBINED_BALANCE",
           message: "Insufficient JPYC balance: required 200 minimal units (amount 100 + fee 100), but sender has 50."
+        })
+      );
+    });
+
+    it("should throw FAILED_TO_FETCH_TOKEN_BALANCE when fetching the fee token balance fails", async () => {
+      // arrange
+      class TestTokenDepRepository extends StubTokenDeploymentRepository {
+        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
+          if (query.address === "0xJpycAddress")
+            return {
+              symbol: "JPYC",
+              currency: "JPY",
+              decimals: 0
+            };
+          else if (query.address === "0xUsdcAddress")
+            return {
+              symbol: "USDC",
+              currency: "USD",
+              decimals: 0
+            };
+          return null;
+        }
+      }
+
+      class TestErc20Adapter extends StubErc20Adap {
+        getBalance(query: GetBalanceQuery): Promise<bigint> {
+          if (query.tokenAddress === "0xJpycAddress") return Promise.resolve(30n);
+          else if (query.tokenAddress === "0xUsdcAddress")
+            return Promise.reject(new Error("on error when fetching fee token balance"));
+          return Promise.reject(new Error());
+        }
+      }
+
+      const tokenDepRepository = new TestTokenDepRepository();
+      const erc20Adapter = new TestErc20Adapter();
+      const balanceSufficiency = new DefaultBalanceSufficiencyPolicy(tokenDepRepository, erc20Adapter);
+
+      const input: EnsureSufficientBalanceInput = {
+        chainKey: "mainnet",
+        owner: "0xOwner",
+        tokenAddress: "0xJpycAddress",
+        tokenRequiredMinUnits: 100n,
+        feeTokenAddress: "0xUsdcAddress",
+        feeRequiredMinUnits: 100n
+      };
+
+      // act & assert
+      await expect(balanceSufficiency.ensure(input)).rejects.toThrow(
+        new ApplicationError({
+          code: "FAILED_TO_FETCH_TOKEN_BALANCE",
+          message: "Failed to fetch fee token balance.",
+          cause: new Error("on error when fetching fee token balance")
         })
       );
     });

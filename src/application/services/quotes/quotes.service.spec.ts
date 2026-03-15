@@ -1,10 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 import { StubRegistryAdapter } from "@test/doubles/adapters/stub-registry.adapter";
+import { StubBalanceSufficiencyPolicy } from "@test/doubles/policies/stub-balance-sufficiency.policy";
 
 import { ApplicationError } from "@/application/errors";
-import type { EnsureSufficientBalanceInput } from "@/application/policies/balance-sufficiency";
-import { BalanceSufficiencyPolicy } from "@/application/policies/balance-sufficiency";
 import type { TransferEligibilityInput, TransferEligibilityOutput } from "@/application/policies/transfer-eligibility";
 import { TransferEligibilityPolicy } from "@/application/policies/transfer-eligibility";
 import type { GetNextNonceQuery } from "@/application/ports/adapters/registry.adapter.port";
@@ -77,26 +76,29 @@ describe("QuotesService", () => {
     it("should throw FAILED_TO_FETCH_NEXT_NONCE when fetching the next nonce fails", async () => {
       // arrange
       class TestRegistryAdapter extends StubRegistryAdapter {
-        getNextNonce(_query: GetNextNonceQuery): Promise<bigint> {
+        getNextNonce(query: GetNextNonceQuery): Promise<bigint> {
+          expect(query).toEqual({ chainKey: baseInput.chainKey, owner: baseInput.sender });
+
           return Promise.reject(new Error("on error when fetching next nonce"));
         }
       }
 
       class TestTransferEligibilityPolicy extends TransferEligibilityPolicy {
-        execute(_input: TransferEligibilityInput): TransferEligibilityOutput {
-          return transferEligibilityOutput;
-        }
-      }
+        execute(input: TransferEligibilityInput): TransferEligibilityOutput {
+          expect(input).toEqual({
+            chainKey: baseInput.chainKey,
+            tokenSymbol: baseInput.tokenSymbol,
+            feeTokenSymbol: baseInput.feeTokenSymbol,
+            amountMinUnits: baseInput.amountMinUnits
+          });
 
-      class TestBalanceSufficiencyPolicy extends BalanceSufficiencyPolicy {
-        ensure(_input: EnsureSufficientBalanceInput): Promise<void> {
-          return Promise.resolve();
+          return transferEligibilityOutput;
         }
       }
 
       const registryAdapter = new TestRegistryAdapter();
       const transferEligibility = new TestTransferEligibilityPolicy();
-      const balanceSufficiency = new TestBalanceSufficiencyPolicy();
+      const balanceSufficiency = new StubBalanceSufficiencyPolicy();
       const quotes = new QuotesService(secret, registryAdapter, transferEligibility, balanceSufficiency);
 
       // act & assert
@@ -123,15 +125,9 @@ describe("QuotesService", () => {
         }
       }
 
-      class TestBalanceSufficiencyPolicy extends BalanceSufficiencyPolicy {
-        ensure(_input: EnsureSufficientBalanceInput): Promise<void> {
-          return Promise.resolve();
-        }
-      }
-
       const registryAdapter = new TestRegistryAdapter();
       const transferEligibility = new TestTransferEligibilityPolicy();
-      const balanceSufficiency = new TestBalanceSufficiencyPolicy();
+      const balanceSufficiency = new StubBalanceSufficiencyPolicy();
       const quotes = new QuotesService(secret, registryAdapter, transferEligibility, balanceSufficiency);
 
       // act

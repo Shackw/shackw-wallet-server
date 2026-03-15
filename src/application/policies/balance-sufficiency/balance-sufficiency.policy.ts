@@ -36,11 +36,19 @@ export class DefaultBalanceSufficiencyPolicy extends BalanceSufficiencyPolicy {
         message: `Unknown feeToken address: ${feeTokenAddress}`
       });
 
-    const balToken = await this.erc20Adapter.getBalance({
-      chainKey,
-      tokenAddress,
-      owner
-    });
+    const balToken = await this.erc20Adapter
+      .getBalance({
+        chainKey,
+        tokenAddress,
+        owner
+      })
+      .catch(e => {
+        throw new ApplicationError({
+          code: "FAILED_TO_FETCH_TOKEN_BALANCE",
+          message: "Failed to fetch send token balance.",
+          cause: e
+        });
+      });
 
     if (tokenMaster.symbol === feeTokenMaster.symbol) {
       const required = tokenRequiredMinUnits + feeRequiredMinUnits;
@@ -50,11 +58,19 @@ export class DefaultBalanceSufficiencyPolicy extends BalanceSufficiencyPolicy {
           message: `Insufficient ${tokenMaster.symbol} balance: required ${required} minimal units (amount ${tokenRequiredMinUnits} + fee ${feeRequiredMinUnits}), but sender has ${balToken}.`
         });
     } else {
-      const balFeeToken = await this.erc20Adapter.getBalance({
-        chainKey,
-        tokenAddress: feeTokenAddress,
-        owner
-      });
+      const balFeeToken = await this.erc20Adapter
+        .getBalance({
+          chainKey,
+          tokenAddress: feeTokenAddress,
+          owner
+        })
+        .catch(e => {
+          throw new ApplicationError({
+            code: "FAILED_TO_FETCH_TOKEN_BALANCE",
+            message: "Failed to fetch fee token balance.",
+            cause: e
+          });
+        });
 
       if (balToken < tokenRequiredMinUnits)
         throw new ApplicationError({
