@@ -11,7 +11,7 @@ export const toThirdwebSearchContractEventsContract = (
     logIndex: response.logIndex,
     tokenAddress: response.address,
     fromAddress: response.decoded.params.from,
-    toAddress: response.decoded.params.from,
+    toAddress: response.decoded.params.to,
     valueMinUnits: response.decoded.params.value,
     transferredAt: response.blockTimestamp
   };

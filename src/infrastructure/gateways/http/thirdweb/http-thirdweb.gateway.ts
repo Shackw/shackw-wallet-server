@@ -93,7 +93,7 @@ export class HttpThirdwebApiGateway implements ThirdwebGateway {
       return this._fetchContractEventsByToken(
         {
           ...payload,
-          params: { ...payload.params, page: payload.params.page++ }
+          params: { ...payload.params, page: payload.params.page + 1 }
         },
         results
       );

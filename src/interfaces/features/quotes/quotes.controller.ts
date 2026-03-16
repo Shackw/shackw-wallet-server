@@ -23,7 +23,7 @@ export class QuotesController {
       sender: dto.sender,
       recipient: dto.recipient,
       tokenSymbol: dto.token.symbol,
-      feeTokenSymbol: dto.token.symbol,
+      feeTokenSymbol: dto.feeToken.symbol,
       amountMinUnits: dto.amountMinUnits
     });
 

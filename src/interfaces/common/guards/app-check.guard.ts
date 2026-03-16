@@ -1,10 +1,14 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
+import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 
-import { DefaultAppCheckPolicy } from "@/application/policies/app-check";
+import { AppCheckPolicy } from "@/application/policies/app-check";
+import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
 @Injectable()
 export class AppCheckGuard implements CanActivate {
-  constructor(private readonly appCheckService: DefaultAppCheckPolicy) {}
+  constructor(
+    @Inject(DI_TOKENS.APP_CHECK_POLICY)
+    private readonly appCheckPolicy: AppCheckPolicy
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request & { appCheck?: any }>();
@@ -15,7 +19,7 @@ export class AppCheckGuard implements CanActivate {
 
     if (!token) throw new UnauthorizedException("App Check token is required");
 
-    await this.appCheckService.verify({ token });
+    await this.appCheckPolicy.verify({ token });
 
     return true;
   }
