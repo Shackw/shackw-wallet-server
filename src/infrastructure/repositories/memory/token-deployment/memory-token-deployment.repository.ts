@@ -1,3 +1,5 @@
+import { isAddressEqual } from "viem";
+
 import type {
   ChainMasterContract,
   FindChainMasterQuery,
@@ -20,7 +22,7 @@ import {
 export class MemoryTokenDeploymentRepository implements TokenDeploymentRepository {
   findTokenMasterByAddress({ address, chainKey }: FindTokenMasterByAddressQuery): TokenMasterContract | null {
     const depEntry = Object.values(TOKEN_DEPLOYMENT).find(
-      dep => dep.chainKey === chainKey && dep.tokenAddress.toLowerCase() === address.toLowerCase()
+      dep => dep.chainKey === chainKey && isAddressEqual(dep.tokenAddress, address)
     );
 
     if (!depEntry) return null;

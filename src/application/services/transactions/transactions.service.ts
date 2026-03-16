@@ -26,9 +26,7 @@ export class TransactionsService {
   async searchTransactions(input: SearchTransactionsInput): Promise<TransactionEntity[]> {
     const { chainKey, tokenSymbols, walletAddress, timestampGte, timestampLte, searchDirection, limit } = input;
 
-    const tokenDeps = tokenSymbols.map(symbol =>
-      this.chainToTokenSupport.execute({ chainKey: chainKey, tokenSymbol: symbol })
-    );
+    const tokenDeps = tokenSymbols.map(symbol => this.chainToTokenSupport.execute({ chainKey, tokenSymbol: symbol }));
     const addrToDep = tokenDeps.reduce<Record<Address, TokenMasterContract>>((acc, dep) => {
       const key = dep.token.address;
       acc[key] = dep.token;
@@ -36,7 +34,7 @@ export class TransactionsService {
     }, {});
 
     const tokenAddresses = tokenDeps.map(dep => dep.token.address);
-    const addrFil = (() => {
+    const addrFilter = (() => {
       switch (searchDirection) {
         case "in":
           return { toAddress: walletAddress };
@@ -54,7 +52,7 @@ export class TransactionsService {
         timestampLte,
         timestampGte,
         sortOrder: "desc",
-        ...addrFil
+        ...addrFilter
       })
       .catch(async () => {
         return await this.moralisApiGateway.searchTransfers({

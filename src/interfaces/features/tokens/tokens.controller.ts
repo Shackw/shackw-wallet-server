@@ -24,8 +24,7 @@ export class TokensController {
     const entity = await this.tokens.transferToken({
       chainKey: dto.chain,
       quoteToken: dto.quoteToken,
-      authorization: dto.authorization,
-      notify: dto.notify
+      authorization: dto.authorization
     });
 
     return toTransferTokenResponseDto(entity);

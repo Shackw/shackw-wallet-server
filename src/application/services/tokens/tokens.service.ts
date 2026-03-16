@@ -34,7 +34,7 @@ export class TokensService {
   ) {}
 
   async transferToken(input: TransferTokenInput): Promise<TransferTokenEntity> {
-    const { chainKey, quoteToken, authorization, notify } = input;
+    const { chainKey, quoteToken, authorization } = input;
 
     // 1) Verify & decode quoteToken (HMAC integrity)
     const {
@@ -172,10 +172,7 @@ export class TokensService {
       throw new ApplicationError({ code: "TRANSACTION_SEND_FAILED", message: "Transaction send failed.", cause: e });
     });
 
-    // 7c) Fire-and-forget settlement worker.
-    // if (notify?.webhook) startSettlementWebhookJob({ chain, txHash, webhook: notify.webhook });
-
-    // 7d) Return immediately with submission info (confirmation handled by worker).
-    return { status: "submitted", txHash, notify };
+    // 7c) Return immediately with submission info (confirmation handled by worker).
+    return { status: "submitted", txHash };
   }
 }

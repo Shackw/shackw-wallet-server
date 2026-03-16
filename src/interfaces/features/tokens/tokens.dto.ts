@@ -1,7 +1,6 @@
 import * as v from "valibot";
 
 import { AuthorizationShape } from "@/interfaces/common/shapes/authorization.shape";
-import { NotifyShape } from "@/interfaces/common/shapes/notify.shape";
 import { hex64Validator } from "@/shared/validations/rules/address.validator";
 import { chainKeyValidator } from "@/shared/validations/rules/chain.validator";
 import { quoteTokenValidator } from "@/shared/validations/rules/string.validator";
@@ -11,8 +10,7 @@ export const TransferTokenRequestDtoSchema = v.object(
   {
     chain: chainKeyValidator("chain"),
     quoteToken: quoteTokenValidator("quoteToken"),
-    authorization: AuthorizationShape,
-    notify: v.optional(NotifyShape)
+    authorization: AuthorizationShape
   },
   issue => `${issue.expected} is required`
 );
@@ -20,8 +18,7 @@ export const TransferTokenRequestDtoSchema = v.object(
 // === Response Schemas ====
 export const TransferTokenResponseDtoSchema = v.object({
   status: v.literal("submitted"),
-  txHash: hex64Validator("txHash"),
-  notify: v.optional(NotifyShape)
+  txHash: hex64Validator("txHash")
 });
 
 // === Request DTOs ====
