@@ -84,7 +84,7 @@ describe("QuotesService", () => {
       }
 
       class TestTransferEligibilityPolicy extends TransferEligibilityPolicy {
-        execute(input: TransferEligibilityInput): TransferEligibilityOutput {
+        execute(input: TransferEligibilityInput): Promise<TransferEligibilityOutput> {
           expect(input).toEqual({
             chainKey: baseInput.chainKey,
             tokenSymbol: baseInput.tokenSymbol,
@@ -92,7 +92,7 @@ describe("QuotesService", () => {
             amountMinUnits: baseInput.amountMinUnits
           });
 
-          return transferEligibilityOutput;
+          return Promise.resolve(transferEligibilityOutput);
         }
       }
 
@@ -120,8 +120,8 @@ describe("QuotesService", () => {
       }
 
       class TestTransferEligibilityPolicy extends TransferEligibilityPolicy {
-        execute(_input: TransferEligibilityInput): TransferEligibilityOutput {
-          return transferEligibilityOutput;
+        execute(_input: TransferEligibilityInput): Promise<TransferEligibilityOutput> {
+          return Promise.resolve(transferEligibilityOutput);
         }
       }
 

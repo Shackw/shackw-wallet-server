@@ -21,11 +21,11 @@ export class DefaultTransferEligibilityPolicy extends TransferEligibilityPolicy 
     super();
   }
 
-  execute(input: TransferEligibilityInput): TransferEligibilityOutput {
+  async execute(input: TransferEligibilityInput): Promise<TransferEligibilityOutput> {
     const { chainKey, tokenSymbol, feeTokenSymbol, amountMinUnits } = input;
 
-    const tokenDep = this.chainToTokenSupport.execute({ chainKey, tokenSymbol });
-    const feeTokenDep = this.chainToTokenSupport.execute({ chainKey, tokenSymbol: feeTokenSymbol });
+    const tokenDep = await this.chainToTokenSupport.execute({ chainKey, tokenSymbol });
+    const feeTokenDep = await this.chainToTokenSupport.execute({ chainKey, tokenSymbol: feeTokenSymbol });
 
     if (amountMinUnits < tokenDep.minTransferAmountUnits)
       throw new ApplicationError({

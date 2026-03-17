@@ -26,7 +26,9 @@ export class TransactionsService {
   async searchTransactions(input: SearchTransactionsInput): Promise<TransactionEntity[]> {
     const { chainKey, tokenSymbols, walletAddress, timestampGte, timestampLte, searchDirection, limit } = input;
 
-    const tokenDeps = tokenSymbols.map(symbol => this.chainToTokenSupport.execute({ chainKey, tokenSymbol: symbol }));
+    const tokenDeps = await Promise.all(
+      tokenSymbols.map(symbol => this.chainToTokenSupport.execute({ chainKey, tokenSymbol: symbol }))
+    );
     const addrToDep = tokenDeps.reduce<Record<Address, TokenMasterContract>>((acc, dep) => {
       const key = dep.token.address;
       acc[key] = dep.token;

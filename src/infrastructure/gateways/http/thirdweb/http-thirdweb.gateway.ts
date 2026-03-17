@@ -46,7 +46,7 @@ export class HttpThirdwebApiGateway implements ThirdwebGateway {
             ...(filterTopic1 ? [{ ...base, params: { ...base.params, filterTopic1 } }] : []),
             ...(filterTopic2 ? [{ ...base, params: { ...base.params, filterTopic2 } }] : [])
           ];
-          return payloads.map(p => this._fetchContractEventsByToken(p, []));
+          return payloads.map(p => this._fetchContractEventsByToken(p));
         })
         .flat()
     );
@@ -79,7 +79,7 @@ export class HttpThirdwebApiGateway implements ThirdwebGateway {
 
   protected async _fetchContractEventsByToken(
     payload: ThirdwebSearchContractEventsRequestDto,
-    results: ThirdwebSearchContractEventsResponseDto["result"]["events"]
+    results: ThirdwebSearchContractEventsResponseDto["result"]["events"] = []
   ): Promise<ThirdwebSearchContractEventsResponseDto["result"]["events"]> {
     const { chainId, tokenAddress, params } = payload;
 

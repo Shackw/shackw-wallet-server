@@ -15,8 +15,10 @@ export class FeesController {
   constructor(private readonly fees: FeesService) {}
 
   @Post("fees\\:estimate")
-  estimate(@Body(new ValibotPipe(EstimateFeeRequestDtoSchema)) dto: EstimateFeeRequestDto): EstimateFeeResponseDto {
-    const entity = this.fees.estimateFee({
+  async estimate(
+    @Body(new ValibotPipe(EstimateFeeRequestDtoSchema)) dto: EstimateFeeRequestDto
+  ): Promise<EstimateFeeResponseDto> {
+    const entity = await this.fees.estimateFee({
       chainKey: dto.chain,
       tokenSymbol: dto.token.symbol,
       feeTokenSymbol: dto.feeToken.symbol,

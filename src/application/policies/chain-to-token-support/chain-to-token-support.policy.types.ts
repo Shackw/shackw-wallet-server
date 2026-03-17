@@ -4,7 +4,7 @@ import type { Token } from "@/domain/constants/token.constant";
 
 // === Abstract ===
 export abstract class ChainToTokenSupportPolicy {
-  abstract execute(input: ChainToTokenSupportInput): ChainToTokenSupportOutput;
+  abstract execute(input: ChainToTokenSupportInput): Promise<ChainToTokenSupportOutput>;
 }
 
 // === Input ===

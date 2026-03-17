@@ -52,11 +52,11 @@ export type FindTokenDeploymentQuery = Readonly<{
 
 // === Abstract Port ===
 export interface TokenDeploymentRepository {
-  findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): TokenMasterContract | null;
+  findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null>;
 
-  listChainMasters(): ChainMasterContract[];
-  findChainMaster(query: FindChainMasterQuery): ChainMasterContract;
+  listChainMasters(): Promise<ChainMasterContract[]>;
+  findChainMaster(query: FindChainMasterQuery): Promise<ChainMasterContract>;
 
-  listTokenDeployment(): TokenDeploymentContract[];
-  findTokenDeployment(query: FindTokenDeploymentQuery): TokenDeploymentContract | null;
+  listTokenDeployment(): Promise<TokenDeploymentContract[]>;
+  findTokenDeployment(query: FindTokenDeploymentQuery): Promise<TokenDeploymentContract | null>;
 }

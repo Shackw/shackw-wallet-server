@@ -21,14 +21,14 @@ export class MetaService {
     private readonly tokenDepRepository: TokenDeploymentRepository
   ) {}
 
-  getChainsMeta(): ChainMetaEntity[] {
-    const chians = this.tokenDepRepository.listChainMasters();
+  async getChainsMeta(): Promise<ChainMetaEntity[]> {
+    const chians = await this.tokenDepRepository.listChainMasters();
 
     return chians.map(chain => ({ id: chain.id, key: chain.key, testnet: chain.viem.testnet ?? false }));
   }
 
-  getTokensMeta(): TokenMetaEntity[] {
-    const deps = this.tokenDepRepository.listTokenDeployment();
+  async getTokensMeta(): Promise<TokenMetaEntity[]> {
+    const deps = await this.tokenDepRepository.listTokenDeployment();
 
     const tokenByEntity = deps.reduce<Record<Token, TokenMetaEntity>>(
       (acc, dep) => {
@@ -49,8 +49,8 @@ export class MetaService {
     return Object.values(tokenByEntity);
   }
 
-  getFeesMeta(): FeeMetaEntity[] {
-    const deps = this.tokenDepRepository.listTokenDeployment();
+  async getFeesMeta(): Promise<FeeMetaEntity[]> {
+    const deps = await this.tokenDepRepository.listTokenDeployment();
 
     return deps.map(dep => ({
       chainKey: dep.chain.key,
@@ -60,8 +60,8 @@ export class MetaService {
     }));
   }
 
-  getMinTransfersMeta(): MinTransferMetaEntity[] {
-    const deps = this.tokenDepRepository.listTokenDeployment();
+  async getMinTransfersMeta(): Promise<MinTransferMetaEntity[]> {
+    const deps = await this.tokenDepRepository.listTokenDeployment();
 
     return deps.map(dep => ({
       chainKey: dep.chain.key,
@@ -71,8 +71,8 @@ export class MetaService {
     }));
   }
 
-  getContractsMeta(): ContractsMetaEntity {
-    const chains = this.tokenDepRepository.listChainMasters();
+  async getContractsMeta(): Promise<ContractsMetaEntity> {
+    const chains = await this.tokenDepRepository.listChainMasters();
 
     return chains.reduce<Record<"sponsor" | "delegate" | "registry", Record<Chain, Address>>>(
       (acc, chain) => {
@@ -86,14 +86,14 @@ export class MetaService {
     );
   }
 
-  getMetaSummary(): MetaSummaryEntity {
+  async getMetaSummary(): Promise<MetaSummaryEntity> {
     return {
       schemaVersion: "v1",
-      chains: this.getChainsMeta(),
-      tokens: this.getTokensMeta(),
-      fixedFees: this.getFeesMeta(),
-      minTransfers: this.getMinTransfersMeta(),
-      contracts: this.getContractsMeta()
+      chains: await this.getChainsMeta(),
+      tokens: await this.getTokensMeta(),
+      fixedFees: await this.getFeesMeta(),
+      minTransfers: await this.getMinTransfersMeta(),
+      contracts: await this.getContractsMeta()
     };
   }
 }

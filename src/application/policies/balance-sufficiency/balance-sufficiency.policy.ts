@@ -22,11 +22,11 @@ export class DefaultBalanceSufficiencyPolicy extends BalanceSufficiencyPolicy {
   async ensure(input: EnsureSufficientBalanceInput): Promise<void> {
     const { chainKey, owner, tokenAddress, tokenRequiredMinUnits, feeTokenAddress, feeRequiredMinUnits } = input;
 
-    const tokenMaster = this.tokenDepRepository.findTokenMasterByAddress({ chainKey, address: tokenAddress });
+    const tokenMaster = await this.tokenDepRepository.findTokenMasterByAddress({ chainKey, address: tokenAddress });
     if (!tokenMaster)
       throw new ApplicationError({ code: "TOKEN_ADDRESS_UNKNOWN", message: `Unknown token address: ${tokenAddress}` });
 
-    const feeTokenMaster = this.tokenDepRepository.findTokenMasterByAddress({
+    const feeTokenMaster = await this.tokenDepRepository.findTokenMasterByAddress({
       chainKey,
       address: feeTokenAddress
     });

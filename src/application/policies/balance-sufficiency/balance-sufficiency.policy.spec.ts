@@ -19,10 +19,10 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should throw TOKEN_ADDRESS_UNKNOWN when token address is not registered", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
+        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
           expect(query).toEqual({ chainKey: "mainnet", address: "0xNullAddress" });
 
-          return null;
+          return Promise.resolve(null);
         }
       }
 
@@ -49,14 +49,14 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should throw TOKEN_ADDRESS_UNKNOWN when fee token address is not registered", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
+        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
           if (query.address === "0xJpycAddress")
-            return {
+            return Promise.resolve({
               symbol: "JPYC",
               currency: "JPY",
               decimals: 0
-            };
-          return null;
+            });
+          return Promise.resolve(null);
         }
       }
 
@@ -82,12 +82,12 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should throw FAILED_TO_FETCH_TOKEN_BALANCE when fetching the send token balance fails", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
-          return {
+        findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
+          return Promise.resolve({
             symbol: "JPYC",
             currency: "JPY",
             decimals: 0
-          };
+          });
         }
       }
 
@@ -125,12 +125,12 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should throw INSUFFICIENT_COMBINED_BALANCE when token and fee token are the same and balance is insufficient", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
-          return {
+        findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
+          return Promise.resolve({
             symbol: "JPYC",
             currency: "JPY",
             decimals: 0
-          };
+          });
         }
       }
 
@@ -165,20 +165,20 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should throw FAILED_TO_FETCH_TOKEN_BALANCE when fetching the fee token balance fails", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
+        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
           if (query.address === "0xJpycAddress")
-            return {
+            return Promise.resolve({
               symbol: "JPYC",
               currency: "JPY",
               decimals: 0
-            };
+            });
           else if (query.address === "0xUsdcAddress")
-            return {
+            return Promise.resolve({
               symbol: "USDC",
               currency: "USD",
               decimals: 0
-            };
-          return null;
+            });
+          return Promise.resolve(null);
         }
       }
 
@@ -217,20 +217,20 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should throw INSUFFICIENT_SEND_BALANCE when send token balance is insufficient", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
+        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
           if (query.address === "0xJpycAddress")
-            return {
+            return Promise.resolve({
               symbol: "JPYC",
               currency: "JPY",
               decimals: 0
-            };
+            });
           else if (query.address === "0xUsdcAddress")
-            return {
+            return Promise.resolve({
               symbol: "USDC",
               currency: "USD",
               decimals: 0
-            };
-          return null;
+            });
+          return Promise.resolve(null);
         }
       }
 
@@ -267,20 +267,20 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should throw INSUFFICIENT_FEE_BALANCE when fee token balance is insufficient", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
+        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
           if (query.address === "0xJpycAddress")
-            return {
+            return Promise.resolve({
               symbol: "JPYC",
               currency: "JPY",
               decimals: 0
-            };
+            });
           else if (query.address === "0xUsdcAddress")
-            return {
+            return Promise.resolve({
               symbol: "USDC",
               currency: "USD",
               decimals: 0
-            };
-          return null;
+            });
+          return Promise.resolve(null);
         }
       }
 
@@ -317,12 +317,12 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should succeed when send token and fee token are the same and combined balance is sufficient", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
-          return {
+        findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
+          return Promise.resolve({
             symbol: "JPYC",
             currency: "JPY",
             decimals: 0
-          };
+          });
         }
       }
 
@@ -352,20 +352,20 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should succeed when both token balance and fee balance are sufficient", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
+        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
           if (query.address === "0xJpycAddress")
-            return {
+            return Promise.resolve({
               symbol: "JPYC",
               currency: "JPY",
               decimals: 0
-            };
+            });
           else if (query.address === "0xUsdcAddress")
-            return {
+            return Promise.resolve({
               symbol: "USDC",
               currency: "USD",
               decimals: 0
-            };
-          return null;
+            });
+          return Promise.resolve(null);
         }
       }
 

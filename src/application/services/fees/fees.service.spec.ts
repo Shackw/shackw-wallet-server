@@ -13,8 +13,8 @@ describe("FeesService", () => {
     it("should return fee estimation when transfer eligibility is valid", () => {
       // arrange
       class TestTransferEligibilityPolicy extends TransferEligibilityPolicy {
-        execute(input: TransferEligibilityInput): TransferEligibilityOutput {
-          return {
+        execute(input: TransferEligibilityInput): Promise<TransferEligibilityOutput> {
+          return Promise.resolve({
             chain: {
               key: input.chainKey,
               id: CHAIN_KEY_TO_VIEM_CHAIN[input.chainKey].id,
@@ -39,7 +39,7 @@ describe("FeesService", () => {
               version: "v1",
               chainKey: "mainnet"
             }
-          };
+          });
         }
       }
 

@@ -98,8 +98,8 @@ describe("TransactionsService", () => {
       }
 
       class TestChainToTokenSupportPolicy extends ChainToTokenSupportPolicy {
-        execute(input: ChainToTokenSupportInput): ChainToTokenSupportOutput {
-          return {
+        execute(input: ChainToTokenSupportInput): Promise<ChainToTokenSupportOutput> {
+          return Promise.resolve({
             chain: {
               id: CHAIN_KEY_TO_VIEM_CHAIN[input.chainKey].id,
               key: input.chainKey,
@@ -114,7 +114,7 @@ describe("TransactionsService", () => {
             token: { address: tokenAddress, symbol: "JPYC", currency: "JPY", decimals: 18 },
             minTransferAmountUnits: 1000000000000000000000n,
             fixedFeeAmountUnits: 100000000000000000000n
-          };
+          });
         }
       }
 
@@ -220,8 +220,8 @@ describe("TransactionsService", () => {
       }
 
       class TestChainToTokenSupportPolicy extends ChainToTokenSupportPolicy {
-        execute(input: ChainToTokenSupportInput): ChainToTokenSupportOutput {
-          return {
+        execute(input: ChainToTokenSupportInput): Promise<ChainToTokenSupportOutput> {
+          return Promise.resolve({
             chain: {
               id: CHAIN_KEY_TO_VIEM_CHAIN[input.chainKey].id,
               key: input.chainKey,
@@ -236,7 +236,7 @@ describe("TransactionsService", () => {
             token: { address: tokenAddress, symbol: "JPYC", currency: "JPY", decimals: 18 },
             minTransferAmountUnits: 1000000000000000000000n,
             fixedFeeAmountUnits: 100000000000000000000n
-          };
+          });
         }
       }
 
@@ -343,8 +343,8 @@ describe("TransactionsService", () => {
       }
 
       class TestChainToTokenSupportPolicy extends ChainToTokenSupportPolicy {
-        execute(input: ChainToTokenSupportInput): ChainToTokenSupportOutput {
-          return {
+        execute(input: ChainToTokenSupportInput): Promise<ChainToTokenSupportOutput> {
+          return Promise.resolve({
             chain: {
               id: CHAIN_KEY_TO_VIEM_CHAIN[input.chainKey].id,
               key: input.chainKey,
@@ -359,7 +359,7 @@ describe("TransactionsService", () => {
             token: { address: tokenAddress, symbol: "JPYC", currency: "JPY", decimals: 18 },
             minTransferAmountUnits: 1000000000000000000000n,
             fixedFeeAmountUnits: 100000000000000000000n
-          };
+          });
         }
       }
 
@@ -479,8 +479,8 @@ describe("TransactionsService", () => {
       }
 
       class TestChainToTokenSupportPolicy extends ChainToTokenSupportPolicy {
-        execute(input: ChainToTokenSupportInput): ChainToTokenSupportOutput {
-          return {
+        execute(input: ChainToTokenSupportInput): Promise<ChainToTokenSupportOutput> {
+          return Promise.resolve({
             chain: {
               id: CHAIN_KEY_TO_VIEM_CHAIN[input.chainKey].id,
               key: input.chainKey,
@@ -495,7 +495,7 @@ describe("TransactionsService", () => {
             token: { address: tokenAddress, symbol: "JPYC", currency: "JPY", decimals: 18 },
             minTransferAmountUnits: 1000000000000000000000n,
             fixedFeeAmountUnits: 100000000000000000000n
-          };
+          });
         }
       }
 

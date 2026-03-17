@@ -29,38 +29,38 @@ export class MetaController {
   constructor(private readonly meta: MetaService) {}
 
   @Get("summary")
-  summary(): GetMetaSummaryResponseDto {
-    const entity = this.meta.getMetaSummary();
+  async summary(): Promise<GetMetaSummaryResponseDto> {
+    const entity = await this.meta.getMetaSummary();
     return toGetMetaSummaryResponseDto(entity);
   }
 
   @Get("chains")
-  chains(): GetChainMetaResponseDto {
-    const entities = this.meta.getChainsMeta();
+  async chains(): Promise<GetChainMetaResponseDto> {
+    const entities = await this.meta.getChainsMeta();
     return toGetChainMetaResponseDto(entities);
   }
 
   @Get("tokens")
-  tokens(): GetTokenMetaResponseDto {
-    const entities = this.meta.getTokensMeta();
+  async tokens(): Promise<GetTokenMetaResponseDto> {
+    const entities = await this.meta.getTokensMeta();
     return toGetTokenMetaResponseDto(entities);
   }
 
   @Get("fees")
-  fees(): GeFeeMetaResponseDto {
-    const entities = this.meta.getFeesMeta();
+  async fees(): Promise<GeFeeMetaResponseDto> {
+    const entities = await this.meta.getFeesMeta();
     return toGeFeeMetaResponseDto(entities);
   }
 
   @Get("min-transfers")
-  minTransfer(): GetMinTransferMetaResponseDto {
-    const entities = this.meta.getMinTransfersMeta();
+  async minTransfer(): Promise<GetMinTransferMetaResponseDto> {
+    const entities = await this.meta.getMinTransfersMeta();
     return toGetMinTransferMetaResponseDto(entities);
   }
 
   @Get("contracts")
-  contracts(): GetContractsMetaResponseDto {
-    const entity = this.meta.getContractsMeta();
+  async contracts(): Promise<GetContractsMetaResponseDto> {
+    const entity = await this.meta.getContractsMeta();
     return toGetContractsMetaResponseDto(entity);
   }
 }

@@ -110,8 +110,8 @@ describe("TokensService", () => {
       vi.spyOn(QuoteTokenProtocol, "decodeQuoteToken").mockReturnValue({ ...baseDecodeQuoteToken, chainId: 2 });
 
       class TestTokenDeploymentRepository extends StubTokenDeploymentRepository {
-        findChainMaster(_query: FindChainMasterQuery): ChainMasterContract {
-          return {
+        findChainMaster(_query: FindChainMasterQuery): Promise<ChainMasterContract> {
+          return Promise.resolve({
             key: "mainnet",
             id: 1,
             rpcUrl: "https://test-rpc.com/mainnet",
@@ -121,7 +121,7 @@ describe("TokensService", () => {
               delegate: "0xDelegate",
               registry: "0xRegistry"
             }
-          };
+          });
         }
       }
 
@@ -160,10 +160,10 @@ describe("TokensService", () => {
       });
 
       class TestTokenDeploymentRepository extends StubTokenDeploymentRepository {
-        findChainMaster(query: FindChainMasterQuery): ChainMasterContract {
+        findChainMaster(query: FindChainMasterQuery): Promise<ChainMasterContract> {
           expect(query).toEqual({ chainKey: "mainnet" });
 
-          return {
+          return Promise.resolve({
             key: "mainnet",
             id: 1,
             rpcUrl: "https://test-rpc.com/mainnet",
@@ -173,7 +173,7 @@ describe("TokensService", () => {
               delegate: "0xDelegate",
               registry: "0xRegistry"
             }
-          };
+          });
         }
       }
 
@@ -212,8 +212,8 @@ describe("TokensService", () => {
       });
 
       class TestTokenDeploymentRepository extends StubTokenDeploymentRepository {
-        findChainMaster(_query: FindChainMasterQuery): ChainMasterContract {
-          return {
+        findChainMaster(_query: FindChainMasterQuery): Promise<ChainMasterContract> {
+          return Promise.resolve({
             key: "mainnet",
             id: 1,
             rpcUrl: "https://test-rpc.com/mainnet",
@@ -223,7 +223,7 @@ describe("TokensService", () => {
               delegate: "0xDelegate",
               registry: "0xRegistry"
             }
-          };
+          });
         }
       }
 

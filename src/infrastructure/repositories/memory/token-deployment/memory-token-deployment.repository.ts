@@ -9,9 +9,9 @@ import type {
   TokenDeploymentRepository,
   TokenMasterContract
 } from "@/application/ports/repositories/token-deployment.repository.port";
-import { CHAIN_MASTER } from "@/infrastructure/masters/chain.master";
-import { TOKEN_DEPLOYMENT } from "@/infrastructure/masters/token-deployment.master";
-import { TOKEN_MASTER } from "@/infrastructure/masters/token.master";
+import type { ChainMaster } from "@/infrastructure/masters/chain.master";
+import type { TokenDeploymentMaster } from "@/infrastructure/masters/token-deployment.master";
+import type { TokenMaster } from "@/infrastructure/masters/token.master";
 
 import {
   toChainMasterContract,
@@ -20,42 +20,77 @@ import {
 } from "./memory-token-deployment.entry-to-contract";
 
 export class MemoryTokenDeploymentRepository implements TokenDeploymentRepository {
-  findTokenMasterByAddress({ address, chainKey }: FindTokenMasterByAddressQuery): TokenMasterContract | null {
-    const depEntry = Object.values(TOKEN_DEPLOYMENT).find(
+  async findTokenMasterByAddress({
+    address,
+    chainKey
+  }: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
+    const tokenMaster = await this._getTokenMaster();
+    const tokenDeploymentMaster = await this._getTokenDeploymentMaster();
+
+    const depEntry = Object.values(tokenDeploymentMaster).find(
       dep => dep.chainKey === chainKey && isAddressEqual(dep.tokenAddress, address)
     );
 
     if (!depEntry) return null;
 
-    const tokenEntry = TOKEN_MASTER[depEntry.tokenSymbol];
+    const tokenEntry = tokenMaster[depEntry.tokenSymbol];
 
     return toTokenMasterContract([depEntry.tokenSymbol, tokenEntry]);
   }
 
-  listChainMasters(): ChainMasterContract[] {
-    return Object.entries(CHAIN_MASTER).map(toChainMasterContract);
+  async listChainMasters(): Promise<ChainMasterContract[]> {
+    const chainMaster = await this._getChainMaster();
+    return Object.entries(chainMaster).map(toChainMasterContract);
   }
 
-  findChainMaster({ chainKey }: FindChainMasterQuery): ChainMasterContract {
-    const found = CHAIN_MASTER[chainKey];
+  async findChainMaster({ chainKey }: FindChainMasterQuery): Promise<ChainMasterContract> {
+    const chainMaster = await this._getChainMaster();
+
+    const found = chainMaster[chainKey];
     return toChainMasterContract([chainKey, found]);
   }
 
-  listTokenDeployment(): TokenDeploymentContract[] {
-    return Object.values(TOKEN_DEPLOYMENT).map(dep =>
-      toTokenDeploymentContract(TOKEN_MASTER[dep.tokenSymbol], CHAIN_MASTER[dep.chainKey], dep)
+  async listTokenDeployment(): Promise<TokenDeploymentContract[]> {
+    const chainMaster = await this._getChainMaster();
+    const tokenMaster = await this._getTokenMaster();
+    const tokenDeploymentMaster = await this._getTokenDeploymentMaster();
+
+    return Object.values(tokenDeploymentMaster).map(dep =>
+      toTokenDeploymentContract(tokenMaster[dep.tokenSymbol], chainMaster[dep.chainKey], dep)
     );
   }
 
-  findTokenDeployment({ chainKey, tokenSymbol }: FindTokenDeploymentQuery): TokenDeploymentContract | null {
-    const key = `${tokenSymbol}:${chainKey}` as keyof typeof TOKEN_DEPLOYMENT;
-    const depEntry = TOKEN_DEPLOYMENT[key] ?? undefined;
+  async findTokenDeployment({
+    chainKey,
+    tokenSymbol
+  }: FindTokenDeploymentQuery): Promise<TokenDeploymentContract | null> {
+    const chainMaster = await this._getChainMaster();
+    const tokenMaster = await this._getTokenMaster();
+    const tokenDeploymentMaster = await this._getTokenDeploymentMaster();
+
+    const key = `${tokenSymbol}:${chainKey}` as unknown as keyof TokenDeploymentMaster;
+    const depEntry = tokenDeploymentMaster[key] ?? undefined;
 
     if (!depEntry) return null;
 
-    const tokenEntry = TOKEN_MASTER[depEntry.tokenSymbol];
-    const chainEntry = CHAIN_MASTER[depEntry.chainKey];
+    const tokenEntry = tokenMaster[depEntry.tokenSymbol];
+    const chainEntry = chainMaster[depEntry.chainKey];
 
     return toTokenDeploymentContract(tokenEntry, chainEntry, depEntry);
+  }
+
+  protected async _getChainMaster(): Promise<ChainMaster> {
+    const { CHAIN_MASTER } = await import("@/infrastructure/masters/chain.master");
+    return CHAIN_MASTER;
+  }
+
+  protected async _getTokenMaster(): Promise<TokenMaster> {
+    const { TOKEN_MASTER } = await import("@/infrastructure/masters/token.master");
+    return TOKEN_MASTER;
+  }
+
+  protected async _getTokenDeploymentMaster(): Promise<TokenDeploymentMaster> {
+    const { TOKEN_DEPLOYMENT_MASTER } = await import("@/infrastructure/masters/token-deployment.master");
+    return TOKEN_DEPLOYMENT_MASTER;
   }
 }

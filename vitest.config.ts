@@ -9,10 +9,14 @@ export default defineConfig({
     include: ["src/**/*.spec.ts"],
     hookTimeout: 30_000,
     testTimeout: 30_000,
+    env: {
+      NODE_ENV: "test"
+    },
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "lcov"],
-      include: ["src/application/policies", "src/application/protocols", "src/application/services"]
+      include: ["src/application", "src/infrastructure"],
+      exclude: ["src/application/errors", "src/application/ports", "src/infrastructure/masters"]
     }
   }
 });

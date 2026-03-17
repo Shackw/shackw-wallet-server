@@ -10,16 +10,16 @@ import type {
 import { CHAIN_KEY_TO_VIEM_CHAIN } from "@/domain/constants/chain.constant";
 
 export class StubTokenDeploymentRepository implements TokenDeploymentRepository {
-  findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): TokenMasterContract | null {
-    return null;
+  findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
+    return Promise.resolve(null);
   }
 
-  listChainMasters(): ChainMasterContract[] {
-    return [];
+  listChainMasters(): Promise<ChainMasterContract[]> {
+    return Promise.resolve([]);
   }
 
-  findChainMaster(query: FindChainMasterQuery): ChainMasterContract {
-    return {
+  findChainMaster(query: FindChainMasterQuery): Promise<ChainMasterContract> {
+    return Promise.resolve({
       key: query.chainKey,
       id: CHAIN_KEY_TO_VIEM_CHAIN[query.chainKey].id,
       rpcUrl: "https://test-rpc.com",
@@ -29,14 +29,14 @@ export class StubTokenDeploymentRepository implements TokenDeploymentRepository 
         delegate: "0xDelegate",
         registry: "0xRegistry"
       }
-    };
+    });
   }
 
-  listTokenDeployment(): TokenDeploymentContract[] {
-    return [];
+  listTokenDeployment(): Promise<TokenDeploymentContract[]> {
+    return Promise.resolve([]);
   }
 
-  findTokenDeployment(_query: FindTokenDeploymentQuery): TokenDeploymentContract | null {
-    return null;
+  findTokenDeployment(_query: FindTokenDeploymentQuery): Promise<TokenDeploymentContract | null> {
+    return Promise.resolve(null);
   }
 }

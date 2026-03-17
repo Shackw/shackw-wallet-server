@@ -4,7 +4,7 @@ import type { Token } from "@/domain/constants/token.constant";
 
 // === Abstract ===
 export abstract class TransferEligibilityPolicy {
-  abstract execute(input: TransferEligibilityInput): TransferEligibilityOutput;
+  abstract execute(input: TransferEligibilityInput): Promise<TransferEligibilityOutput>;
 }
 
 // === Input ===

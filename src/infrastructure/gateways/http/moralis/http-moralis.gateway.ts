@@ -40,13 +40,13 @@ export class HttpMoralisGateway implements MoralisGateway {
       }
     };
 
-    const fetcheds = await this._fetchTransfersByWallet(payload, []);
+    const fetcheds = await this._fetchTransfersByWallet(payload);
     return fetcheds.map(toMoralisSearchTransfersContract);
   }
 
   protected async _fetchTransfersByWallet(
     payload: MoralisSearchTransfersRequestDto,
-    results: MoralisSearchTransfersResponseDto["result"]
+    results: MoralisSearchTransfersResponseDto["result"] = []
   ): Promise<MoralisSearchTransfersResponseDto["result"]> {
     const { wallet, params } = payload;
 

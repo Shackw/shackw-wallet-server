@@ -12,10 +12,10 @@ export class FeesService {
     private readonly transferEligibility: TransferEligibilityPolicy
   ) {}
 
-  estimateFee(input: EstimateFeeInput): FeeEntity {
+  async estimateFee(input: EstimateFeeInput): Promise<FeeEntity> {
     const { chainKey, tokenSymbol, feeTokenSymbol, amountMinUnits } = input;
 
-    const { tokenDep, feeTokenDep, feePolicy } = this.transferEligibility.execute({
+    const { tokenDep, feeTokenDep, feePolicy } = await this.transferEligibility.execute({
       chainKey,
       tokenSymbol,
       feeTokenSymbol,

@@ -15,7 +15,7 @@ describe("TransferEligibilityPolicy", () => {
     it("should throw TRANSFER_AMOUNT_BELOW_MINIMUM when the transfer amount is below the minimum", () => {
       // arrange
       class TestChainToTokenSupportPolicy extends ChainToTokenSupportPolicy {
-        execute(input: ChainToTokenSupportInput): ChainToTokenSupportOutput {
+        execute(input: ChainToTokenSupportInput): Promise<ChainToTokenSupportOutput> {
           const common = {
             chain: {
               id: CHAIN_KEY_TO_VIEM_CHAIN[input.chainKey].id,
@@ -32,22 +32,22 @@ describe("TransferEligibilityPolicy", () => {
 
           if (input.tokenSymbol === "JPYC") {
             expect(input).toEqual({ chainKey: "mainnet", tokenSymbol: "JPYC" });
-            return {
+            return Promise.resolve({
               ...common,
               token: { address: "0xJpycAddress", symbol: "JPYC", currency: "JPY", decimals: 18 },
               minTransferAmountUnits: 1000000000000000000000n,
               fixedFeeAmountUnits: 100000000000000000000n
-            };
+            });
           } else if (input.tokenSymbol === "USDC") {
             expect(input).toEqual({ chainKey: "mainnet", tokenSymbol: "USDC" });
-            return {
+            return Promise.resolve({
               ...common,
               token: { address: "0xUsdcAddress", symbol: "USDC", currency: "USD", decimals: 6 },
               minTransferAmountUnits: 10000000n,
               fixedFeeAmountUnits: 1000000n
-            };
+            });
           }
-          throw new Error();
+          return Promise.reject(new Error());
         }
       }
 
@@ -73,7 +73,7 @@ describe("TransferEligibilityPolicy", () => {
     it("should return transfer eligibility when transfer amount is above the minimum", () => {
       // arrange
       class TestChainToTokenSupportPolicy extends ChainToTokenSupportPolicy {
-        execute(input: ChainToTokenSupportInput): ChainToTokenSupportOutput {
+        execute(input: ChainToTokenSupportInput): Promise<ChainToTokenSupportOutput> {
           const common = {
             chain: {
               id: CHAIN_KEY_TO_VIEM_CHAIN[input.chainKey].id,
@@ -89,21 +89,20 @@ describe("TransferEligibilityPolicy", () => {
           } as const;
 
           if (input.tokenSymbol === "JPYC")
-            return {
+            return Promise.resolve({
               ...common,
               token: { address: "0xJpycAddress", symbol: "JPYC", currency: "JPY", decimals: 18 },
               minTransferAmountUnits: 1000000000000000000000n,
               fixedFeeAmountUnits: 100000000000000000000n
-            };
+            });
           else if (input.tokenSymbol === "USDC")
-            return {
+            return Promise.resolve({
               ...common,
               token: { address: "0xUsdcAddress", symbol: "USDC", currency: "USD", decimals: 6 },
               minTransferAmountUnits: 10000000n,
               fixedFeeAmountUnits: 1000000n
-            };
-
-          throw new Error();
+            });
+          return Promise.reject(new Error());
         }
       }
 

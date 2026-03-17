@@ -99,11 +99,11 @@ describe("MetaService", () => {
   ];
 
   describe("getChainsMeta", () => {
-    it("should return chain metadata for all supported chains", () => {
+    it("should return chain metadata for all supported chains", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        listChainMasters(): ChainMasterContract[] {
-          return chainMasterContracts;
+        listChainMasters(): Promise<ChainMasterContract[]> {
+          return Promise.resolve(chainMasterContracts);
         }
       }
 
@@ -111,7 +111,7 @@ describe("MetaService", () => {
       const meta = new MetaService(tokenDepRepository);
 
       // act
-      const chainsMeta = meta.getChainsMeta();
+      const chainsMeta = await meta.getChainsMeta();
 
       // assert
       expect(chainsMeta).toEqual([
@@ -123,11 +123,11 @@ describe("MetaService", () => {
   });
 
   describe("getTokensMeta", () => {
-    it("should return token metadata for all supported tokens on every chain", () => {
+    it("should return token metadata for all supported tokens on every chain", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        listTokenDeployment(): TokenDeploymentContract[] {
-          return tokenDeploymentContracts;
+        listTokenDeployment(): Promise<TokenDeploymentContract[]> {
+          return Promise.resolve(tokenDeploymentContracts);
         }
       }
 
@@ -135,7 +135,7 @@ describe("MetaService", () => {
       const meta = new MetaService(tokenDepRepository);
 
       // act
-      const tokensMeta = meta.getTokensMeta();
+      const tokensMeta = await meta.getTokensMeta();
 
       // assert
       expect(tokensMeta).toEqual([
@@ -150,11 +150,11 @@ describe("MetaService", () => {
   });
 
   describe("getFeesMeta", () => {
-    it("should return fee metadata for all supported tokens across all chains", () => {
+    it("should return fee metadata for all supported tokens across all chains", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        listTokenDeployment(): TokenDeploymentContract[] {
-          return tokenDeploymentContracts;
+        listTokenDeployment(): Promise<TokenDeploymentContract[]> {
+          return Promise.resolve(tokenDeploymentContracts);
         }
       }
 
@@ -162,7 +162,7 @@ describe("MetaService", () => {
       const meta = new MetaService(tokenDepRepository);
 
       // act
-      const feesMeta = meta.getFeesMeta();
+      const feesMeta = await meta.getFeesMeta();
 
       // assert
       expect(feesMeta).toEqual([
@@ -189,11 +189,11 @@ describe("MetaService", () => {
   });
 
   describe("getMinTransfersMeta", () => {
-    it("should return min transfers units metadata for all supported tokens across all chains", () => {
+    it("should return min transfers units metadata for all supported tokens across all chains", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        listTokenDeployment(): TokenDeploymentContract[] {
-          return tokenDeploymentContracts;
+        listTokenDeployment(): Promise<TokenDeploymentContract[]> {
+          return Promise.resolve(tokenDeploymentContracts);
         }
       }
 
@@ -201,7 +201,7 @@ describe("MetaService", () => {
       const meta = new MetaService(tokenDepRepository);
 
       // act
-      const minTransfersMeta = meta.getMinTransfersMeta();
+      const minTransfersMeta = await meta.getMinTransfersMeta();
 
       // assert
       expect(minTransfersMeta).toEqual([
@@ -228,11 +228,11 @@ describe("MetaService", () => {
   });
 
   describe("getContractsMeta", () => {
-    it("should return contracts addresses metadata for all supported chains", () => {
+    it("should return contracts addresses metadata for all supported chains", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        listChainMasters(): ChainMasterContract[] {
-          return chainMasterContracts;
+        listChainMasters(): Promise<ChainMasterContract[]> {
+          return Promise.resolve(chainMasterContracts);
         }
       }
 
@@ -240,7 +240,7 @@ describe("MetaService", () => {
       const meta = new MetaService(tokenDepRepository);
 
       // act
-      const contractsMeta = meta.getContractsMeta();
+      const contractsMeta = await meta.getContractsMeta();
 
       // assert
       expect(contractsMeta).toEqual({
@@ -264,13 +264,13 @@ describe("MetaService", () => {
   });
 
   describe("getMetaSummary", () => {
-    it("should return metadata summary for all supported chains", () => {
+    it("should return metadata summary for all supported chains", async () => {
       // arrange
       const tokenDepRepository = new StubTokenDeploymentRepository();
       const meta = new MetaService(tokenDepRepository);
 
       // act
-      const summary = meta.getMetaSummary();
+      const summary = await meta.getMetaSummary();
 
       // assert
       expect(summary).toEqual({

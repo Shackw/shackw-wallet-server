@@ -36,7 +36,7 @@ export class QuotesService {
     const expiresAtSec = BigInt(expiresAt.unix());
 
     // Eligibility transfer (support + min amount + fee policy)
-    const { chain, tokenDep, feeTokenDep, contracts, feePolicy } = this.transferEligibility.execute({
+    const { chain, tokenDep, feeTokenDep, contracts, feePolicy } = await this.transferEligibility.execute({
       chainKey,
       tokenSymbol,
       feeTokenSymbol,

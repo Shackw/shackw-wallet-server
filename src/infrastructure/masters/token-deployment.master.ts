@@ -14,7 +14,7 @@ export type TokenDeploymentMasterEntry = {
 
 export type TokenDeploymentMaster = Partial<Record<`${Token}:${Chain}`, TokenDeploymentMasterEntry>>;
 
-export const TOKEN_DEPLOYMENT = {
+export const TOKEN_DEPLOYMENT_MASTER = {
   "JPYC:mainnet": {
     tokenSymbol: "JPYC",
     chainKey: "mainnet",

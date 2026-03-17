@@ -61,7 +61,7 @@ export class TokensService {
       });
 
     // 2b) Validate that the chain in the payload matches the chain used when issuing the quote.
-    const chainMaster = this.tokenDepRepository.findChainMaster({ chainKey });
+    const chainMaster = await this.tokenDepRepository.findChainMaster({ chainKey });
     if (chainMaster.id !== chainId)
       throw new ApplicationError({
         code: "QUOTE_TOKEN_CHAIN_MISMATCH",

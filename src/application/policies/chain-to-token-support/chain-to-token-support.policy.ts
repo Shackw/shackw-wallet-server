@@ -19,10 +19,10 @@ export class DefaultChainToTokenSupportPolicy extends ChainToTokenSupportPolicy 
     super();
   }
 
-  execute(input: ChainToTokenSupportInput): ChainToTokenSupportOutput {
+  async execute(input: ChainToTokenSupportInput): Promise<ChainToTokenSupportOutput> {
     const { chainKey, tokenSymbol } = input;
 
-    const tokenDep = this.tokenDepRepository.findTokenDeployment({ chainKey, tokenSymbol });
+    const tokenDep = await this.tokenDepRepository.findTokenDeployment({ chainKey, tokenSymbol });
     if (!tokenDep)
       throw new ApplicationError({
         code: "UNSUPPORTED_TOKEN_FOR_CHAIN",
