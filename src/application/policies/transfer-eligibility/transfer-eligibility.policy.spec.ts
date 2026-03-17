@@ -12,7 +12,7 @@ import type { ChainToTokenSupportInput, ChainToTokenSupportOutput } from "../cha
 
 describe("TransferEligibilityPolicy", () => {
   describe("execute", () => {
-    it("should throw TRANSFER_AMOUNT_BELOW_MINIMUM when the transfer amount is below the minimum", () => {
+    it("should throw TRANSFER_AMOUNT_BELOW_MINIMUM when the transfer amount is below the minimum", async () => {
       // arrange
       class TestChainToTokenSupportPolicy extends ChainToTokenSupportPolicy {
         execute(input: ChainToTokenSupportInput): Promise<ChainToTokenSupportOutput> {
@@ -62,7 +62,7 @@ describe("TransferEligibilityPolicy", () => {
       };
 
       // act & assert
-      expect(() => transferEligibility.execute(input)).toThrow(
+      await expect(transferEligibility.execute(input)).rejects.toThrow(
         new ApplicationError({
           code: "TRANSFER_AMOUNT_BELOW_MINIMUM",
           message: "Minimum transferable amount for JPYC is 1000 JPYC (1000000000000000000000 minimal units)."
@@ -70,7 +70,7 @@ describe("TransferEligibilityPolicy", () => {
       );
     });
 
-    it("should return transfer eligibility when transfer amount is above the minimum", () => {
+    it("should return transfer eligibility when transfer amount is above the minimum", async () => {
       // arrange
       class TestChainToTokenSupportPolicy extends ChainToTokenSupportPolicy {
         execute(input: ChainToTokenSupportInput): Promise<ChainToTokenSupportOutput> {
@@ -117,7 +117,7 @@ describe("TransferEligibilityPolicy", () => {
       };
 
       // act
-      const tokenDep = transferEligibility.execute(input);
+      const tokenDep = await transferEligibility.execute(input);
 
       // assert
       expect(tokenDep).toMatchObject({

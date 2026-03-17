@@ -15,7 +15,7 @@ import type { ChainToTokenSupportInput } from "./chain-to-token-support.policy.t
 
 describe("ChainToTokenSupportPolicy", () => {
   describe("execute", () => {
-    it("should throw UNSUPPORTED_TOKEN_FOR_CHAIN when token symbol is not supported on chain", () => {
+    it("should throw UNSUPPORTED_TOKEN_FOR_CHAIN when token symbol is not supported on chain", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
         findTokenDeployment(query: FindTokenDeploymentQuery): Promise<TokenDeploymentContract | null> {
@@ -33,7 +33,7 @@ describe("ChainToTokenSupportPolicy", () => {
       };
 
       // act & assert
-      expect(() => chainToTokenSupport.execute(input)).toThrow(
+      await expect(chainToTokenSupport.execute(input)).rejects.toThrow(
         new ApplicationError({
           code: "UNSUPPORTED_TOKEN_FOR_CHAIN",
           message: "Token JPYC is not supported on chain base."
@@ -41,7 +41,7 @@ describe("ChainToTokenSupportPolicy", () => {
       );
     });
 
-    it("should succeed when token symbol is supported on chain", () => {
+    it("should succeed when token symbol is supported on chain", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
         findTokenDeployment(_query: FindTokenDeploymentQuery): Promise<TokenDeploymentContract | null> {
@@ -73,7 +73,7 @@ describe("ChainToTokenSupportPolicy", () => {
       };
 
       // act
-      const tokenDep = chainToTokenSupport.execute(input);
+      const tokenDep = await chainToTokenSupport.execute(input);
 
       // assert
       expect(tokenDep).toEqual({

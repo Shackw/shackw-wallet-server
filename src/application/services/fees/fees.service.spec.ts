@@ -10,7 +10,7 @@ import type { EstimateFeeInput } from "./fees.service.types";
 
 describe("FeesService", () => {
   describe("estimateFee", () => {
-    it("should return fee estimation when transfer eligibility is valid", () => {
+    it("should return fee estimation when transfer eligibility is valid", async () => {
       // arrange
       class TestTransferEligibilityPolicy extends TransferEligibilityPolicy {
         execute(input: TransferEligibilityInput): Promise<TransferEligibilityOutput> {
@@ -54,7 +54,7 @@ describe("FeesService", () => {
       };
 
       // act
-      const fee = fees.estimateFee(input);
+      const fee = await fees.estimateFee(input);
 
       // assert
       expect(fee).toEqual({
