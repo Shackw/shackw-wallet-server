@@ -95,27 +95,40 @@ export default [
         "error",
         {
           zones: [
-            { target: "./src/domain", from: "./src/application", message: "domain must not depend on application" },
-            { target: "./src/domain", from: "./src/interfaces", message: "domain must not depend on interfaces" },
+            {
+              target: "./src/domain",
+              from: "./src/application",
+              message: "domain must not depend on application"
+            },
+            {
+              target: "./src/domain",
+              from: "./src/interfaces",
+              message: "domain must not depend on interfaces"
+            },
             {
               target: "./src/domain",
               from: "./src/infrastructure",
               message: "domain must not depend on infrastructure"
             },
             {
-              target: ["./src/application", "!./src/application/ports"],
-              from: "./src/interfaces",
+              target: ["./src/application/**/*", "!./src/application/ports/**/*"],
+              from: "./src/interfaces/**/*",
               message: "application must not depend on interfaces"
             },
             {
-              target: ["./src/application", "!./src/application/ports"],
-              from: "./src/infrastructure",
+              target: ["./src/application/**/*", "!./src/application/ports/**/*"],
+              from: "./src/infrastructure/**/*",
               message: "application must not depend on infrastructure"
             },
             {
-              target: ["./src/application"],
-              from: "./src/config",
+              target: "./src/application/**/*",
+              from: "./src/config/**/*",
               message: "application must not depend on config"
+            },
+            {
+              target: ["./src/application/**/*", "./src/infrastructure/!(masters)/**/*"],
+              from: "./src/config/**/*",
+              message: "infrastructure must not depend on config (except masters)"
             }
           ]
         }

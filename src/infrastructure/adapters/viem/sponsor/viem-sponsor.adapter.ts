@@ -1,4 +1,5 @@
 import type { DelegateExecuteQuery, SponsorAdapter } from "@/application/ports/adapters/sponsor.adapter.port";
+import type { Chain } from "@/domain/constants/chain.constant";
 
 import { DELEGATE_ABI } from "./viem-sponsor.abi";
 
@@ -17,7 +18,7 @@ export class ViemSponsorAdapter implements SponsorAdapter {
     const { chainKey, sender, calls, nonce, expiresAt, callHash, authorization } = query;
 
     const client = this.publicClientFactor.get(chainKey);
-    const account = await this._getSponsorAddress();
+    const account = await this._getSponsorAddress(chainKey);
 
     const tx = {
       account,
@@ -38,7 +39,7 @@ export class ViemSponsorAdapter implements SponsorAdapter {
     const { chainKey, sender, calls, nonce, expiresAt, callHash, authorization } = query;
 
     const client = this.walletClientFactory.get(chainKey);
-    const account = await this._getSponsorAddress();
+    const account = await this._getSponsorAddress(chainKey);
 
     const tx = {
       account,
@@ -53,8 +54,8 @@ export class ViemSponsorAdapter implements SponsorAdapter {
     return await client.writeContract(tx);
   }
 
-  protected async _getSponsorAddress(): Promise<Address> {
-    const { ENV } = await import("@/config/env.config");
-    return ENV.SPONSOR_ADDRESS;
+  protected async _getSponsorAddress(chainKey: Chain): Promise<Address> {
+    const { CHAIN_MASTER } = await import("@/infrastructure/masters/chain.master");
+    return CHAIN_MASTER[chainKey].contracts.sponsor;
   }
 }

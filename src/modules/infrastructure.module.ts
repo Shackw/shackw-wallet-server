@@ -14,7 +14,7 @@ import { ViemPublicClientFactory } from "@/infrastructure/adapters/viem/viem-pub
 import { ViemSponsorWalletClientFactory } from "@/infrastructure/adapters/viem/viem-sponsor-client.factory";
 import { HttpMoralisGateway } from "@/infrastructure/gateways/http/moralis";
 import { HttpThirdwebApiGateway } from "@/infrastructure/gateways/http/thirdweb";
-import { MemoryTokenDeploymentRepository } from "@/infrastructure/repositories/memory/token-deployment";
+import { StaticTokenDeploymentRepository } from "@/infrastructure/repositories/static/token-deployment";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
 @Module({
@@ -80,7 +80,7 @@ import { DI_TOKENS } from "@/shared/tokens/di.tokens";
     { provide: DI_TOKENS.SPONSOR_ADAPTER, useClass: ViemSponsorAdapter },
 
     // repositories
-    { provide: DI_TOKENS.TOKEN_DEPLOYMENT_REPOSITORY, useClass: MemoryTokenDeploymentRepository }
+    { provide: DI_TOKENS.TOKEN_DEPLOYMENT_REPOSITORY, useClass: StaticTokenDeploymentRepository }
   ],
   exports: [
     DI_TOKENS.THIRDWEB_GATEWAY,

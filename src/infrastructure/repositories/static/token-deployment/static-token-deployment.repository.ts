@@ -17,9 +17,9 @@ import {
   toChainMasterContract,
   toTokenDeploymentContract,
   toTokenMasterContract
-} from "./memory-token-deployment.entry-to-contract";
+} from "./static-token-deployment.entry-to-contract";
 
-export class MemoryTokenDeploymentRepository implements TokenDeploymentRepository {
+export class StaticTokenDeploymentRepository implements TokenDeploymentRepository {
   async findTokenMasterByAddress({
     address,
     chainKey

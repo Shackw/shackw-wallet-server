@@ -3,6 +3,7 @@ import { describe, it, expect, vi } from "vitest";
 import { makeClient } from "@test/utils";
 
 import type { DelegateExecuteQuery } from "@/application/ports/adapters/sponsor.adapter.port";
+import type { Chain } from "@/domain/constants/chain.constant";
 
 import { ViemSponsorAdapter } from "./viem-sponsor.adapter";
 
@@ -50,7 +51,9 @@ describe("ViemSponsorAdapter", () => {
       };
 
       class TestViemSponsorAdapter extends ViemSponsorAdapter {
-        protected override async _getSponsorAddress(): Promise<Address> {
+        protected override async _getSponsorAddress(chainKey: Chain): Promise<Address> {
+          expect(chainKey).toBe(query.chainKey);
+
           return Promise.resolve(expectedSponsorAddress);
         }
       }
@@ -123,7 +126,7 @@ describe("ViemSponsorAdapter", () => {
       };
 
       class TestViemSponsorAdapter extends ViemSponsorAdapter {
-        protected override async _getSponsorAddress(): Promise<Address> {
+        protected override async _getSponsorAddress(_chainKey: Chain): Promise<Address> {
           return Promise.resolve(expectedSponsorAddress);
         }
       }
