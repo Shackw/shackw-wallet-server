@@ -2,7 +2,7 @@ import * as v from "valibot";
 
 import type { MoralisSearchTransfersQuery } from "@/application/ports/gateways/moralis.gateway.port";
 import type { Chain } from "@/domain/constants/chain.constant";
-import { addressValidator, hex32Validator } from "@/shared/validations/rules/address.validator";
+import { addressValidator, hex64Validator } from "@/shared/validations/rules/address.validator";
 import {
   isoDateStringValidator,
   nullableString,
@@ -34,28 +34,28 @@ export const MoralisSearchTransfersResponseDtoSchema = v.object({
     v.object({
       token_name: nullableString("result[].token_name"),
       token_symbol: v.string("result[].token_symbol is required"),
-      token_logo: nullableString("result[].token_logo"),
+      token_logo: v.optional(nullableString("result[].token_logo")),
       token_decimals: v.string("result[].token_decimals must be a string"),
-      from_address_entity: nullableString("result[].from_address_entity"),
-      from_address_entity_logo: nullableString("result[].from_address_entity_logo"),
+      from_address_entity: v.optional(nullableString("result[].from_address_entity")),
+      from_address_entity_logo: v.optional(nullableString("result[].from_address_entity_logo")),
       from_address: addressValidator("result[].from_address"),
-      from_address_label: nullableString("result[].from_address_label"),
-      to_address_entity: nullableString("result[].to_address_entity"),
-      to_address_entity_logo: nullableString("result[].to_address_entity_logo"),
+      from_address_label: v.optional(nullableString("result[].from_address_label")),
+      to_address_entity: v.optional(nullableString("result[].to_address_entity")),
+      to_address_entity_logo: v.optional(nullableString("result[].to_address_entity_logo")),
       to_address: addressValidator("result[].to_address"),
-      to_address_label: nullableString("result[].to_address_label"),
+      to_address_label: v.optional(nullableString("result[].to_address_label")),
       address: addressValidator("result[].address"),
       block_hash: v.string("result[].block_hash is required"),
       block_number: stringBigintValidator("result[].block_number"),
       block_timestamp: isoDateStringValidator("result[].block_timestamp"),
-      transaction_hash: hex32Validator("result[].transaction_hash"),
+      transaction_hash: hex64Validator("result[].transaction_hash"),
       transaction_index: v.number("result[].transaction_index must be a number"),
       log_index: v.number("result[].og_index must be a number"),
       value: stringBigintValidator("result[].value"),
-      value_decimal: v.string("result[].value_decimal must be a string"),
+      value_decimal: v.optional(v.string("result[].value_decimal must be a string")),
       possible_spam: v.boolean("result[].possible_spam must be a boolean"),
       verified_contract: v.boolean("result[].verified_contract must be a boolean"),
-      security_score: v.nullable(v.number("result[].security_score must be a number"))
+      security_score: v.optional(v.nullable(v.number("result[].security_score must be a number")))
     }),
     "result must be an array"
   )

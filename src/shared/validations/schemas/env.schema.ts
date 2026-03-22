@@ -1,10 +1,10 @@
 import * as v from "valibot";
 
-import { hex32Validator, addressValidator, hex64Validator } from "../rules/address.validator";
-import { stringBigintValidator } from "../rules/string.validator";
+import { addressValidator, hex64Validator } from "../rules/address.validator";
+import { hex32StringValidator, stringBigintValidator } from "../rules/string.validator";
 
 export const EnvSchema = v.object({
-  RPC_INFURA_ID: hex32Validator("RPC_INFURA_ID"),
+  RPC_INFURA_ID: hex32StringValidator("RPC_INFURA_ID"),
 
   SPONSOR_PK: hex64Validator("SPONSOR_PK"),
   SPONSOR_ADDRESS: addressValidator("SPONSOR_ADDRESS"),

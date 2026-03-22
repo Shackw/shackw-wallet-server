@@ -18,15 +18,6 @@ export const addressValidator = (field: string) =>
     )
   );
 
-export const hex32Validator = (field: string) =>
-  v.pipe(
-    v.string(`${field} must be a string.`),
-    v.trim(),
-    v.length(32, `${field} must be 32 characters long.`),
-    v.regex(/^[0-9a-fA-F]{32}$/, `${field} must be a 32-char hex string.`),
-    v.transform((s): Hex => s.toLowerCase() as Hex)
-  );
-
 export const hex64Validator = (field: string) =>
   v.pipe(
     v.string(`${field} must be a string.`),

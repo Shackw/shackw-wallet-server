@@ -26,3 +26,11 @@ export const quoteTokenValidator = (field: string = "quoteToken") =>
     v.string(`${field} must be a string.`),
     v.regex(/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/, `${field} must be base64url 'payload.mac' format.`)
   );
+
+export const hex32StringValidator = (field: string) =>
+  v.pipe(
+    v.string(`${field} must be a string.`),
+    v.trim(),
+    v.length(32, `${field} must be 32 characters long.`),
+    v.regex(/^[0-9a-fA-F]{32}$/, `${field} must be a 32-char hex string.`)
+  );

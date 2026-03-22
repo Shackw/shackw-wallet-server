@@ -45,17 +45,20 @@ export class HttpMoralisGateway implements MoralisGateway {
   }
 
   protected async _fetchTransfersByWallet(
-    payload: MoralisSearchTransfersRequestDto,
-    results: MoralisSearchTransfersResponseDto["result"] = []
+    payload: MoralisSearchTransfersRequestDto
   ): Promise<MoralisSearchTransfersResponseDto["result"]> {
     const { wallet, params } = payload;
 
     const res = await this.client.get(`/api/v2.2/${wallet}/erc20/transfers`, { params });
     const { cursor, result } = v.parse(MoralisSearchTransfersResponseDtoSchema, res.data);
 
-    results.push(...result);
-    if (cursor) return this._fetchTransfersByWallet({ ...payload, params: { ...payload.params, cursor } }, result);
+    if (!cursor) return result;
 
-    return results;
+    const next = await this._fetchTransfersByWallet({
+      ...payload,
+      params: { ...params, cursor }
+    });
+
+    return [...result, ...next];
   }
 }

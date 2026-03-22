@@ -16,6 +16,9 @@ import { toThirdwebSearchContractEventsContract } from "./http-thirdweb.response
 import type { AxiosInstance } from "axios";
 
 export class HttpThirdwebApiGateway implements ThirdwebGateway {
+  private readonly ERC20_TRANSFER_EVENT_SIGNATURE =
+    "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+
   constructor(private client: AxiosInstance) {}
 
   async searchContractEvents(
@@ -26,7 +29,7 @@ export class HttpThirdwebApiGateway implements ThirdwebGateway {
     const promises = await Promise.all(
       tokenAddresses
         .map(addr => {
-          const filterTopic0 = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+          const filterTopic0 = this.ERC20_TRANSFER_EVENT_SIGNATURE;
           const filterTopic1 = fromAddress ? query.fromAddress : undefined;
           const filterTopic2 = toAddress ? query.toAddress : undefined;
 
@@ -78,8 +81,7 @@ export class HttpThirdwebApiGateway implements ThirdwebGateway {
   }
 
   protected async _fetchContractEventsByToken(
-    payload: ThirdwebSearchContractEventsRequestDto,
-    results: ThirdwebSearchContractEventsResponseDto["result"]["events"] = []
+    payload: ThirdwebSearchContractEventsRequestDto
   ): Promise<ThirdwebSearchContractEventsResponseDto["result"]["events"]> {
     const { chainId, tokenAddress, params } = payload;
 
@@ -88,16 +90,13 @@ export class HttpThirdwebApiGateway implements ThirdwebGateway {
       result: { events, pagination }
     } = v.parse(ThirdwebSearchContractEventsResponseDtoSchema, res.data);
 
-    results.push(...events);
-    if (pagination.page * pagination.limit < pagination.totalCount)
-      return this._fetchContractEventsByToken(
-        {
-          ...payload,
-          params: { ...payload.params, page: payload.params.page + 1 }
-        },
-        results
-      );
+    if (pagination.totalCount <= pagination.page * pagination.limit) return events;
 
-    return results;
+    const next = await this._fetchContractEventsByToken({
+      ...payload,
+      params: { ...payload.params, page: payload.params.page + 1 }
+    });
+
+    return [...events, ...next];
   }
 }

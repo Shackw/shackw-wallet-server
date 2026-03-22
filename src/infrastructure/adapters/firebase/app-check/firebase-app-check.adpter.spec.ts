@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 
-import { makeClient } from "@test/utils";
+import { makeMockClient } from "@test/utils";
 
 import type { AppCheckVerifyTokenQuery } from "@/application/ports/adapters/app-check.adapter.port";
 
@@ -14,7 +14,7 @@ describe("FirebaseAppCheckAdapter", () => {
       // arrange
       const expectedToken = "app-check-token";
 
-      const client = makeClient<AppCheck>({
+      const client = makeMockClient<AppCheck>({
         verifyToken(token) {
           expect(token).toBe(expectedToken);
 
@@ -33,7 +33,7 @@ describe("FirebaseAppCheckAdapter", () => {
       // arrange
       const expectedToken = "app-check-token";
 
-      const client = makeClient<AppCheck>({
+      const client = makeMockClient<AppCheck>({
         verifyToken(_token) {
           return Promise.resolve({
             appId: "app-id",
@@ -55,7 +55,7 @@ describe("FirebaseAppCheckAdapter", () => {
       process.env.NODE_ENV = "development";
       const expectedToken = "app-check-token";
 
-      const client = makeClient<AppCheck>({
+      const client = makeMockClient<AppCheck>({
         verifyToken(token) {
           expect(token).toBe(expectedToken);
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 
-import { makeClient } from "@test/utils";
+import { makeMockClient } from "@test/utils";
 
 import type { DelegateExecuteQuery } from "@/application/ports/adapters/sponsor.adapter.port";
 
@@ -50,7 +50,7 @@ describe("ViemSponsorAdapter", () => {
         }
       };
 
-      const publicClientFactor = makeClient<ViemPublicClientFactory>({
+      const publicClientFactor = makeMockClient<ViemPublicClientFactory>({
         get(chainKey: string) {
           expect(chainKey).toBe(query.chainKey);
 
@@ -70,7 +70,7 @@ describe("ViemSponsorAdapter", () => {
         }
       });
 
-      const walletClientFactory = makeClient<ViemSponsorWalletClientFactory>({
+      const walletClientFactory = makeMockClient<ViemSponsorWalletClientFactory>({
         get(_chainKey: string) {
           return {} as unknown as WalletClient<Transport, ViemChain, Account>;
         }
@@ -118,13 +118,13 @@ describe("ViemSponsorAdapter", () => {
         }
       };
 
-      const publicClientFactor = makeClient<ViemPublicClientFactory>({
+      const publicClientFactor = makeMockClient<ViemPublicClientFactory>({
         get(_chainKey: string) {
           return {} as unknown as PublicClient;
         }
       });
 
-      const walletClientFactory = makeClient<ViemSponsorWalletClientFactory>({
+      const walletClientFactory = makeMockClient<ViemSponsorWalletClientFactory>({
         get(chainKey: string) {
           expect(chainKey).toBe(query.chainKey);
           return {

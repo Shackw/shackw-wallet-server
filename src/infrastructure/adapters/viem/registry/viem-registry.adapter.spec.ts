@@ -1,7 +1,7 @@
 import { getContract } from "viem";
 import { describe, it, expect, vi } from "vitest";
 
-import { makeClient } from "@test/utils";
+import { makeMockClient } from "@test/utils";
 
 import type { GetNextNonceQuery } from "@/application/ports/adapters/registry.adapter.port";
 
@@ -36,7 +36,7 @@ describe("ViemRegistryAdapter", () => {
         }
       } as unknown as ReturnType<typeof getContract>);
 
-      const factory = makeClient<ViemPublicClientFactory>({
+      const factory = makeMockClient<ViemPublicClientFactory>({
         get(chainKey: string) {
           expect(chainKey).toBe(query.chainKey);
           return {} as PublicClient;

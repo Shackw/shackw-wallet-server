@@ -1,6 +1,6 @@
 import * as v from "valibot";
 
-import { addressValidator, hex32Validator } from "@/shared/validations/rules/address.validator";
+import { addressValidator, hex64Validator } from "@/shared/validations/rules/address.validator";
 import { numberBigintValidator, unixTimestampSecondsValidator } from "@/shared/validations/rules/number.validator";
 import { stringBigintValidator } from "@/shared/validations/rules/string.validator";
 
@@ -15,7 +15,7 @@ export const ThirdwebSearchContractEventsResponseDtoSchema = v.object({
         blockNumber: numberBigintValidator("result.events[].blockNumber"),
         blockHash: v.string("result.events[].blockHash must be a string"),
         blockTimestamp: unixTimestampSecondsValidator("result.events[].blockTimestamp"),
-        transactionHash: hex32Validator("result.events[].transactionHash"),
+        transactionHash: hex64Validator("result.events[].transactionHash"),
         transactionIndex: v.number("result.events[].transactionIndex must be a number"),
         logIndex: v.number("result.events[].logIndex must be a number"),
         address: addressValidator("result.events[].address"),
