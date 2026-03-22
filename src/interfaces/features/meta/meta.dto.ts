@@ -42,7 +42,7 @@ export const GetMinTransferMetaResponseDtoSchema = v.array(
 export const GetContractsMetaResponseDtoSchema = v.object({
   delegate: v.record(chainKeyValidator("chain.key"), addressValidator("contracts.delegate")),
   registry: v.record(chainKeyValidator("chain.key"), addressValidator("contracts.registry")),
-  sponsor: addressValidator("contracts.sponsor")
+  sponsor: v.record(chainKeyValidator("chain.key"), addressValidator("contracts.sponsor"))
 });
 
 export const GetMetaSummaryResponseDtoSchema = v.object({

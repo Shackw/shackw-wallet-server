@@ -1,7 +1,7 @@
 import { getAddress } from "viem";
 import { describe, it, expect } from "vitest";
 
-import { makeMockClient } from "@test/utils";
+import { makeMockObject } from "@test/utils";
 
 import type { ThirdwebSearchContractEventsQuery } from "@/application/ports/gateways/thirdweb.gateway.port";
 
@@ -68,7 +68,7 @@ describe("HttpThirdwebApiGateway", () => {
       const resValue = "1000000000000000000000";
       const resLogIdx = 8;
 
-      const client = makeMockClient<AxiosInstance>({
+      const client = makeMockObject<AxiosInstance>({
         get: (url, config) => {
           expect(url).toBe(`/v1/contracts/${chainId}/${tokenAddress}/events`);
           expect(config?.params).toEqual({
@@ -133,7 +133,7 @@ describe("HttpThirdwebApiGateway", () => {
       const resValue = "1000000000000000000000";
       const resLogIdx = 8;
 
-      const client = makeMockClient<AxiosInstance>({
+      const client = makeMockObject<AxiosInstance>({
         get: (url, config) => {
           expect(url).toBe(`/v1/contracts/${chainId}/${tokenAddress}/events`);
           expect(config?.params).toEqual({
@@ -195,7 +195,7 @@ describe("HttpThirdwebApiGateway", () => {
       let callCount = 0;
       const duplicateTxHash = `0x${"d".repeat(64)}`;
 
-      const client = makeMockClient<AxiosInstance>({
+      const client = makeMockObject<AxiosInstance>({
         get: (_url, config) => {
           callCount++;
 
@@ -267,7 +267,7 @@ describe("HttpThirdwebApiGateway", () => {
       const forceTxHash = `0x${"e".repeat(64)}`;
 
       let fetchCount = 0;
-      const client = makeMockClient<AxiosInstance>({
+      const client = makeMockObject<AxiosInstance>({
         get: (_url, config) => {
           if (fetchCount === 0) {
             fetchCount++;
@@ -466,7 +466,7 @@ describe("HttpThirdwebApiGateway", () => {
       const secondTxHash = `0x${"b".repeat(64)}`;
 
       let callCount = 0;
-      const client = makeMockClient<AxiosInstance>({
+      const client = makeMockObject<AxiosInstance>({
         get: url => {
           callCount++;
 
@@ -558,7 +558,7 @@ describe("HttpThirdwebApiGateway", () => {
       const tokenAddress2 = "0x62AED87d21Ad0F3cdE4D147Fdcc9245401Af0044";
       const duplicateTxHash = `0x${"f".repeat(64)}`;
 
-      const client = makeMockClient<AxiosInstance>({
+      const client = makeMockObject<AxiosInstance>({
         get: url => {
           const address = url.includes(tokenAddress2) ? tokenAddress2 : tokenAddress;
 
@@ -610,7 +610,7 @@ describe("HttpThirdwebApiGateway", () => {
       const oldTxHash = `0x${"a".repeat(64)}`;
       const newTxHash = `0x${"b".repeat(64)}`;
 
-      const client = makeMockClient<AxiosInstance>({
+      const client = makeMockObject<AxiosInstance>({
         get: () =>
           Promise.resolve({
             data: {
@@ -680,7 +680,7 @@ describe("HttpThirdwebApiGateway", () => {
       const oldTxHash = `0x${"a".repeat(64)}`;
       const newTxHash = `0x${"b".repeat(64)}`;
 
-      const client = makeMockClient<AxiosInstance>({
+      const client = makeMockObject<AxiosInstance>({
         get: () =>
           Promise.resolve({
             data: {

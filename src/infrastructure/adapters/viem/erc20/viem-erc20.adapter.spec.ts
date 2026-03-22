@@ -1,7 +1,7 @@
 import { getContract } from "viem";
 import { describe, it, expect, vi } from "vitest";
 
-import { makeMockClient } from "@test/utils";
+import { makeMockObject } from "@test/utils";
 
 import type { GetBalanceQuery } from "@/application/ports/adapters/erc20.adapter.port";
 
@@ -36,7 +36,7 @@ describe("ViemErc20Adapter", () => {
         }
       } as unknown as ReturnType<typeof getContract>);
 
-      const factory = makeMockClient<ViemPublicClientFactory>({
+      const factory = makeMockObject<ViemPublicClientFactory>({
         get(chainKey: string) {
           expect(chainKey).toBe(query.chainKey);
           return {} as PublicClient;

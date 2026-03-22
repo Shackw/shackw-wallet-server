@@ -1,7 +1,7 @@
 import { getAddress } from "viem";
 import { describe, it, expect } from "vitest";
 
-import { makeMockClient } from "@test/utils";
+import { makeMockObject } from "@test/utils";
 
 import type { MoralisSearchTransfersQuery } from "@/application/ports/gateways/moralis.gateway.port";
 
@@ -68,7 +68,7 @@ describe("HttpMoralisGateway", () => {
       const resLogIdx = 8;
       const resToAddr = "0x62AED87d21Ad0F3cdE4D147Fdcc9245401Af0044";
 
-      const client = makeMockClient<AxiosInstance>({
+      const client = makeMockObject<AxiosInstance>({
         get: (url, config) => {
           expect(url).toBe(`/api/v2.2/${walletAddress}/erc20/transfers`);
           expect(config?.params).toEqual({
@@ -125,7 +125,7 @@ describe("HttpMoralisGateway", () => {
 
     it("should return empty array when result is empty and cursor is null", async () => {
       // arrange
-      const client = makeMockClient<AxiosInstance>({
+      const client = makeMockObject<AxiosInstance>({
         get: (url, config) => {
           expect(url).toBe(`/api/v2.2/${walletAddress}/erc20/transfers`);
           expect(config?.params).toEqual({
@@ -168,7 +168,7 @@ describe("HttpMoralisGateway", () => {
       const secondCursor = "second-cursor";
 
       let fetchCount = 0;
-      const client = makeMockClient<AxiosInstance>({
+      const client = makeMockObject<AxiosInstance>({
         get: (url, config) => {
           expect(url).toBe(`/api/v2.2/${walletAddress}/erc20/transfers`);
 
@@ -276,7 +276,7 @@ describe("HttpMoralisGateway", () => {
 
     it("should map ascending sort order", async () => {
       // arrange
-      const client = makeMockClient<AxiosInstance>({
+      const client = makeMockObject<AxiosInstance>({
         get: (_url, config) => {
           expect(config?.params).toEqual({
             chain: "eth",
