@@ -77,7 +77,11 @@ describe("QuotesService", () => {
       // arrange
       class TestRegistryAdapter extends StubRegistryAdapter {
         getNextNonce(query: GetNextNonceQuery): Promise<bigint> {
-          expect(query).toEqual({ chainKey: baseInput.chainKey, owner: baseInput.sender });
+          expect(query).toEqual({
+            registry: transferEligibilityOutput.contracts.registry,
+            chainKey: baseInput.chainKey,
+            owner: baseInput.sender
+          });
 
           return Promise.reject(new Error("on error when fetching next nonce"));
         }

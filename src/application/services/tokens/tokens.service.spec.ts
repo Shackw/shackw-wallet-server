@@ -312,7 +312,7 @@ describe("TokensService", () => {
 
       class TestRegistryAdapter extends StubRegistryAdapter {
         getNextNonce(query: GetNextNonceQuery): Promise<bigint> {
-          expect(query).toEqual({ chainKey: "mainnet", owner: baseDecodeQuoteToken.sender });
+          expect(query).toEqual({ registry: "0xRegistry", chainKey: "mainnet", owner: baseDecodeQuoteToken.sender });
 
           return Promise.reject(new Error("on error when fetching next nonce"));
         }
@@ -504,6 +504,7 @@ describe("TokensService", () => {
       class TestSponsorAdapter extends StubSponsorAdapter {
         simulateDelegateExecute(query: DelegateExecuteQuery): Promise<void> {
           expect(query).toEqual({
+            sponsor: "0xSponsor",
             chainKey: "mainnet",
             sender: baseDecodeQuoteToken.sender,
             calls: baseExecutionIntentOutput.calls,
@@ -554,6 +555,7 @@ describe("TokensService", () => {
       class TestSponsorAdapter extends StubSponsorAdapter {
         writeDelegateExecute(query: DelegateExecuteQuery): Promise<Hex> {
           expect(query).toEqual({
+            sponsor: "0xSponsor",
             chainKey: "mainnet",
             sender: baseDecodeQuoteToken.sender,
             calls: baseExecutionIntentOutput.calls,

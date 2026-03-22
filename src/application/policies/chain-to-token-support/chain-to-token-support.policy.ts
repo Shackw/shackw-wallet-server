@@ -1,13 +1,13 @@
 import { Inject, Injectable } from "@nestjs/common";
 
 import { ApplicationError } from "@/application/errors";
-import { TokenDeploymentRepository } from "@/application/ports/repositories/token-deployment.repository.port";
+import type { TokenDeploymentRepository } from "@/application/ports/repositories/token-deployment.repository.port";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
 import {
-  ChainToTokenSupportInput,
-  ChainToTokenSupportOutput,
-  ChainToTokenSupportPolicy
+  ChainToTokenSupportPolicy,
+  type ChainToTokenSupportInput,
+  type ChainToTokenSupportOutput
 } from "./chain-to-token-support.policy.types";
 
 @Injectable()

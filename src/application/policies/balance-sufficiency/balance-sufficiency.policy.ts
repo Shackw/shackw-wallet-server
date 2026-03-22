@@ -1,11 +1,11 @@
 import { Injectable, Inject } from "@nestjs/common";
 
 import { ApplicationError } from "@/application/errors";
-import { Erc20Adapter } from "@/application/ports/adapters/erc20.adapter.port";
-import { TokenDeploymentRepository } from "@/application/ports/repositories/token-deployment.repository.port";
+import type { Erc20Adapter } from "@/application/ports/adapters/erc20.adapter.port";
+import type { TokenDeploymentRepository } from "@/application/ports/repositories/token-deployment.repository.port";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
-import { BalanceSufficiencyPolicy, EnsureSufficientBalanceInput } from "./balance-sufficiency.policy.types";
+import { BalanceSufficiencyPolicy, type EnsureSufficientBalanceInput } from "./balance-sufficiency.policy.types";
 
 @Injectable()
 export class DefaultBalanceSufficiencyPolicy extends BalanceSufficiencyPolicy {

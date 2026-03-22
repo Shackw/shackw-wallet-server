@@ -1,9 +1,9 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { Address, formatUnits } from "viem";
+import { formatUnits } from "viem/utils";
 
-import { TokenDeploymentRepository } from "@/application/ports/repositories/token-deployment.repository.port";
-import { Chain } from "@/domain/constants/chain.constant";
-import { Token } from "@/domain/constants/token.constant";
+import type { TokenDeploymentRepository } from "@/application/ports/repositories/token-deployment.repository.port";
+import type { Chain } from "@/domain/constants/chain.constant";
+import type { Token } from "@/domain/constants/token.constant";
 import type {
   ChainMetaEntity,
   TokenMetaEntity,
@@ -13,6 +13,8 @@ import type {
   MetaSummaryEntity
 } from "@/domain/entities/meta.entity";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
+
+import type { Address } from "viem";
 
 @Injectable()
 export class MetaService {

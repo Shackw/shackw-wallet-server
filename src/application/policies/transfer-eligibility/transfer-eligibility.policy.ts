@@ -1,16 +1,16 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { formatUnits } from "viem";
+import { formatUnits } from "viem/utils";
 
 import { ApplicationError } from "@/application/errors";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
-import { ChainToTokenSupportPolicy } from "../chain-to-token-support";
-
 import {
   TransferEligibilityPolicy,
-  TransferEligibilityInput,
-  TransferEligibilityOutput
+  type TransferEligibilityInput,
+  type TransferEligibilityOutput
 } from "./transfer-eligibility.policy.types";
+
+import type { ChainToTokenSupportPolicy } from "../chain-to-token-support";
 
 @Injectable()
 export class DefaultTransferEligibilityPolicy extends TransferEligibilityPolicy {

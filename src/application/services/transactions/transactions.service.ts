@@ -1,14 +1,15 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { Address, isAddressEqual } from "viem";
+import { isAddressEqual } from "viem/utils";
 
-import { ChainToTokenSupportPolicy } from "@/application/policies/chain-to-token-support";
-import { MoralisGateway } from "@/application/ports/gateways/moralis.gateway.port";
-import { ThirdwebGateway } from "@/application/ports/gateways/thirdweb.gateway.port";
-import { TokenMasterContract } from "@/application/ports/repositories/token-deployment.repository.port";
-import { TransactionEntity } from "@/domain/entities/transaction.entity";
+import type { ChainToTokenSupportPolicy } from "@/application/policies/chain-to-token-support";
+import type { MoralisGateway } from "@/application/ports/gateways/moralis.gateway.port";
+import type { ThirdwebGateway } from "@/application/ports/gateways/thirdweb.gateway.port";
+import type { TokenMasterContract } from "@/application/ports/repositories/token-deployment.repository.port";
+import type { TransactionEntity } from "@/domain/entities/transaction.entity";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
-import { SearchTransactionsInput } from "./transactions.service.types";
+import type { SearchTransactionsInput } from "./transactions.service.types";
+import type { Address } from "viem";
 
 @Injectable()
 export class TransactionsService {

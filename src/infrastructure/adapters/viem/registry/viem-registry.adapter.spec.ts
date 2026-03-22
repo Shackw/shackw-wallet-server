@@ -4,12 +4,11 @@ import { describe, it, expect, vi } from "vitest";
 import { makeClient } from "@test/utils";
 
 import type { GetNextNonceQuery } from "@/application/ports/adapters/registry.adapter.port";
-import type { Chain } from "@/domain/constants/chain.constant";
 
 import { ViemRegistryAdapter } from "./viem-registry.adapter";
 
 import type { ViemPublicClientFactory } from "../viem-public-client.factory";
-import type { Address, PublicClient } from "viem";
+import type { PublicClient } from "viem";
 
 vi.mock("viem", async importOriginal => ({
   ...(await importOriginal<typeof import("viem")>()),
@@ -23,17 +22,10 @@ describe("ViemRegistryAdapter", () => {
       const expectedNonce = 1220n;
 
       const query: GetNextNonceQuery = {
+        registry: "0xMainnectRegistry",
         chainKey: "mainnet",
         owner: "0xOwnerAddress"
       };
-
-      class TestViemRegistryAdapter extends ViemRegistryAdapter {
-        protected override async _getRegistryAddress(chainKey: Chain): Promise<Address> {
-          expect(chainKey).toBe(query.chainKey);
-
-          return Promise.resolve("0xRegistryAddress");
-        }
-      }
 
       vi.mocked(getContract).mockReturnValue({
         read: {
@@ -51,7 +43,7 @@ describe("ViemRegistryAdapter", () => {
         }
       });
 
-      const adapter = new TestViemRegistryAdapter(factory);
+      const adapter = new ViemRegistryAdapter(factory);
 
       // act & assert
       await expect(adapter.getNextNonce(query)).resolves.toBe(expectedNonce);

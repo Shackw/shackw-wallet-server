@@ -3,13 +3,12 @@ import { describe, it, expect, vi } from "vitest";
 import { makeClient } from "@test/utils";
 
 import type { DelegateExecuteQuery } from "@/application/ports/adapters/sponsor.adapter.port";
-import type { Chain } from "@/domain/constants/chain.constant";
 
 import { ViemSponsorAdapter } from "./viem-sponsor.adapter";
 
 import type { ViemPublicClientFactory } from "../viem-public-client.factory";
 import type { ViemSponsorWalletClientFactory } from "../viem-sponsor-client.factory";
-import type { Account, Address, PublicClient, Transport, WalletClient, Chain as ViemChain } from "viem";
+import type { Account, PublicClient, Transport, WalletClient, Chain as ViemChain } from "viem";
 
 vi.mock("viem", async importOriginal => ({
   ...(await importOriginal<typeof import("viem")>()),
@@ -20,9 +19,10 @@ describe("ViemSponsorAdapter", () => {
   describe("simulateDelegateExecute", () => {
     it("should call simulateContract with the correct arguments", async () => {
       // arrange
-      const expectedSponsorAddress = "0xSponsorAddress";
+      const expectedSponsorAddress = "0xMainnetSponsor";
 
       const query: DelegateExecuteQuery = {
+        sponsor: expectedSponsorAddress,
         chainKey: "mainnet",
         sender: "0xSender",
         calls: [
@@ -49,14 +49,6 @@ describe("ViemSponsorAdapter", () => {
           v: 27n
         }
       };
-
-      class TestViemSponsorAdapter extends ViemSponsorAdapter {
-        protected override async _getSponsorAddress(chainKey: Chain): Promise<Address> {
-          expect(chainKey).toBe(query.chainKey);
-
-          return Promise.resolve(expectedSponsorAddress);
-        }
-      }
 
       const publicClientFactor = makeClient<ViemPublicClientFactory>({
         get(chainKey: string) {
@@ -84,7 +76,7 @@ describe("ViemSponsorAdapter", () => {
         }
       });
 
-      const adapter = new TestViemSponsorAdapter(publicClientFactor, walletClientFactory);
+      const adapter = new ViemSponsorAdapter(publicClientFactor, walletClientFactory);
 
       // act & assert
       await expect(adapter.simulateDelegateExecute(query)).resolves.toBeUndefined();
@@ -98,6 +90,7 @@ describe("ViemSponsorAdapter", () => {
       const expectedResultTxHash = "0xResultTxHash";
 
       const query: DelegateExecuteQuery = {
+        sponsor: expectedSponsorAddress,
         chainKey: "mainnet",
         sender: "0xSender",
         calls: [
@@ -125,12 +118,6 @@ describe("ViemSponsorAdapter", () => {
         }
       };
 
-      class TestViemSponsorAdapter extends ViemSponsorAdapter {
-        protected override async _getSponsorAddress(_chainKey: Chain): Promise<Address> {
-          return Promise.resolve(expectedSponsorAddress);
-        }
-      }
-
       const publicClientFactor = makeClient<ViemPublicClientFactory>({
         get(_chainKey: string) {
           return {} as unknown as PublicClient;
@@ -156,7 +143,7 @@ describe("ViemSponsorAdapter", () => {
         }
       });
 
-      const adapter = new TestViemSponsorAdapter(publicClientFactor, walletClientFactory);
+      const adapter = new ViemSponsorAdapter(publicClientFactor, walletClientFactory);
 
       // act
       const result = await adapter.writeDelegateExecute(query);

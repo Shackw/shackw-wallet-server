@@ -1,17 +1,17 @@
 import { Inject } from "@nestjs/common";
 import dayjs from "dayjs";
-import { Hex } from "viem";
 
 import { ApplicationError } from "@/application/errors";
-import { BalanceSufficiencyPolicy } from "@/application/policies/balance-sufficiency";
-import { TransferEligibilityPolicy } from "@/application/policies/transfer-eligibility";
-import { RegistryAdapter } from "@/application/ports/adapters/registry.adapter.port";
+import type { BalanceSufficiencyPolicy } from "@/application/policies/balance-sufficiency";
+import type { TransferEligibilityPolicy } from "@/application/policies/transfer-eligibility";
+import type { RegistryAdapter } from "@/application/ports/adapters/registry.adapter.port";
 import { buildExcutionIntent } from "@/application/protocols/execution-intent";
 import { encodeQuoteToken } from "@/application/protocols/quote-token";
 import type { QuoteEntity } from "@/domain/entities/quote.entity";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
-import { CreateQuoteInput } from "./quotes.service.types";
+import type { CreateQuoteInput } from "./quotes.service.types";
+import type { Hex } from "viem";
 
 export class QuotesService {
   constructor(
@@ -53,13 +53,15 @@ export class QuotesService {
       feeRequiredMinUnits: feeTokenDep.fixedFeeAmountUnits
     });
 
-    const nonce = await this.registryAdapter.getNextNonce({ chainKey: chain.key, owner: sender }).catch(e => {
-      throw new ApplicationError({
-        code: "FAILED_TO_FETCH_NEXT_NONCE",
-        message: "Failed to fetch next nonce.",
-        cause: e
+    const nonce = await this.registryAdapter
+      .getNextNonce({ registry: contracts.registry, chainKey: chain.key, owner: sender })
+      .catch(e => {
+        throw new ApplicationError({
+          code: "FAILED_TO_FETCH_NEXT_NONCE",
+          message: "Failed to fetch next nonce.",
+          cause: e
+        });
       });
-    });
 
     // Build calls and compute callHash to ensure integrity
     const { callHash } = buildExcutionIntent({

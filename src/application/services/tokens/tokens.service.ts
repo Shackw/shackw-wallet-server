@@ -1,18 +1,18 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { Hex } from "viem";
 import { verifyAuthorization } from "viem/utils";
 
 import { ApplicationError } from "@/application/errors";
-import { BalanceSufficiencyPolicy } from "@/application/policies/balance-sufficiency";
-import { RegistryAdapter } from "@/application/ports/adapters/registry.adapter.port";
-import { SponsorAdapter } from "@/application/ports/adapters/sponsor.adapter.port";
-import { TokenDeploymentRepository } from "@/application/ports/repositories/token-deployment.repository.port";
+import type { BalanceSufficiencyPolicy } from "@/application/policies/balance-sufficiency";
+import type { RegistryAdapter } from "@/application/ports/adapters/registry.adapter.port";
+import type { SponsorAdapter } from "@/application/ports/adapters/sponsor.adapter.port";
+import type { TokenDeploymentRepository } from "@/application/ports/repositories/token-deployment.repository.port";
 import { buildExcutionIntent } from "@/application/protocols/execution-intent";
 import { decodeQuoteToken } from "@/application/protocols/quote-token";
-import { TransferTokenEntity } from "@/domain/entities/token.entity";
+import type { TransferTokenEntity } from "@/domain/entities/token.entity";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
-import { TransferTokenInput } from "./tokens.service.types";
+import type { TransferTokenInput } from "./tokens.service.types";
+import type { Hex } from "viem";
 
 @Injectable()
 export class TokensService {
@@ -102,13 +102,15 @@ export class TokensService {
       });
 
     // 4) Replay protection: ensure nonce is fresh
-    const expectedNonce = await this.registryAdapter.getNextNonce({ chainKey, owner: sender }).catch(e => {
-      throw new ApplicationError({
-        code: "FAILED_TO_FETCH_NEXT_NONCE",
-        message: "Failed to fetch next nonce.",
-        cause: e
+    const expectedNonce = await this.registryAdapter
+      .getNextNonce({ registry: chainMaster.contracts.registry, chainKey, owner: sender })
+      .catch(e => {
+        throw new ApplicationError({
+          code: "FAILED_TO_FETCH_NEXT_NONCE",
+          message: "Failed to fetch next nonce.",
+          cause: e
+        });
       });
-    });
     if (nonce !== expectedNonce)
       throw new ApplicationError({
         code: "QUOTE_TOKEN_NONCE_STALE",
@@ -153,6 +155,7 @@ export class TokensService {
 
     // 7) Simulate and send execute() to the sender EOA (EIP-7702)
     const executeQuery = {
+      sponsor: chainMaster.contracts.sponsor,
       chainKey,
       sender,
       calls,

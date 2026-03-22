@@ -5,6 +5,7 @@ import type { Address, Authorization, Hex } from "viem";
 
 // === Queries ===
 export type DelegateExecuteQuery = Readonly<{
+  sponsor: Address;
   chainKey: Chain;
   sender: Address;
   calls: readonly EvmCallValueObject[];

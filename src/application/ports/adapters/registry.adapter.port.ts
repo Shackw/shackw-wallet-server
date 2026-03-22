@@ -4,6 +4,7 @@ import type { Address } from "viem";
 
 // === Queries ===
 export type GetNextNonceQuery = Readonly<{
+  registry: Address;
   chainKey: Chain;
   owner: Address;
 }>;

@@ -1,10 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
 
 import { ApplicationError } from "@/application/errors";
-import { AppCheckAdapter } from "@/application/ports/adapters/app-check.adapter.port";
+import type { AppCheckAdapter } from "@/application/ports/adapters/app-check.adapter.port";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
-import { AppCheckPolicy, VerifyAppCheckTokenInput } from "./app-check.policy.type";
+import { AppCheckPolicy, type VerifyAppCheckTokenInput } from "./app-check.policy.type";
 
 @Injectable()
 export class DefaultAppCheckPolicy extends AppCheckPolicy {

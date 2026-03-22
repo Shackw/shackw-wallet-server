@@ -1,11 +1,10 @@
 import type { DelegateExecuteQuery, SponsorAdapter } from "@/application/ports/adapters/sponsor.adapter.port";
-import type { Chain } from "@/domain/constants/chain.constant";
 
 import { DELEGATE_ABI } from "./viem-sponsor.abi";
 
 import type { ViemPublicClientFactory } from "../viem-public-client.factory";
 import type { ViemSponsorWalletClientFactory } from "../viem-sponsor-client.factory";
-import type { Address, Hex } from "viem";
+import type { Hex } from "viem";
 
 export class ViemSponsorAdapter implements SponsorAdapter {
   constructor(
@@ -15,20 +14,11 @@ export class ViemSponsorAdapter implements SponsorAdapter {
   ) {}
 
   async simulateDelegateExecute(query: DelegateExecuteQuery): Promise<void> {
-    const { chainKey, sender, calls, nonce, expiresAt, callHash, authorization } = query;
+    const { chainKey, ...rest } = query;
 
     const client = this.publicClientFactor.get(chainKey);
-    const account = await this._getSponsorAddress(chainKey);
 
-    const tx = {
-      account,
-      abi: DELEGATE_ABI,
-      address: sender,
-      functionName: "execute",
-      args: [calls, nonce, expiresAt, callHash],
-      authorizationList: [authorization],
-      value: 0n
-    } as const;
+    const tx = this._buildTx(rest);
 
     await client.simulateContract(tx);
 
@@ -36,13 +26,26 @@ export class ViemSponsorAdapter implements SponsorAdapter {
   }
 
   async writeDelegateExecute(query: DelegateExecuteQuery): Promise<Hex> {
-    const { chainKey, sender, calls, nonce, expiresAt, callHash, authorization } = query;
+    const { chainKey, ...rest } = query;
 
     const client = this.walletClientFactory.get(chainKey);
-    const account = await this._getSponsorAddress(chainKey);
 
-    const tx = {
-      account,
+    const tx = this._buildTx(rest);
+
+    return await client.writeContract(tx);
+  }
+
+  private _buildTx({
+    sponsor,
+    sender,
+    calls,
+    nonce,
+    expiresAt,
+    callHash,
+    authorization
+  }: Omit<DelegateExecuteQuery, "chainKey">) {
+    return {
+      account: sponsor,
       abi: DELEGATE_ABI,
       address: sender,
       functionName: "execute",
@@ -50,12 +53,5 @@ export class ViemSponsorAdapter implements SponsorAdapter {
       authorizationList: [authorization],
       value: 0n
     } as const;
-
-    return await client.writeContract(tx);
-  }
-
-  protected async _getSponsorAddress(chainKey: Chain): Promise<Address> {
-    const { CHAIN_MASTER } = await import("@/infrastructure/masters/chain.master");
-    return CHAIN_MASTER[chainKey].contracts.sponsor;
   }
 }
