@@ -12,6 +12,9 @@ describe("FirebaseAppCheckAdapter", () => {
   describe("verifyToken", () => {
     it("should throw an error when an invalid App Check token is provided", async () => {
       // arrange
+      const originalEnv = process.env;
+
+      process.env.NODE_ENV = "production";
       const expectedToken = "app-check-token";
 
       const client = makeMockObject<AppCheck>({
@@ -27,6 +30,9 @@ describe("FirebaseAppCheckAdapter", () => {
 
       // act & assert
       await expect(appCheckAdapter.verifyToken(query)).rejects.toThrow(new Error("on error when verifying token"));
+
+      // teardown
+      process.env = { ...originalEnv };
     });
 
     it("should succeed when an valid App Check token is provided", async () => {
@@ -52,6 +58,8 @@ describe("FirebaseAppCheckAdapter", () => {
 
     it("should succeed when NODE_ENV is development", async () => {
       // arrange
+      const originalEnv = process.env;
+
       process.env.NODE_ENV = "development";
       const expectedToken = "app-check-token";
 
@@ -70,7 +78,7 @@ describe("FirebaseAppCheckAdapter", () => {
       await expect(appCheckAdapter.verifyToken(query)).resolves.toBeUndefined();
 
       // teardown
-      process.env.NODE_ENV = "test";
+      process.env = { ...originalEnv };
     });
   });
 });

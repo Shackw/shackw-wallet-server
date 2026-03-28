@@ -10,7 +10,7 @@ export default defineConfig({
     hookTimeout: 30_000,
     testTimeout: 30_000,
     env: {
-      NODE_ENV: "test"
+      NODE_ENV: "development"
     },
     coverage: {
       provider: "v8",
