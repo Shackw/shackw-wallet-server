@@ -256,7 +256,7 @@ describe("StaticTokenDeploymentRepository", () => {
           } as unknown as ChainMaster);
         }
 
-        protected _getTokenDeploymentMaster(): Promise<TokenDeploymentMaster> {
+        protected override async _getTokenDeploymentMaster(): Promise<TokenDeploymentMaster> {
           return Promise.resolve({ "JPYC:mainnet": mainJpycEntry, "USDC:base": baseUsdcEntry });
         }
       }
@@ -361,7 +361,7 @@ describe("StaticTokenDeploymentRepository", () => {
           } as unknown as ChainMaster);
         }
 
-        protected _getTokenDeploymentMaster(): Promise<TokenDeploymentMaster> {
+        protected override async _getTokenDeploymentMaster(): Promise<TokenDeploymentMaster> {
           return Promise.resolve({ "JPYC:mainnet": mainJpycEntry, "USDC:base": baseUsdcEntry });
         }
       }
@@ -390,7 +390,7 @@ describe("StaticTokenDeploymentRepository", () => {
           } as unknown as ChainMaster);
         }
 
-        protected _getTokenDeploymentMaster(): Promise<TokenDeploymentMaster> {
+        protected override async _getTokenDeploymentMaster(): Promise<TokenDeploymentMaster> {
           return Promise.resolve({ "JPYC:mainnet": mainJpycEntry, "USDC:base": baseUsdcEntry });
         }
       }
@@ -419,7 +419,7 @@ describe("StaticTokenDeploymentRepository", () => {
           } as unknown as ChainMaster);
         }
 
-        protected _getTokenDeploymentMaster(): Promise<TokenDeploymentMaster> {
+        protected override async _getTokenDeploymentMaster(): Promise<TokenDeploymentMaster> {
           return Promise.resolve({ "JPYC:mainnet": mainJpycEntry, "USDC:base": baseUsdcEntry });
         }
       }

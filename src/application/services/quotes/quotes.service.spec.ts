@@ -76,7 +76,7 @@ describe("QuotesService", () => {
     it("should throw FAILED_TO_FETCH_NEXT_NONCE when fetching the next nonce fails", async () => {
       // arrange
       class TestRegistryAdapter extends StubRegistryAdapter {
-        getNextNonce(query: GetNextNonceQuery): Promise<bigint> {
+        override getNextNonce(query: GetNextNonceQuery): Promise<bigint> {
           expect(query).toEqual({
             registry: transferEligibilityOutput.contracts.registry,
             chainKey: baseInput.chainKey,
@@ -118,7 +118,7 @@ describe("QuotesService", () => {
     it("should return quote model when succeed fetching next nonce", async () => {
       // arrange
       class TestRegistryAdapter extends StubRegistryAdapter {
-        getNextNonce(_query: GetNextNonceQuery): Promise<bigint> {
+        override getNextNonce(_query: GetNextNonceQuery): Promise<bigint> {
           return Promise.resolve(1000n);
         }
       }

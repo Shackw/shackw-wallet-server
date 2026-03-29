@@ -19,7 +19,7 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should throw TOKEN_ADDRESS_UNKNOWN when token address is not registered", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
+        override findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
           expect(query).toEqual({ chainKey: "mainnet", address: "0xNullAddress" });
 
           return Promise.resolve(null);
@@ -49,7 +49,7 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should throw TOKEN_ADDRESS_UNKNOWN when fee token address is not registered", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
+        override findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
           if (query.address === "0xJpycAddress")
             return Promise.resolve({
               symbol: "JPYC",
@@ -82,7 +82,7 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should throw FAILED_TO_FETCH_TOKEN_BALANCE when fetching the send token balance fails", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
+        override findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
           return Promise.resolve({
             symbol: "JPYC",
             currency: "JPY",
@@ -92,7 +92,7 @@ describe("BalanceSufficiencyPolicy", () => {
       }
 
       class TestErc20Adapter extends StubErc20Adap {
-        getBalance(query: GetBalanceQuery): Promise<bigint> {
+        override getBalance(query: GetBalanceQuery): Promise<bigint> {
           expect(query).toEqual({ chainKey: "mainnet", owner: "0xOwner", tokenAddress: "0xJpycAddress" });
 
           return Promise.reject(new Error("on error when fetching send token balance"));
@@ -125,7 +125,7 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should throw INSUFFICIENT_COMBINED_BALANCE when token and fee token are the same and balance is insufficient", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
+        override findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
           return Promise.resolve({
             symbol: "JPYC",
             currency: "JPY",
@@ -135,7 +135,7 @@ describe("BalanceSufficiencyPolicy", () => {
       }
 
       class TestErc20Adapter extends StubErc20Adap {
-        getBalance(_query: GetBalanceQuery): Promise<bigint> {
+        override getBalance(_query: GetBalanceQuery): Promise<bigint> {
           return Promise.resolve(50n);
         }
       }
@@ -165,7 +165,7 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should throw FAILED_TO_FETCH_TOKEN_BALANCE when fetching the fee token balance fails", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
+        override findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
           if (query.address === "0xJpycAddress")
             return Promise.resolve({
               symbol: "JPYC",
@@ -183,7 +183,7 @@ describe("BalanceSufficiencyPolicy", () => {
       }
 
       class TestErc20Adapter extends StubErc20Adap {
-        getBalance(query: GetBalanceQuery): Promise<bigint> {
+        override getBalance(query: GetBalanceQuery): Promise<bigint> {
           if (query.tokenAddress === "0xJpycAddress") return Promise.resolve(30n);
           else if (query.tokenAddress === "0xUsdcAddress")
             return Promise.reject(new Error("on error when fetching fee token balance"));
@@ -217,7 +217,7 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should throw INSUFFICIENT_SEND_BALANCE when send token balance is insufficient", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
+        override findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
           if (query.address === "0xJpycAddress")
             return Promise.resolve({
               symbol: "JPYC",
@@ -235,7 +235,7 @@ describe("BalanceSufficiencyPolicy", () => {
       }
 
       class TestErc20Adapter extends StubErc20Adap {
-        getBalance(query: GetBalanceQuery): Promise<bigint> {
+        override getBalance(query: GetBalanceQuery): Promise<bigint> {
           if (query.tokenAddress === "0xJpycAddress") return Promise.resolve(30n);
           else if (query.tokenAddress === "0xUsdcAddress") return Promise.resolve(30n);
           throw new Error();
@@ -267,7 +267,7 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should throw INSUFFICIENT_FEE_BALANCE when fee token balance is insufficient", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
+        override findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
           if (query.address === "0xJpycAddress")
             return Promise.resolve({
               symbol: "JPYC",
@@ -285,7 +285,7 @@ describe("BalanceSufficiencyPolicy", () => {
       }
 
       class TestErc20Adapter extends StubErc20Adap {
-        getBalance(query: GetBalanceQuery): Promise<bigint> {
+        override getBalance(query: GetBalanceQuery): Promise<bigint> {
           if (query.tokenAddress === "0xJpycAddress") return Promise.resolve(200n);
           else if (query.tokenAddress === "0xUsdcAddress") return Promise.resolve(45n);
           throw new Error();
@@ -317,7 +317,7 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should succeed when send token and fee token are the same and combined balance is sufficient", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
+        override findTokenMasterByAddress(_query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
           return Promise.resolve({
             symbol: "JPYC",
             currency: "JPY",
@@ -327,7 +327,7 @@ describe("BalanceSufficiencyPolicy", () => {
       }
 
       class TestErc20Adapter extends StubErc20Adap {
-        getBalance(_query: GetBalanceQuery): Promise<bigint> {
+        override getBalance(_query: GetBalanceQuery): Promise<bigint> {
           return Promise.resolve(1000n);
         }
       }
@@ -352,7 +352,7 @@ describe("BalanceSufficiencyPolicy", () => {
     it("should succeed when both token balance and fee balance are sufficient", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
+        override findTokenMasterByAddress(query: FindTokenMasterByAddressQuery): Promise<TokenMasterContract | null> {
           if (query.address === "0xJpycAddress")
             return Promise.resolve({
               symbol: "JPYC",
@@ -370,7 +370,7 @@ describe("BalanceSufficiencyPolicy", () => {
       }
 
       class TestErc20Adapter extends StubErc20Adap {
-        getBalance(query: GetBalanceQuery): Promise<bigint> {
+        override getBalance(query: GetBalanceQuery): Promise<bigint> {
           if (query.tokenAddress === "0xJpycAddress") return Promise.resolve(1000n);
           else if (query.tokenAddress === "0xUsdcAddress") return Promise.resolve(1000n);
           throw new Error();

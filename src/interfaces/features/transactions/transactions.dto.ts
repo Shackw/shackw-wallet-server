@@ -13,7 +13,10 @@ export const SearchTransactionsRequestDtoSchema = v.pipe(
   v.object(
     {
       chain: v.picklist(CHAIN_KEYS, `chain must be one of ${CHAIN_KEYS.join("/")}`),
-      tokens: v.array(v.object({ symbol: v.picklist(TOKENS, `token must be one of ${TOKENS.join("/")}`) })),
+      tokens: v.pipe(
+        v.array(v.object({ symbol: v.picklist(TOKENS, `tokens[i].symbol must be one of ${TOKENS.join("/")}`) })),
+        v.minLength(1, "tokens must have at least one item")
+      ),
       wallet: addressValidator("wallet"),
       timestampGte: v.pipe(
         v.number("timestampGte must be a number"),

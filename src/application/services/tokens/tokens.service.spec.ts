@@ -110,7 +110,7 @@ describe("TokensService", () => {
       vi.spyOn(QuoteTokenProtocol, "decodeQuoteToken").mockReturnValue({ ...baseDecodeQuoteToken, chainId: 2 });
 
       class TestTokenDeploymentRepository extends StubTokenDeploymentRepository {
-        findChainMaster(_query: FindChainMasterQuery): Promise<ChainMasterContract> {
+        override findChainMaster(_query: FindChainMasterQuery): Promise<ChainMasterContract> {
           return Promise.resolve({
             key: "mainnet",
             id: 1,
@@ -160,7 +160,7 @@ describe("TokensService", () => {
       });
 
       class TestTokenDeploymentRepository extends StubTokenDeploymentRepository {
-        findChainMaster(query: FindChainMasterQuery): Promise<ChainMasterContract> {
+        override findChainMaster(query: FindChainMasterQuery): Promise<ChainMasterContract> {
           expect(query).toEqual({ chainKey: "mainnet" });
 
           return Promise.resolve({
@@ -212,7 +212,7 @@ describe("TokensService", () => {
       });
 
       class TestTokenDeploymentRepository extends StubTokenDeploymentRepository {
-        findChainMaster(_query: FindChainMasterQuery): Promise<ChainMasterContract> {
+        override findChainMaster(_query: FindChainMasterQuery): Promise<ChainMasterContract> {
           return Promise.resolve({
             key: "mainnet",
             id: 1,
@@ -311,7 +311,7 @@ describe("TokensService", () => {
       vi.spyOn(ExcutionIntentProtocol, "buildExcutionIntent").mockReturnValue(baseExecutionIntentOutput);
 
       class TestRegistryAdapter extends StubRegistryAdapter {
-        getNextNonce(query: GetNextNonceQuery): Promise<bigint> {
+        override getNextNonce(query: GetNextNonceQuery): Promise<bigint> {
           expect(query).toEqual({ registry: "0xRegistry", chainKey: "mainnet", owner: baseDecodeQuoteToken.sender });
 
           return Promise.reject(new Error("on error when fetching next nonce"));
@@ -352,7 +352,7 @@ describe("TokensService", () => {
       vi.spyOn(ExcutionIntentProtocol, "buildExcutionIntent").mockReturnValue(baseExecutionIntentOutput);
 
       class TestRegistryAdapter extends StubRegistryAdapter {
-        getNextNonce(_query: GetNextNonceQuery): Promise<bigint> {
+        override getNextNonce(_query: GetNextNonceQuery): Promise<bigint> {
           return Promise.resolve(9999n);
         }
       }
@@ -502,7 +502,7 @@ describe("TokensService", () => {
       vi.spyOn(ExcutionIntentProtocol, "buildExcutionIntent").mockReturnValue(baseExecutionIntentOutput);
 
       class TestSponsorAdapter extends StubSponsorAdapter {
-        simulateDelegateExecute(query: DelegateExecuteQuery): Promise<void> {
+        override simulateDelegateExecute(query: DelegateExecuteQuery): Promise<void> {
           expect(query).toEqual({
             sponsor: "0xSponsor",
             chainKey: "mainnet",
@@ -553,7 +553,7 @@ describe("TokensService", () => {
       vi.spyOn(ExcutionIntentProtocol, "buildExcutionIntent").mockReturnValue(baseExecutionIntentOutput);
 
       class TestSponsorAdapter extends StubSponsorAdapter {
-        writeDelegateExecute(query: DelegateExecuteQuery): Promise<Hex> {
+        override writeDelegateExecute(query: DelegateExecuteQuery): Promise<Hex> {
           expect(query).toEqual({
             sponsor: "0xSponsor",
             chainKey: "mainnet",
@@ -604,7 +604,7 @@ describe("TokensService", () => {
       vi.spyOn(ExcutionIntentProtocol, "buildExcutionIntent").mockReturnValue(baseExecutionIntentOutput);
 
       class TestSponsorAdapter extends StubSponsorAdapter {
-        writeDelegateExecute(_query: DelegateExecuteQuery): Promise<Hex> {
+        override writeDelegateExecute(_query: DelegateExecuteQuery): Promise<Hex> {
           return Promise.resolve("0xTxHash");
         }
       }

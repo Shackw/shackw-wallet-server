@@ -102,7 +102,7 @@ describe("MetaService", () => {
     it("should return chain metadata for all supported chains", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        listChainMasters(): Promise<ChainMasterContract[]> {
+        override listChainMasters(): Promise<ChainMasterContract[]> {
           return Promise.resolve(chainMasterContracts);
         }
       }
@@ -126,7 +126,7 @@ describe("MetaService", () => {
     it("should return token metadata for all supported tokens on every chain", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        listTokenDeployment(): Promise<TokenDeploymentContract[]> {
+        override listTokenDeployment(): Promise<TokenDeploymentContract[]> {
           return Promise.resolve(tokenDeploymentContracts);
         }
       }
@@ -153,7 +153,7 @@ describe("MetaService", () => {
     it("should return fee metadata for all supported tokens across all chains", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        listTokenDeployment(): Promise<TokenDeploymentContract[]> {
+        override listTokenDeployment(): Promise<TokenDeploymentContract[]> {
           return Promise.resolve(tokenDeploymentContracts);
         }
       }
@@ -192,7 +192,7 @@ describe("MetaService", () => {
     it("should return min transfers units metadata for all supported tokens across all chains", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        listTokenDeployment(): Promise<TokenDeploymentContract[]> {
+        override listTokenDeployment(): Promise<TokenDeploymentContract[]> {
           return Promise.resolve(tokenDeploymentContracts);
         }
       }
@@ -231,7 +231,7 @@ describe("MetaService", () => {
     it("should return contracts addresses metadata for all supported chains", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        listChainMasters(): Promise<ChainMasterContract[]> {
+        override listChainMasters(): Promise<ChainMasterContract[]> {
           return Promise.resolve(chainMasterContracts);
         }
       }

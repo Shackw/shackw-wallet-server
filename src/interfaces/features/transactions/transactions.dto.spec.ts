@@ -93,4 +93,12 @@ describe("SearchTransactionsRequestDtoSchema", () => {
     // assert
     expect(result.success).toBe(false);
   });
+
+  it("should fail when tokens is empty", () => {
+    // act
+    const result = v.safeParse(SearchTransactionsRequestDtoSchema, { ...input, tokens: [] });
+
+    // assert
+    expect(result.success).toBe(false);
+  });
 });

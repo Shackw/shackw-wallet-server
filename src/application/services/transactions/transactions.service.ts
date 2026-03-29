@@ -50,7 +50,7 @@ export class TransactionsService {
 
     const contracts = await this.thirdwebApiGateway
       .searchContractEvents({
-        chainId: tokenDeps[0].chain.id,
+        chainId: tokenDeps[0]!.chain.id,
         tokenAddresses,
         timestampLte,
         timestampGte,
@@ -101,15 +101,15 @@ export class TransactionsService {
         blockNumber: c.blockNumber,
         logIndex: c.logIndex,
         token: {
-          symbol: addrToDep[c.tokenAddress].symbol,
+          symbol: addrToDep[c.tokenAddress]!.symbol,
           address: c.tokenAddress,
-          decimals: addrToDep[c.tokenAddress].decimals
+          decimals: addrToDep[c.tokenAddress]!.decimals
         },
         direction: txDir,
         value: {
-          symbol: addrToDep[c.tokenAddress].symbol,
+          symbol: addrToDep[c.tokenAddress]!.symbol,
           minUnits: c.valueMinUnits,
-          decimals: addrToDep[c.tokenAddress].decimals
+          decimals: addrToDep[c.tokenAddress]!.decimals
         },
         counterparty: {
           address: peerAddr

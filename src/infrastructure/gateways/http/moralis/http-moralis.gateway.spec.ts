@@ -269,9 +269,9 @@ describe("HttpMoralisGateway", () => {
       // assert
       expect(fetchCount).toBe(3);
       expect(results).toHaveLength(3);
-      expect(results[0].txHash).toBe(firstTxHash);
-      expect(results[1].txHash).toBe(secondTxHash);
-      expect(results[2].txHash).toBe(thirdTxHash);
+      expect(results[0]?.txHash).toBe(firstTxHash);
+      expect(results[1]?.txHash).toBe(secondTxHash);
+      expect(results[2]?.txHash).toBe(thirdTxHash);
     });
 
     it("should map ascending sort order", async () => {

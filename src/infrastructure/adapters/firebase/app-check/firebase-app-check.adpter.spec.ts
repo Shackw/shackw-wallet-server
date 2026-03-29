@@ -44,7 +44,7 @@ describe("FirebaseAppCheckAdapter", () => {
           return Promise.resolve({
             appId: "app-id",
             token: expectedToken as unknown as DecodedAppCheckToken,
-            alreadyConsumed: undefined
+            alreadyConsumed: false
           });
         }
       });

@@ -14,7 +14,7 @@ describe("AppCheckPolicy", () => {
     it("should throw UNAUTHORIZED when an invalid App Check token is received", async () => {
       // arrange
       class TestAppCheckAdapter extends StubAppCheckAdapter {
-        verifyToken(_query: AppCheckVerifyTokenQuery): Promise<void> {
+        override verifyToken(_query: AppCheckVerifyTokenQuery): Promise<void> {
           throw new Error("invalid app check token");
         }
       }
@@ -40,7 +40,7 @@ describe("AppCheckPolicy", () => {
     it("should succeed when an valid App Check Token is received", async () => {
       // arrange
       class TestAppCheckAdaper extends StubAppCheckAdapter {
-        verifyToken(_query: AppCheckVerifyTokenQuery): Promise<void> {
+        override verifyToken(_query: AppCheckVerifyTokenQuery): Promise<void> {
           return Promise.resolve();
         }
       }

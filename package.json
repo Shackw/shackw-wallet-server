@@ -6,8 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "yarn format && yarn lint && yarn typecheck && nest build",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build": "yarn format && yarn lint && nest build",
+    "typecheck": "tsc -p tsconfig.eslint.json --noEmit",
     "start": "nest start",
     "start:dev": "PORT=3010 dotenv -e .env -- nest start --watch",
     "start:debug": "nest start --debug --watch",

@@ -18,7 +18,7 @@ describe("ChainToTokenSupportPolicy", () => {
     it("should throw UNSUPPORTED_TOKEN_FOR_CHAIN when token symbol is not supported on chain", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenDeployment(query: FindTokenDeploymentQuery): Promise<TokenDeploymentContract | null> {
+        override findTokenDeployment(query: FindTokenDeploymentQuery): Promise<TokenDeploymentContract | null> {
           expect(query).toEqual({ chainKey: "base", tokenSymbol: "JPYC" });
           return Promise.resolve(null);
         }
@@ -44,7 +44,7 @@ describe("ChainToTokenSupportPolicy", () => {
     it("should succeed when token symbol is supported on chain", async () => {
       // arrange
       class TestTokenDepRepository extends StubTokenDeploymentRepository {
-        findTokenDeployment(_query: FindTokenDeploymentQuery): Promise<TokenDeploymentContract | null> {
+        override findTokenDeployment(_query: FindTokenDeploymentQuery): Promise<TokenDeploymentContract | null> {
           return Promise.resolve({
             token: { address: "0xJpycAddress", symbol: "JPYC", currency: "JPY", decimals: 0 },
             chain: {

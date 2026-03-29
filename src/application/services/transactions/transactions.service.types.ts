@@ -10,5 +10,5 @@ export type SearchTransactionsInput = Readonly<{
   timestampGte: number;
   timestampLte: number;
   searchDirection: "in" | "out" | "both";
-  limit?: number;
+  limit?: number | undefined;
 }>;
