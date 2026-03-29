@@ -1,4 +1,4 @@
-import { Controller, UseFilters, Post, Body, UseGuards } from "@nestjs/common";
+import { Controller, UseFilters, Post, Body, UseGuards, HttpCode } from "@nestjs/common";
 
 import { FeesService } from "@/application/services/fees";
 import { HttpExceptionsFilter } from "@/interfaces/common/filters/http-exception.filter";
@@ -15,6 +15,7 @@ export class FeesController {
   constructor(private readonly fees: FeesService) {}
 
   @Post("fees\\:estimate")
+  @HttpCode(200)
   async estimate(
     @Body(new ValibotPipe(EstimateFeeRequestDtoSchema)) dto: EstimateFeeRequestDto
   ): Promise<EstimateFeeResponseDto> {

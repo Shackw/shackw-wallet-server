@@ -1,22 +1,27 @@
+import { Inject } from "@nestjs/common";
+
 import type { DelegateExecuteQuery, SponsorAdapter } from "@/application/ports/adapters/sponsor.adapter.port";
+
+import { ViemPublicClientFactory } from "../viem-public-client.factory";
+import { ViemSponsorWalletClientFactory } from "../viem-sponsor-client.factory";
 
 import { DELEGATE_ABI } from "./viem-sponsor.abi";
 
-import type { ViemPublicClientFactory } from "../viem-public-client.factory";
-import type { ViemSponsorWalletClientFactory } from "../viem-sponsor-client.factory";
 import type { Hex } from "viem";
 
 export class ViemSponsorAdapter implements SponsorAdapter {
   constructor(
-    private readonly publicClientFactor: ViemPublicClientFactory,
+    @Inject(ViemPublicClientFactory)
+    private readonly publicClientFactory: ViemPublicClientFactory,
 
+    @Inject(ViemSponsorWalletClientFactory)
     private readonly walletClientFactory: ViemSponsorWalletClientFactory
   ) {}
 
   async simulateDelegateExecute(query: DelegateExecuteQuery): Promise<void> {
     const { chainKey, ...rest } = query;
 
-    const client = this.publicClientFactor.get(chainKey);
+    const client = this.publicClientFactory.get(chainKey);
 
     const tx = this._buildTx(rest);
 

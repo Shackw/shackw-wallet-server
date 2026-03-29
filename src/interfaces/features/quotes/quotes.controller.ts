@@ -1,4 +1,4 @@
-import { Controller, UseGuards, UseFilters, Post, Body } from "@nestjs/common";
+import { Controller, UseGuards, UseFilters, Post, Body, HttpCode } from "@nestjs/common";
 
 import { QuotesService } from "@/application/services/quotes";
 import { HttpExceptionsFilter } from "@/interfaces/common/filters/http-exception.filter";
@@ -15,6 +15,7 @@ export class QuotesController {
   constructor(private readonly quotes: QuotesService) {}
 
   @Post("quotes")
+  @HttpCode(201)
   async create(
     @Body(new ValibotPipe(CreateQuoteRequestDtoSchema)) dto: CreateQuoteRequestDto
   ): Promise<CreateQuoteResponseDto> {

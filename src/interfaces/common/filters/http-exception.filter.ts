@@ -82,43 +82,27 @@ export class HttpExceptionsFilter implements ExceptionFilter {
   }
 
   private normalizeErrors(exception: unknown): ErrorItem[] {
-    if (isApplicationError(exception)) {
-      return [{ code: exception.code, message: exception.message }];
-    }
+    if (isApplicationError(exception)) return [{ code: exception.code, message: exception.message }];
 
     if (exception instanceof HttpException) {
       const payload = exception.getResponse();
 
-      const baseCode = toCode(
-        isRecord(payload) ? payload.error : undefined,
-        toCode((exception as any)?.name ?? undefined, "HTTP_ERROR")
-      );
+      const baseCode = toCode(isRecord(payload) ? payload.error : undefined, toCode(exception.name, "HTTP_ERROR"));
 
-      if (typeof payload === "string") {
-        return [{ code: baseCode, message: payload }];
-      }
+      if (typeof payload === "string") return [{ code: baseCode, message: payload }];
 
       if (isRecord(payload)) {
-        if ("message" in payload) {
-          const m = (payload as any).message;
-          if (Array.isArray(m)) {
-            return m.filter((x): x is string => typeof x === "string").map(msg => ({ code: baseCode, message: msg }));
-          }
-          if (typeof m === "string") {
-            return [{ code: baseCode, message: m }];
-          }
-        }
+        const message = payload.message;
 
-        const msg =
-          (typeof (payload as any).error === "string" && (payload as any).error) ||
-          (typeof (payload as any).message === "string" && (payload as any).message) ||
-          (exception as any).message ||
-          "Internal server error";
+        if (Array.isArray(message))
+          return message
+            .filter((m): m is string => typeof m === "string")
+            .map(msg => ({ code: baseCode, message: msg }));
 
-        return [{ code: baseCode, message: msg }];
+        if (typeof message === "string") return [{ code: baseCode, message }];
       }
 
-      return [{ code: baseCode, message: (exception as any).message || "Internal server error" }];
+      return [{ code: baseCode, message: exception.message }];
     }
 
     return [{ code: "INTERNAL_SERVER_ERROR", message: "Internal server error" }];

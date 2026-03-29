@@ -48,23 +48,23 @@ export class TransactionsService {
       }
     })();
 
-    const contracts = await this.thirdwebApiGateway
-      .searchContractEvents({
-        chainId: tokenDeps[0]!.chain.id,
+    const contracts = await this.moralisApiGateway
+      .searchTransfers({
+        chain: chainKey,
         tokenAddresses,
+        wallet: walletAddress,
         timestampLte,
         timestampGte,
-        sortOrder: "desc",
-        ...addrFilter
+        sortOrder: "desc"
       })
       .catch(async () => {
-        return await this.moralisApiGateway.searchTransfers({
-          chain: chainKey,
+        return await this.thirdwebApiGateway.searchContractEvents({
+          chainId: tokenDeps[0]!.chain.id,
           tokenAddresses,
-          wallet: walletAddress,
           timestampLte,
           timestampGte,
-          sortOrder: "desc"
+          sortOrder: "desc",
+          ...addrFilter
         });
       });
 

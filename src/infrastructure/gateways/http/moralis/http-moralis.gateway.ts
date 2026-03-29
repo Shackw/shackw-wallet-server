@@ -41,7 +41,16 @@ export class HttpMoralisGateway implements MoralisGateway {
     };
 
     const fetcheds = await this._fetchTransfersByWallet(payload);
-    return fetcheds.map(toMoralisSearchTransfersContract);
+
+    const uniques = Object.values(
+      fetcheds.reduce<Record<string, MoralisSearchTransfersResponseDto["result"][number]>>((acc, fetched) => {
+        const key = `${fetched.transaction_hash}:${fetched.log_index}:${fetched.block_number}`;
+        acc[key] = fetched;
+        return acc;
+      }, {})
+    );
+
+    return uniques.map(toMoralisSearchTransfersContract);
   }
 
   protected async _fetchTransfersByWallet(

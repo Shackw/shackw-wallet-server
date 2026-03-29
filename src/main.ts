@@ -15,9 +15,7 @@ async function bootstrap() {
     })
   });
 
-  app.useGlobalInterceptors(new WrapDataInterceptor());
-  app.useGlobalInterceptors(new BigIntToStringInterceptor());
-
+  app.useGlobalInterceptors(new WrapDataInterceptor(), new BigIntToStringInterceptor());
   app.setGlobalPrefix("v1");
 
   await app.listen(process.env.PORT ?? 3000);

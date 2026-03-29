@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from "@nestjs/common";
 import { Observable } from "rxjs";
@@ -10,27 +9,18 @@ type Wrapped<T> = { data: T; meta?: Record<string, unknown> };
 
 @Injectable()
 export class WrapDataInterceptor implements NestInterceptor {
-  intercept(ctx: ExecutionContext, next: CallHandler): Observable<any> {
-    const req: any = ctx.switchToHttp().getRequest();
-    const limit = req?.query?.limit ? Number(req.query.limit) : undefined;
-    const offset = req?.query?.offset ? Number(req.query.offset) : undefined;
-
+  intercept(_ctx: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       map((value): Wrapped<any> | any => {
-        if (value && typeof value === "object" && "data" in value) return value;
-
-        if (Array.isArray(value)) {
+        if (Array.isArray(value))
           return {
             data: value,
             meta: {
-              count: value.length,
-              ...(limit !== undefined ? { limit } : {}),
-              ...(offset !== undefined ? { offset } : {})
+              count: value.length
             }
           };
-        }
 
-        return { data: value ?? null };
+        return { data: value };
       })
     );
   }
