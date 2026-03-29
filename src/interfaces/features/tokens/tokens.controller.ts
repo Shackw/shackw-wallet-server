@@ -10,7 +10,7 @@ import {
   type TransferTokenRequestDto,
   type TransferTokenResponseDto
 } from "./tokens.dto";
-import { toTransferTokenResponseDto } from "./tokens.entity-to-response";
+import { toTransferTokenResponseDto } from "./tokens.mapper";
 
 @Controller()
 @UseGuards(AppCheckGuard)

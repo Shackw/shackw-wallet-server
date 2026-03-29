@@ -6,7 +6,7 @@ import { AppCheckGuard } from "@/interfaces/common/guards/app-check.guard";
 import { ValibotPipe } from "@/interfaces/common/pipes/valibot.pipe";
 
 import { EstimateFeeRequestDtoSchema, type EstimateFeeRequestDto, type EstimateFeeResponseDto } from "./fees.dto";
-import { toEstimateFeeResponseDto } from "./fees.entity-to-response";
+import { toEstimateFeeResponseDto } from "./fees.mapper";
 
 @Controller()
 @UseGuards(AppCheckGuard)

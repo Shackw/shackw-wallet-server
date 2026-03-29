@@ -6,7 +6,7 @@ import { AppCheckGuard } from "@/interfaces/common/guards/app-check.guard";
 import { ValibotPipe } from "@/interfaces/common/pipes/valibot.pipe";
 
 import { CreateQuoteRequestDtoSchema, type CreateQuoteRequestDto, type CreateQuoteResponseDto } from "./quotes.dto";
-import { toCreateQuoteResponseDto } from "./quotes.entity-to-response";
+import { toCreateQuoteResponseDto } from "./quotes.mapper";
 
 @Controller()
 @UseGuards(AppCheckGuard)

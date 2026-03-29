@@ -11,7 +11,7 @@ import {
   toGeFeeMetaResponseDto,
   toGetMinTransferMetaResponseDto,
   toGetContractsMetaResponseDto
-} from "./meta.entity-to-response";
+} from "./meta.mapper";
 
 import type {
   GetMetaSummaryResponseDto,

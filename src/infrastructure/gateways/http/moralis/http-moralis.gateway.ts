@@ -11,7 +11,7 @@ import {
   APP_SORT_ORDER_TO_MORALIS_SORT_ORDER,
   MoralisSearchTransfersResponseDtoSchema
 } from "./http-moralis.dto";
-import { toMoralisSearchTransfersContract } from "./http-moralis.response-to-contract";
+import { toMoralisSearchTransfersContract } from "./http-moralis.mapper";
 
 import type { MoralisSearchTransfersRequestDto, MoralisSearchTransfersResponseDto } from "./http-moralis.dto";
 import type { AxiosInstance } from "axios";

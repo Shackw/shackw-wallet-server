@@ -11,7 +11,7 @@ import {
   type ThirdwebSearchContractEventsRequestDto,
   type ThirdwebSearchContractEventsResponseDto
 } from "./http-thirdweb.dto";
-import { toThirdwebSearchContractEventsContract } from "./http-thirdweb.response-to-contract";
+import { toThirdwebSearchContractEventsContract } from "./http-thirdweb.mapper";
 
 import type { AxiosInstance } from "axios";
 

@@ -10,7 +10,7 @@ import {
   type SearchTransactionsRequestDto,
   type SearchTransactionsResponseDto
 } from "./transactions.dto";
-import { toSearchTransactionsResponseDto } from "./transactions.entity-to-response";
+import { toSearchTransactionsResponseDto } from "./transactions.mapper";
 
 @Controller()
 @UseGuards(AppCheckGuard)
