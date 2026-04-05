@@ -1,6 +1,6 @@
 {
   "name": "shackw-wallet-server",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Reference implementation of a transaction relay server for Shackw Wallet, enabling fixed-fee stablecoin transfers via EIP-7702 authorization.",
   "author": "Shackw",
   "private": true,
