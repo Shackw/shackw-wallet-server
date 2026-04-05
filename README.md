@@ -142,9 +142,6 @@ Token transfers follow a three-step conceptual flow:
    The server verifies the quote and authorization, then relays the transaction
    on-chain.
 
-Concrete endpoint names and request formats are intentionally omitted from this
-document.
-
 ---
 
 # 8. Security Notes
@@ -159,17 +156,7 @@ explicit, cryptographically signed authorization.
 
 ---
 
-# 9. Development Notes
-
-- All chain-, token-, and environment-dependent values must be retrieved via
-  metadata endpoints
-- Clients should not embed contract addresses, decimals, or fee values
-- This document intentionally avoids environment-specific constants to prevent
-  accidental desynchronization
-
----
-
-# 10. License
+# 9. License
 
 This repository is provided for reference purposes only.
 
