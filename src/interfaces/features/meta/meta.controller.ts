@@ -1,8 +1,7 @@
-import { Controller, UseGuards, UseFilters, Get } from "@nestjs/common";
+import { Controller, UseFilters, Get } from "@nestjs/common";
 
 import { MetaService } from "@/application/services/meta";
 import { HttpExceptionsFilter } from "@/interfaces/common/filters/http-exception.filter";
-import { AppCheckGuard } from "@/interfaces/common/guards/app-check.guard";
 
 import {
   toGetMetaSummaryResponseDto,
@@ -23,7 +22,6 @@ import type {
 } from "./meta.dto";
 
 @Controller("meta")
-@UseGuards(AppCheckGuard)
 @UseFilters(HttpExceptionsFilter)
 export class MetaController {
   constructor(private readonly meta: MetaService) {}
