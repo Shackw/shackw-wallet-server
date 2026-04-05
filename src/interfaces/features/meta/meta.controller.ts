@@ -1,4 +1,4 @@
-import { Controller, UseGuards, UseFilters, Get } from "@nestjs/common";
+import { Controller, UseFilters, Get, UseGuards } from "@nestjs/common";
 
 import { MetaService } from "@/application/services/meta";
 import { HttpExceptionsFilter } from "@/interfaces/common/filters/http-exception.filter";
