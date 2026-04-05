@@ -12,10 +12,21 @@ export const makeMockObject = <T extends object>(overrides?: Partial<T>) =>
     ...overrides
   }) as unknown as T;
 
-export const setupTestApp = async () => {
-  const moduleRef = await Test.createTestingModule({
+type OverrideProvider = {
+  token: unknown;
+  useValue: unknown;
+};
+
+export const setupTestApp = async (options?: { overrideProviders?: OverrideProvider[] }) => {
+  const builder = Test.createTestingModule({
     imports: [AppModule]
-  }).compile();
+  });
+
+  for (const { token, useValue } of options?.overrideProviders ?? []) {
+    builder.overrideProvider(token).useValue(useValue);
+  }
+
+  const moduleRef = await builder.compile();
 
   const app = moduleRef.createNestApplication();
   app.useGlobalInterceptors(new WrapDataInterceptor(), new BigIntToStringInterceptor());
