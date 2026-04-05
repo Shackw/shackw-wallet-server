@@ -55,7 +55,7 @@ describe("Transactions", () => {
 
     it("should return 400 when chain is not in allowed values", async () => {
       // act
-      const res = await req.post("/v1/fees:estimate").send({ ...payload, chain: "unknown chain" });
+      const res = await req.post("/v1/transactions:search").send({ ...payload, chain: "unknown chain" });
 
       // assert
       expect(res.status).toBe(400);
@@ -72,7 +72,7 @@ describe("Transactions", () => {
 
     it("should return 400 when token is not supported on the chain", async () => {
       // act
-      const res = await req.post("/v1/fees:estimate").send({ ...payload, chain: "base" });
+      const res = await req.post("/v1/transactions:search").send({ ...payload, chain: "base" });
 
       // assert
       expect(res.status).toBe(400);
@@ -89,7 +89,7 @@ describe("Transactions", () => {
 
     it("should return 401 when x-app-check-token is invalid", async () => {
       // act
-      const res = await req.post("/v1/fees:estimate").set("x-app-check-token", "").send(payload);
+      const res = await req.post("/v1/transactions:search").set("x-app-check-token", "").send(payload);
 
       // assert
       expect(res.status).toBe(401);

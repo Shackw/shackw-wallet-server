@@ -3,7 +3,6 @@ import { isAddressEqual } from "viem/utils";
 
 import type { ChainToTokenSupportPolicy } from "@/application/policies/chain-to-token-support";
 import type { MoralisGateway } from "@/application/ports/gateways/moralis.gateway.port";
-import type { ThirdwebGateway } from "@/application/ports/gateways/thirdweb.gateway.port";
 import type { TokenMasterContract } from "@/application/ports/repositories/token-deployment.repository.port";
 import type { TransactionEntity } from "@/domain/entities/transaction.entity";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
@@ -14,9 +13,6 @@ import type { Address } from "viem";
 @Injectable()
 export class TransactionsService {
   constructor(
-    @Inject(DI_TOKENS.THIRDWEB_GATEWAY)
-    private readonly thirdwebApiGateway: ThirdwebGateway,
-
     @Inject(DI_TOKENS.MORALIS_GATEWAY)
     private readonly moralisApiGateway: MoralisGateway,
 
@@ -37,36 +33,15 @@ export class TransactionsService {
     }, {});
 
     const tokenAddresses = tokenDeps.map(dep => dep.token.address);
-    const addrFilter = (() => {
-      switch (searchDirection) {
-        case "in":
-          return { toAddress: walletAddress };
-        case "out":
-          return { fromAddress: walletAddress };
-        case "both":
-          return { toAddress: walletAddress, fromAddress: walletAddress };
-      }
-    })();
 
-    const contracts = await this.moralisApiGateway
-      .searchTransfers({
-        chain: chainKey,
-        tokenAddresses,
-        wallet: walletAddress,
-        timestampLte,
-        timestampGte,
-        sortOrder: "desc"
-      })
-      .catch(async () => {
-        return await this.thirdwebApiGateway.searchContractEvents({
-          chainId: tokenDeps[0]!.chain.id,
-          tokenAddresses,
-          timestampLte,
-          timestampGte,
-          sortOrder: "desc",
-          ...addrFilter
-        });
-      });
+    const contracts = await this.moralisApiGateway.searchTransfers({
+      chain: chainKey,
+      tokenAddresses,
+      wallet: walletAddress,
+      timestampLte,
+      timestampGte,
+      sortOrder: "desc"
+    });
 
     const results: TransactionEntity[] = [];
     for (const c of contracts) {

@@ -11,7 +11,6 @@ export const EnvSchema = v.object({
 
   QUOTE_TOKEN_SECRET: hex64Validator("QUOTE_TOKEN_SECRET"),
 
-  THIRD_WEB_API_SECRET: v.string("THIRD_WEB_API_SECRET must be a string."),
   MORALIS_API_SECRET: v.string("MORALIS_API_SECRET must be a string."),
   FIREBASE_ADMIN_SECRET: v.pipe(
     v.string("FIREBASE_ADMIN_SECRET must be a string."),

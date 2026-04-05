@@ -18,7 +18,6 @@ export const DI_TOKENS = {
   SPONSOR_ADAPTER: Symbol("SPONSOR_ADAPTER"),
 
   // gateways
-  THIRDWEB_GATEWAY: Symbol("THIRDWEB_GATEWAY"),
   MORALIS_GATEWAY: Symbol("MORALIS_GATEWAY"),
 
   // repositories

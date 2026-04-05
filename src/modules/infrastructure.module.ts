@@ -5,7 +5,7 @@ import { getAppCheck } from "firebase-admin/app-check";
 
 import { ENV } from "@/config/env.config";
 import { FIREBASE_CREDENTIAL } from "@/config/firebase.config";
-import { MORALIS_BASE_URL, THIRDWEB_BASE_URL } from "@/config/url.config";
+import { MORALIS_BASE_URL } from "@/config/url.config";
 import { FirebaseAppCheckAdapter } from "@/infrastructure/adapters/firebase/app-check";
 import { ViemErc20Adapter } from "@/infrastructure/adapters/viem/erc20";
 import { ViemRegistryAdapter } from "@/infrastructure/adapters/viem/registry";
@@ -13,7 +13,6 @@ import { ViemSponsorAdapter } from "@/infrastructure/adapters/viem/sponsor";
 import { ViemPublicClientFactory } from "@/infrastructure/adapters/viem/viem-public-client.factory";
 import { ViemSponsorWalletClientFactory } from "@/infrastructure/adapters/viem/viem-sponsor-client.factory";
 import { HttpMoralisGateway } from "@/infrastructure/gateways/http/moralis";
-import { HttpThirdwebApiGateway } from "@/infrastructure/gateways/http/thirdweb";
 import { StaticTokenDeploymentRepository } from "@/infrastructure/repositories/static/token-deployment";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
@@ -35,21 +34,6 @@ import { DI_TOKENS } from "@/shared/tokens/di.tokens";
     },
 
     // gateways
-    {
-      provide: DI_TOKENS.THIRDWEB_GATEWAY,
-      useFactory: () => {
-        const client = axios.create({
-          baseURL: THIRDWEB_BASE_URL,
-          timeout: 10_000,
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "x-secret-key": ENV.THIRD_WEB_API_SECRET
-          }
-        });
-        return new HttpThirdwebApiGateway(client);
-      }
-    },
     {
       provide: DI_TOKENS.MORALIS_GATEWAY,
       useFactory: () => {
@@ -83,7 +67,6 @@ import { DI_TOKENS } from "@/shared/tokens/di.tokens";
     { provide: DI_TOKENS.TOKEN_DEPLOYMENT_REPOSITORY, useClass: StaticTokenDeploymentRepository }
   ],
   exports: [
-    DI_TOKENS.THIRDWEB_GATEWAY,
     DI_TOKENS.MORALIS_GATEWAY,
     DI_TOKENS.APP_CHECK_ADAPTER,
     DI_TOKENS.ERC20_ADAPTER,

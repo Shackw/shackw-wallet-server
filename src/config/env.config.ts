@@ -10,7 +10,6 @@ export const ENV = v.parse(EnvSchema, {
 
   QUOTE_TOKEN_SECRET: process.env.QUOTE_TOKEN_SECRET,
 
-  THIRD_WEB_API_SECRET: process.env.THIRD_WEB_API_SECRET,
   MORALIS_API_SECRET: process.env.MORALIS_API_SECRET,
   FIREBASE_ADMIN_SECRET: process.env.FIREBASE_ADMIN_SECRET,
 
