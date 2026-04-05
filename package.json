@@ -7,70 +7,57 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "yarn format && yarn lint && nest build",
+    "typecheck": "tsc -p tsconfig.eslint.json --noEmit",
     "start": "nest start",
     "start:dev": "PORT=3010 dotenv -e .env -- nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "ngrok": "ngrok http http://localhost:3010",
+    "test": "vitest run",
+    "test:cov": "vitest run --coverage",
+    "test:local": "vitest run --config vitest.config.local.ts",
+    "test:local:cov": "vitest run --config vitest.config.local.ts --coverage",
+    "test:ci": "yarn typecheck && yarn test",
+    "test:ci:cov": "yarn typecheck && yarn test:cov",
     "format": "prettier --write \"**/*.ts\"",
-    "lint": "eslint src --fix"
+    "lint": "eslint src --fix",
+    "ngrok": "ngrok http http://localhost:3010"
   },
   "dependencies": {
-    "@nestjs/common": "^11.1.13",
-    "@nestjs/config": "^4.0.3",
-    "@nestjs/core": "^11.1.13",
-    "@nestjs/platform-express": "^11.1.13",
-    "@nestjs/throttler": "^6.5.0",
-    "@types/express": "^5.0.6",
-    "dayjs": "^1.11.19",
-    "express": "^5.2.1",
-    "firebase-admin": "^13.6.1",
+    "@nestjs/common": "^11.1.18",
+    "@nestjs/core": "^11.1.18",
+    "@nestjs/platform-express": "^11.1.18",
+    "axios": "^1.14.0",
+    "dayjs": "^1.11.20",
+    "firebase-admin": "^13.7.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "valibot": "^1.2.0",
-    "viem": "^2.45.2"
+    "valibot": "^1.3.1",
+    "viem": "^2.47.10"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@nestjs/cli": "^11.0.16",
-    "@nestjs/schematics": "^11.0.9",
-    "@nestjs/testing": "^11.1.13",
-    "@swc/cli": "^0.8.0",
-    "@swc/core": "^1.15.11",
-    "@types/node": "^25.2.2",
-    "@types/supertest": "^6.0.3",
+    "@nestjs/cli": "^11.0.17",
+    "@nestjs/schematics": "^11.0.10",
+    "@nestjs/testing": "^11.1.18",
+    "@swc/cli": "^0.8.1",
+    "@swc/core": "^1.15.24",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.5.2",
+    "@types/supertest": "^7.2.0",
+    "@vitest/coverage-v8": "^4.1.2",
     "dotenv-cli": "^11.0.0",
-    "eslint": "^10.0.0",
+    "eslint": "^10.2.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.4",
-    "eslint-plugin-import-x": "^4.16.1",
+    "eslint-plugin-import-x": "^4.16.2",
     "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-unused-imports": "^4.4.1",
-    "globals": "^17.3.0",
+    "globals": "^17.4.0",
     "prettier": "^3.8.1",
-    "source-map-support": "^0.5.21",
     "supertest": "^7.2.2",
-    "ts-loader": "^9.5.4",
-    "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.54.0"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "typescript-eslint": "^8.58.0",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^4.1.2"
   }
 }

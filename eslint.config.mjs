@@ -6,17 +6,29 @@ import tseslint from "typescript-eslint";
 import pluginImportX from "eslint-plugin-import-x";
 import unusedImports from "eslint-plugin-unused-imports";
 
-export default [
+const barrelPatterns = [
   {
-    ignores: ["dist", "node_modules", "coverage", "eslint.config.mjs"]
+    group: ["@/interfaces/features/*/*"],
+    message: "Use interfaces/features barrel (index.ts) only."
   },
+  {
+    group: ["@/application/*/*/*", "!@/application/ports/*/*"],
+    message: "Import application modules only via barrel (index.ts)."
+  },
+  {
+    group: ["@/infrastructure/*/*/*/*"],
+    message: "Import infrastructure modules only via barrel (index.ts)."
+  }
+];
+
+export default [
+  { ignores: ["dist", "node_modules", "coverage", "eslint.config.mjs"] },
 
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
 
   {
     files: ["src/**/*.ts", "test/**/*.ts"],
-
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
@@ -25,16 +37,13 @@ export default [
         sourceType: "module"
       },
       globals: {
-        ...globals.node,
-        ...globals.jest
+        ...globals.node
       }
     },
-
     plugins: {
       "import-x": pluginImportX,
       "unused-imports": unusedImports
     },
-
     settings: {
       "import-x/resolver": {
         typescript: {
@@ -44,7 +53,6 @@ export default [
         node: true
       }
     },
-
     rules: {
       "@typescript-eslint/no-unsafe-call": "off",
       "@typescript-eslint/no-explicit-any": "off",
@@ -60,9 +68,8 @@ export default [
         { prefer: "type-imports", disallowTypeAnnotations: false }
       ],
 
-      "unused-imports/no-unused-imports": "error",
-      "unused-imports/no-unused-vars": [
-        "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
         {
           vars: "all",
           varsIgnorePattern: "^_",
@@ -71,22 +78,97 @@ export default [
         }
       ],
 
+      "unused-imports/no-unused-imports": "error",
+
       "import-x/order": [
         "warn",
         {
           groups: ["builtin", "external", "internal", "parent", "sibling", "index", "object", "type"],
-          pathGroups: [
-            {
-              pattern: "@/**",
-              group: "internal",
-              position: "after"
-            }
-          ],
+          pathGroups: [{ pattern: "@/**", group: "internal", position: "after" }],
           pathGroupsExcludedImportTypes: ["builtin"],
           "newlines-between": "always",
           alphabetize: { order: "asc", caseInsensitive: true }
         }
+      ],
+
+      "import-x/no-restricted-paths": [
+        "error",
+        {
+          zones: [
+            {
+              target: "./src/domain",
+              from: "./src/application",
+              message: "domain must not depend on application"
+            },
+            {
+              target: "./src/domain",
+              from: "./src/interfaces",
+              message: "domain must not depend on interfaces"
+            },
+            {
+              target: "./src/domain",
+              from: "./src/infrastructure",
+              message: "domain must not depend on infrastructure"
+            },
+            {
+              target: ["./src/application/**/*", "!./src/application/ports/**/*"],
+              from: "./src/interfaces/**/*",
+              message: "application must not depend on interfaces"
+            },
+            {
+              target: ["./src/application/**/*", "!./src/application/ports/**/*"],
+              from: "./src/infrastructure/**/*",
+              message: "application must not depend on infrastructure"
+            },
+            {
+              target: "./src/application/**/*",
+              from: "./src/config/**/*",
+              message: "application must not depend on config"
+            },
+            {
+              target: ["./src/application/**/*", "./src/infrastructure/!(masters)/**/*"],
+              from: "./src/config/**/*",
+              message: "infrastructure must not depend on config (except masters)"
+            }
+          ]
+        }
+      ],
+      "no-restricted-imports": ["error", { patterns: barrelPatterns }]
+    }
+  },
+
+  {
+    files: ["src/application/**/*.ts"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: barrelPatterns,
+          paths: [
+            {
+              name: "@nestjs/common",
+              importNames: [
+                "BadRequestException",
+                "UnauthorizedException",
+                "ForbiddenException",
+                "NotFoundException",
+                "ConflictException",
+                "InternalServerErrorException",
+                "HttpException"
+              ],
+              message: "Application layer must not depend on NestJS HTTP exceptions. Use ApplicationError instead."
+            }
+          ]
+        }
       ]
+    }
+  },
+
+  {
+    files: ["**/*.e2e.spec.ts"],
+    rules: {
+      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-assignment": "off"
     }
   },
 

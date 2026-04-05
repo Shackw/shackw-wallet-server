@@ -61,7 +61,7 @@ Instead:
 are all retrieved dynamically through metadata endpoints.
 
 This allows clients to remain environment-agnostic while relying on the server
-as the source of truth.
+as the authoritative source for quoting and execution policies.
 
 ---
 
@@ -132,7 +132,7 @@ This design ensures that clients never rely on hardcoded constants.
 Token transfers follow a three-step conceptual flow:
 
 1. **Quote issuance**  
-   The server issues a signed, time-limited quote describing the intended transfer.
+   The server issues a cryptographically authenticated, time-limited quote describing the intended transfer.
 
 2. **Client-side authorization signing**  
    The user wallet signs an EIP-7702 authorization binding the allowed call,
@@ -141,9 +141,6 @@ Token transfers follow a three-step conceptual flow:
 3. **Transaction relay and execution**  
    The server verifies the quote and authorization, then relays the transaction
    on-chain.
-
-Concrete endpoint names and request formats are intentionally omitted from this
-document.
 
 ---
 
@@ -159,17 +156,7 @@ explicit, cryptographically signed authorization.
 
 ---
 
-# 9. Development Notes
-
-- All chain-, token-, and environment-dependent values must be retrieved via
-  metadata endpoints
-- Clients should not embed contract addresses, decimals, or fee values
-- This document intentionally avoids environment-specific constants to prevent
-  accidental desynchronization
-
----
-
-# 10. License
+# 9. License
 
 This repository is provided for reference purposes only.
 

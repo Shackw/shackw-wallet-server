@@ -1,36 +1,38 @@
-import type { CHAIN_IDS, Chain } from "@/config/chain.config";
-import type { Token } from "@/registries/token-chain.registry";
+import type { Chain } from "@/domain/constants/chain.constant";
+import type { Token } from "@/domain/constants/token.constant";
+
+import type { Address } from "viem";
 
 export type ChainMetaEntity = {
-  symbol: Chain;
-  id: (typeof CHAIN_IDS)[number];
+  key: Chain;
+  id: number;
   testnet: boolean;
 };
 
 export type TokenMetaEntity = {
   symbol: Token;
-  address: Record<string, string>;
+  address: Partial<Record<Chain, Address>>;
   decimals: number;
 };
 
 export type FeeMetaEntity = {
-  chainSymbol: Chain;
+  chainKey: Chain;
   tokenSymbol: Token;
-  fixedFeeAmountUnits: string;
+  fixedFeeAmountUnits: bigint;
   fixedFeeAmountDisplay: number;
 };
 
 export type MinTransferMetaEntity = {
-  chainSymbol: Chain;
+  chainKey: Chain;
   tokenSymbol: Token;
-  minUnits: string;
-  display: number;
+  minTransferAmountUnits: bigint;
+  minTransferAmountDisplay: number;
 };
 
 export type ContractsMetaEntity = {
-  delegate: Record<Chain, string>;
-  registry: Record<Chain, string>;
-  sponsor: string;
+  sponsor: Record<Chain, Address>;
+  delegate: Record<Chain, Address>;
+  registry: Record<Chain, Address>;
 };
 
 export type MetaSummaryEntity = {
