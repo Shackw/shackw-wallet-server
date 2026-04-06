@@ -71,8 +71,8 @@ describe("ViemSponsorAdapter", () => {
       });
 
       const walletClientFactory = makeMockObject<ViemSponsorWalletClientFactory>({
-        get(_chainKey: string) {
-          return {} as unknown as WalletClient<Transport, ViemChain, Account>;
+        async get(_chainKey: string) {
+          return Promise.resolve({} as unknown as WalletClient<Transport, ViemChain, Account>);
         }
       });
 
@@ -125,9 +125,9 @@ describe("ViemSponsorAdapter", () => {
       });
 
       const walletClientFactory = makeMockObject<ViemSponsorWalletClientFactory>({
-        get(chainKey: string) {
+        async get(chainKey: string) {
           expect(chainKey).toBe(query.chainKey);
-          return {
+          return Promise.resolve({
             writeContract: (tx: object) => {
               expect(tx).toEqual(
                 expect.objectContaining({
@@ -139,7 +139,7 @@ describe("ViemSponsorAdapter", () => {
               );
               return Promise.resolve(expectedResultTxHash);
             }
-          } as unknown as WalletClient<Transport, ViemChain, Account>;
+          } as unknown as WalletClient<Transport, ViemChain, Account>);
         }
       });
 

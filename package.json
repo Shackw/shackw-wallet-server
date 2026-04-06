@@ -6,7 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "yarn format && yarn lint && nest build",
+    "build": "nest build",
+    "build:local": "yarn format && yarn lint && nest build",
     "typecheck": "tsc -p tsconfig.eslint.json --noEmit",
     "start": "nest start",
     "start:dev": "PORT=3010 dotenv -e .env -- nest start --watch",
@@ -20,6 +21,7 @@
     "test:ci:cov": "yarn typecheck && yarn test:cov",
     "format": "prettier --write \"**/*.ts\"",
     "lint": "eslint src --fix",
+    "lint:check": "eslint src",
     "ngrok": "ngrok http http://localhost:3010"
   },
   "dependencies": {

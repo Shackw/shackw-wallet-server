@@ -1,5 +1,8 @@
 import { defineConfig } from "vitest/config";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { config } from "dotenv";
+
+config({ path: ".env.ci" });
 
 export default defineConfig({
   plugins: [tsconfigPaths()],
@@ -9,9 +12,7 @@ export default defineConfig({
     include: ["src/**/*.spec.ts"],
     hookTimeout: 30_000,
     testTimeout: 30_000,
-    env: {
-      NODE_ENV: "development"
-    },
+    env: { NODE_ENV: "development" },
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "lcov"],

@@ -33,7 +33,7 @@ export class ViemSponsorAdapter implements SponsorAdapter {
   async writeDelegateExecute(query: DelegateExecuteQuery): Promise<Hex> {
     const { chainKey, ...rest } = query;
 
-    const client = this.walletClientFactory.get(chainKey);
+    const client = await this.walletClientFactory.get(chainKey);
 
     const tx = this._buildTx(rest);
 
