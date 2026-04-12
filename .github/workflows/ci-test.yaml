@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: yarn
@@ -55,16 +55,8 @@ jobs:
           POLYGON_AMOY_DELEGATE_ADDRESS: "0x3f80037AeC2DFfd88a193c58161bB1CDcA1ecF6a"
           POLYGON_AMOY_REGISTRY_ADDRESS: "0x773c5cA412751a5a2cD24e4d706bb417AFF2F531"
 
-      - name: Upload test report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: vitest-report
-          path: html/
-          retention-days: 14
-
       - name: Upload coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: coverage-report
