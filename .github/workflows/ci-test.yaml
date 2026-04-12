@@ -23,11 +23,11 @@ jobs:
         run: yarn test:ci:cov
         env:
           RPC_INFURA_ID: "02834402f4c542519e41a81e2e7bba66"
-          QUOTE_TOKEN_SECRET: "0x9c1d7f6a2b4e8c53d0f1a6b7e3c5d8f9a4b6c1e2d3f7a8b9c0d1e2f3a4b5c6d7"
-          SPONSOR_PK: "0xeb04f8ae0e9f3f35c4f837489fe7387a6d02aa041b4bf54d5c1ad0dd1b5c6abf"
+          QUOTE_TOKEN_SECRET: ${{ secrets.QUOTE_TOKEN_SECRET }}
+          SPONSOR_PK: ${{ secrets.SPONSOR_PK }}
           SPONSOR_ADDRESS: "0xf0BF1971B04787fC0dE4f8Ad40d00EAC2562f9A8"
-          MORALIS_API_SECRET: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjQwMmE5YmFmLTE2NzUtNGU1Ni1iNjkzLThkOTJhZTA3YzI0YiIsIm9yZ0lkIjoiNDgzNzE5IiwidXNlcklkIjoiNDk3NjYwIiwidHlwZSI6IlBST0pFQ1QiLCJ0eXBlSWQiOiIxMDYyMTdhZi0yNTI0LTRmYWUtOWU2YS04MjgzZmY5ZmZlMDYiLCJpYXQiOjE3NzU0ODU4MzgsImV4cCI6NDkzMTI0NTgzOH0.5X_RdjM6xbIuv-55eybjcTMAi6t-UxEXIR4rwTDRmuc"
-          FIREBASE_ADMIN_SECRET: "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC+TOZLYfdrnTKx\n2QSpCTYuXGlDWdtmcheQSJ6w/cn6sVxNjw7ZSUK+hRhPsP0h1SPPoMDPJjtxWCB9\nasx07RXN2NUVIr1NS9HNKCBiGP3gV2YkUy0dbLlChBbQelIBmv52dxmvcO8U6h+i\nMg13Gh802WEY4T4xqz/ZCVPTwKHd9tfx4Jq79kjlrrnvaXSAqL1mjzlpM4HiHg5n\ncCuHgpqrY1PvM2Tiq6dghYC3eRCXj6tfKMDWJX9M6rkvS8Q2DnzYAADqIzm4tJ9S\nZjzuO4z91H6fnj+DTQVcyt6lHbazKbJJ65Pk7pzeowilH3pLxXVjiNyA77A2H+mR\nbZl/lYExAgMBAAECggEAKfu4MPhPiB/Zr8/jjdFY8Th1BqVb2ImiNjQ3Qm/zMAoS\nBZBio8BcZ8DgQLCY3+5wZJ2f+/OA2LwrCtBVhBRMI6pLNEsCPXvVMPBB2LKPy/8s\nKyZohR3X71tJ1zutPOpvaj5TXdfJ/zC5wuRNATIzoUq197G1sWqI/v5mToiojVnG\n/2dhdFT5rm/X2SpgMhRGHcYv8Gype3tGYiDGut2AQBsRL/7ENcCM4VbaqrpLYF/f\nY+w8aCbSQQ4eHl0qGtYabvOHs+Od8/mzuokMY5Jo0OfJrYeJDcEndaGo3QPzoBcX\ns6kGeVZhLLQkdn/lSZq/4wBpe509ucuiSCHYyBTEuwKBgQDn3wYOo1d2zp5aj+FW\nmZmKWU7pbgkXV8hS1n4LwgtEYtNOuJeWHfNEkRRWpSr2Coe6QTEQElsHjCwsZJbW\nb3mELED9ZoLqf3L40yUqDgA0RTTI2+1TdBInOJ+QrEerL+/if/67ObooXb9FRIP9\nHkR/GDNUaVH8CBddtY16xybNVwKBgQDSGnFb/FGfeHspCulXkkH8NQEbjVfndiDC\nWWiYsOEHsbQAl0rPBBf+xjRM5b+/MdCfxWsZp/9dnMb1CQtFnUnHWavctFILJuJG\nMxr0UoSNqjooGmkbEDoF3j8k4etOpMHAg1P0OLQqyuT/6UE4L9lgW1Ez6w4oEF6m\nA7qjZEIItwKBgAC6lLxLCyVWdOz38s9g4DitGzBkpiaqofiQsAi9bWejn+JpdiCE\nq5UVl6jGECKB2fdd6ReR1zNo32KsVkUKSKl/shyZy+OMzwG1ODKvpJSFeyr+dfqD\nLONurCG6SOdi2TAvEs/n2Ivz73v6QSf0hmaX3uFvC1DtfZVP0sgGBDs1AoGBAJlF\n1SDn55vQxvhgD25lMmINQOuap2Ah2zAtDZMmpmN4jfpIZLi1IdQpQApBKSsP6kRE\nPyeOWUsvji1AFcsJPcOCdVAi9B9SlIvlyGoosK6wWpDbA4ZMxid1xNbhQUo0A2yv\n4dUucLEvJvRSc9PLhGc49vpLJh6wInw2CDgecdXtAoGAYi7iQbOqprkDIiuKTmvR\n3NzQdf7rl5MVvSjASvcC0wz672Hmt6YCNBDEgwMtGErlhMWQ8lpBv30FyqmM/yEU\nkvkwDFzCngWmL9cyd0/iw9t0tfhBJwfhVcvEMAUSFtkud4hPU+/OP2l70YlJRFYe\nCsQQEPC+jwcJHk5m7xeTC/w=\n-----END PRIVATE KEY-----\n"
+          MORALIS_API_SECRET: ${{ secrets.MORALIS_API_SECRET }}
+          FIREBASE_ADMIN_SECRET: ${{ secrets.FIREBASE_ADMIN_SECRET }}
           ETH_JPYC_FIXED_FEE_AMOUNT_UNITS: "100000000000000000000"
           ETH_JPYC_MIN_TRANSFER_AMOUNT_UNITS: "1000000000000000000000"
           ETH_USDC_FIXED_FEE_AMOUNT_UNITS: "1000000"
@@ -61,4 +61,12 @@ jobs:
         with:
           name: vitest-report
           path: html/
+          retention-days: 14
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
           retention-days: 14
