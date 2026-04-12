@@ -1,9 +1,11 @@
 import { Test } from "@nestjs/testing";
 import request from "supertest";
 
+import { HttpExceptionsFilter } from "@/interfaces/common/filters/http-exception.filter";
 import { BigIntToStringInterceptor } from "@/interfaces/common/interceptors/bigint-to-string.interceptor";
 import { WrapDataInterceptor } from "@/interfaces/common/interceptors/wrap-data.interceptor";
 import { AppModule } from "@/modules/app.module";
+import { CustomLogger } from "@/shared/custom-logger";
 
 import type { Server } from "http";
 
@@ -28,8 +30,13 @@ export const setupTestApp = async (options?: { overrideProviders?: OverrideProvi
 
   const moduleRef = await builder.compile();
 
+  const logger = new CustomLogger();
+  const filter = new HttpExceptionsFilter(logger);
+
   const app = moduleRef.createNestApplication();
+
   app.useGlobalInterceptors(new WrapDataInterceptor(), new BigIntToStringInterceptor());
+  app.useGlobalFilters(filter);
   app.setGlobalPrefix("v1");
 
   await app.init();

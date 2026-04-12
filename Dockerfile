@@ -4,14 +4,11 @@ WORKDIR /app
 COPY package.json yarn.lock .yarnrc.yml ./
 RUN corepack enable && yarn install --immutable
 
-# ---- test & build
+# ---- build
 FROM node:lts-alpine AS build
 WORKDIR /app
 COPY --from=deps /app/ ./
 COPY . .
-# TODO: Remove test:ci and switch to build:ci after introducing CI pipeline
-RUN yarn run test:ci 
-RUN yarn build
 
 # ---- prod deps
 FROM node:lts-alpine AS prod-deps
