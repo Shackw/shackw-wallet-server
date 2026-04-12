@@ -1,12 +1,13 @@
-import { Inject, Logger } from "@nestjs/common";
+import { Inject } from "@nestjs/common";
 
 import type { AppCheckAdapter, AppCheckVerifyTokenQuery } from "@/application/ports/adapters/app-check.adapter.port";
+import { CustomLogger } from "@/shared/custom-logger";
 import { DI_TOKENS } from "@/shared/tokens/di.tokens";
 
 import type { AppCheck } from "firebase-admin/app-check";
 
 export class FirebaseAppCheckAdapter implements AppCheckAdapter {
-  private readonly logger = new Logger(FirebaseAppCheckAdapter.name);
+  private readonly logger = new CustomLogger({ context: FirebaseAppCheckAdapter.name });
 
   constructor(
     @Inject(DI_TOKENS.FIREBASE_CLIENT)

@@ -35,9 +35,12 @@ export class ViemSponsorAdapter implements SponsorAdapter {
 
     const client = await this.walletClientFactory.get(chainKey);
 
+    if (client.account.address.toLowerCase() !== rest.sponsor.toLowerCase())
+      throw new Error("Sponsor address does not match the wallet account.");
+
     const tx = this._buildTx(rest);
 
-    return await client.writeContract(tx);
+    return await client.writeContract({ ...tx, account: client.account });
   }
 
   private _buildTx({

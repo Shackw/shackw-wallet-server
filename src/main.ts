@@ -9,11 +9,7 @@ import { WrapDataInterceptor } from "./interfaces/common/interceptors/wrap-data.
 import { CustomLogger } from "./shared/custom-logger";
 
 async function bootstrap() {
-  const logger = new CustomLogger({
-    json: true,
-    timestamp: true,
-    logLevels: ["log", "warn", "error", "fatal"]
-  });
+  const logger = new CustomLogger();
 
   const filter = new HttpExceptionsFilter(logger);
 

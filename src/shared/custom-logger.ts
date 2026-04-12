@@ -3,8 +3,8 @@ import dayjs from "dayjs";
 
 @Injectable()
 export class CustomLogger extends ConsoleLogger {
-  constructor(options: ConsoleLoggerOptions = {}) {
-    super(options);
+  constructor(options?: Omit<ConsoleLoggerOptions, "json" | "timestamp" | "logLevels">) {
+    super({ ...options, json: true, timestamp: true, logLevels: ["log", "warn", "error", "fatal"] });
   }
 
   protected override printAsJson(
