@@ -1,7 +1,6 @@
-import { Controller, UseFilters, Post, UsePipes, Body, UseGuards } from "@nestjs/common";
+import { Controller, Post, UsePipes, Body, UseGuards } from "@nestjs/common";
 
 import { TokensService } from "@/application/services/tokens";
-import { HttpExceptionsFilter } from "@/interfaces/common/filters/http-exception.filter";
 import { AppCheckGuard } from "@/interfaces/common/guards/app-check.guard";
 import { ValibotPipe } from "@/interfaces/common/pipes/valibot.pipe";
 
@@ -14,7 +13,6 @@ import { toTransferTokenResponseDto } from "./tokens.mapper";
 
 @Controller()
 @UseGuards(AppCheckGuard)
-@UseFilters(HttpExceptionsFilter)
 export class TokensController {
   constructor(private readonly tokens: TokensService) {}
 

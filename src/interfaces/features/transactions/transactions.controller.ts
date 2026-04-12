@@ -1,7 +1,6 @@
-import { Body, Controller, Post, UseFilters, UseGuards } from "@nestjs/common";
+import { Body, Controller, Post, UseGuards } from "@nestjs/common";
 
 import { TransactionsService } from "@/application/services/transactions";
-import { HttpExceptionsFilter } from "@/interfaces/common/filters/http-exception.filter";
 import { AppCheckGuard } from "@/interfaces/common/guards/app-check.guard";
 import { ValibotPipe } from "@/interfaces/common/pipes/valibot.pipe";
 
@@ -14,7 +13,6 @@ import { toSearchTransactionsResponseDto } from "./transactions.mapper";
 
 @Controller()
 @UseGuards(AppCheckGuard)
-@UseFilters(HttpExceptionsFilter)
 export class TransactionsController {
   constructor(private readonly transactions: TransactionsService) {}
 

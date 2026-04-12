@@ -1,7 +1,6 @@
-import { Controller, UseFilters, Get, UseGuards } from "@nestjs/common";
+import { Controller, Get, UseGuards } from "@nestjs/common";
 
 import { MetaService } from "@/application/services/meta";
-import { HttpExceptionsFilter } from "@/interfaces/common/filters/http-exception.filter";
 import { AppCheckGuard } from "@/interfaces/common/guards/app-check.guard";
 
 import {
@@ -24,7 +23,6 @@ import type {
 
 @Controller("meta")
 @UseGuards(AppCheckGuard)
-@UseFilters(HttpExceptionsFilter)
 export class MetaController {
   constructor(private readonly meta: MetaService) {}
 
