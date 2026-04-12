@@ -2,9 +2,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { randomUUID } from "crypto";
 
-import { Catch, ExceptionFilter, ArgumentsHost, HttpException, HttpStatus, Logger } from "@nestjs/common";
+import { Catch, ExceptionFilter, ArgumentsHost, HttpException, HttpStatus } from "@nestjs/common";
 
 import { isApplicationError } from "@/application/errors";
+import { CustomLogger } from "@/shared/custom-logger";
 
 import type { Request, Response } from "express";
 
@@ -33,6 +34,8 @@ function toCode(raw: unknown, fallback = "HTTP_ERROR"): string {
 
 @Catch()
 export class HttpExceptionsFilter implements ExceptionFilter {
+  constructor(private readonly logger: CustomLogger) {}
+
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
@@ -50,12 +53,17 @@ export class HttpExceptionsFilter implements ExceptionFilter {
     const ex = exception as any;
     const cause = ex?.cause;
 
-    Logger.error(
+    this.logger.error(
       {
         requestId,
         status,
         method: req.method,
         path: req.originalUrl,
+        request: {
+          ...(Object.keys(req.query).length ? { query: req.query } : {}),
+          ...(Object.keys(req.params).length ? { params: req.params } : {}),
+          body: req.body as unknown
+        },
         errors,
         exception: {
           name: ex?.name,

@@ -1,7 +1,6 @@
-import { Controller, UseFilters, Post, Body, UseGuards, HttpCode } from "@nestjs/common";
+import { Controller, Post, Body, UseGuards, HttpCode } from "@nestjs/common";
 
 import { FeesService } from "@/application/services/fees";
-import { HttpExceptionsFilter } from "@/interfaces/common/filters/http-exception.filter";
 import { AppCheckGuard } from "@/interfaces/common/guards/app-check.guard";
 import { ValibotPipe } from "@/interfaces/common/pipes/valibot.pipe";
 
@@ -10,7 +9,6 @@ import { toEstimateFeeResponseDto } from "./fees.mapper";
 
 @Controller()
 @UseGuards(AppCheckGuard)
-@UseFilters(HttpExceptionsFilter)
 export class FeesController {
   constructor(private readonly fees: FeesService) {}
 
