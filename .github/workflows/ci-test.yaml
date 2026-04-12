@@ -56,7 +56,7 @@ jobs:
           POLYGON_AMOY_REGISTRY_ADDRESS: "0x773c5cA412751a5a2cD24e4d706bb417AFF2F531"
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: coverage-report
