@@ -9,20 +9,14 @@ FROM node:lts-alpine AS build
 WORKDIR /app
 COPY --from=deps /app/ ./
 COPY . .
+RUN yarn build
 
-# ---- prod deps
-FROM node:lts-alpine AS prod-deps
+# ---- runner
+FROM node:lts-alpine AS runner
 WORKDIR /app
 COPY package.json yarn.lock .yarnrc.yml ./
 RUN corepack enable && yarn install --immutable --production
-
-# ---- run
-FROM node:lts-alpine AS runner
-WORKDIR /app
+COPY --from=build /app/dist ./dist
 USER node
-COPY --from=build --chown=node:node /app/package.json ./
-COPY --from=prod-deps --chown=node:node /app/node_modules ./node_modules
-COPY --from=build --chown=node:node /app/dist ./dist
-
 EXPOSE 3000
 CMD ["yarn","start:prod"]
