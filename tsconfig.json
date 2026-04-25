@@ -14,13 +14,13 @@
     "types": ["node"],
     "paths": {
       "@/*": ["./src/*"],
-      "@interfaces/*": ["./src/interfaces/*"],
       "@application/*": ["./src/application/*"],
+      "@config/*": ["./src/config/*"],
       "@domain/*": ["./src/domain/*"],
       "@infrastructure/*": ["./src/infrastructure/*"],
-      "@registries/*": ["./src/registries/*"],
+      "@interfaces/*": ["./src/interfaces/*"],
+      "@modules/*": ["./src/modules/*"],
       "@shared/*": ["./src/shared/*"],
-      "@config/*": ["./src/config/*"],
       "@test/*": ["./test/*"]
     },
     "strict": true,

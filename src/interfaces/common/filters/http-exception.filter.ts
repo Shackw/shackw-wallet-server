@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { randomUUID } from "crypto";
 
 import { Catch, ExceptionFilter, ArgumentsHost, HttpException, HttpStatus } from "@nestjs/common";
@@ -11,8 +9,19 @@ import type { Request, Response } from "express";
 
 type ErrorItem = { code: string; message: string };
 
+type ErrorLike = {
+  name?: string;
+  message?: string;
+  stack?: string;
+  cause?: unknown;
+};
+
 function isRecord(v: unknown): v is Record<string, unknown> {
   return !!v && typeof v === "object" && !Array.isArray(v);
+}
+
+function isErrorLike(v: unknown): v is ErrorLike {
+  return isRecord(v);
 }
 
 function toCode(raw: unknown, fallback = "HTTP_ERROR"): string {
@@ -50,8 +59,8 @@ export class HttpExceptionsFilter implements ExceptionFilter {
 
     const errors = this.normalizeErrors(exception);
 
-    const ex = exception as any;
-    const cause = ex?.cause;
+    const ex = isErrorLike(exception) ? exception : {};
+    const cause = isRecord(ex.cause) ? ex.cause : undefined;
 
     this.logger.error(
       {
@@ -66,17 +75,17 @@ export class HttpExceptionsFilter implements ExceptionFilter {
         },
         errors,
         exception: {
-          name: ex?.name,
-          message: ex?.message
+          name: ex.name,
+          message: ex.message
         },
         cause: cause
           ? {
-              name: cause?.name ?? "Error",
-              message: String(cause?.message ?? cause)
+              name: typeof cause["name"] === "string" ? cause["name"] : "Error",
+              message: typeof cause["message"] === "string" ? cause["message"] : JSON.stringify(cause)
             }
           : undefined
       },
-      ex?.stack,
+      ex.stack,
       "HttpExceptionsFilter"
     );
 
@@ -95,12 +104,12 @@ export class HttpExceptionsFilter implements ExceptionFilter {
     if (exception instanceof HttpException) {
       const payload = exception.getResponse();
 
-      const baseCode = toCode(isRecord(payload) ? payload.error : undefined, toCode(exception.name, "HTTP_ERROR"));
+      const baseCode = toCode(isRecord(payload) ? payload["error"] : undefined, toCode(exception.name, "HTTP_ERROR"));
 
       if (typeof payload === "string") return [{ code: baseCode, message: payload }];
 
       if (isRecord(payload)) {
-        const message = payload.message;
+        const message = payload["message"];
 
         if (Array.isArray(message))
           return message
