@@ -8,7 +8,7 @@ import type { RegistryAdapter } from "@/application/ports/adapters/registry.adap
 import { buildExcutionIntent } from "@/application/protocols/execution-intent";
 import { encodeQuoteToken } from "@/application/protocols/quote-token";
 import type { QuoteEntity } from "@/domain/entities/quote.entity";
-import { DI_TOKENS } from "@/shared/tokens/di.tokens";
+import { DI_TOKENS } from "@/shared/di.tokens";
 
 import type { CreateQuoteInput } from "./quotes.service.types";
 import type { Hex } from "viem";

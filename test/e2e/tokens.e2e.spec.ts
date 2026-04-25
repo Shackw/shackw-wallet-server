@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { setupTestApp } from "@test/utils";
 
-import { DI_TOKENS } from "@/shared/tokens/di.tokens";
+import { DI_TOKENS } from "@/shared/di.tokens";
 
 import type { INestApplication } from "@nestjs/common";
 import type request from "supertest";

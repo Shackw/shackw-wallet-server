@@ -5,7 +5,7 @@ import type { ChainToTokenSupportPolicy } from "@/application/policies/chain-to-
 import type { MoralisGateway } from "@/application/ports/gateways/moralis.gateway.port";
 import type { TokenMasterContract } from "@/application/ports/repositories/token-deployment.repository.port";
 import type { TransactionEntity } from "@/domain/entities/transaction.entity";
-import { DI_TOKENS } from "@/shared/tokens/di.tokens";
+import { DI_TOKENS } from "@/shared/di.tokens";
 
 import type { SearchTransactionsInput } from "./transactions.service.types";
 import type { Address } from "viem";

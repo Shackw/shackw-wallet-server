@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { formatUnits } from "viem/utils";
 
 import { ApplicationError } from "@/application/errors";
-import { DI_TOKENS } from "@/shared/tokens/di.tokens";
+import { DI_TOKENS } from "@/shared/di.tokens";
 
 import {
   TransferEligibilityPolicy,

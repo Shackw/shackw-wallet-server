@@ -2,7 +2,7 @@ import { Inject } from "@nestjs/common";
 
 import type { TransferEligibilityPolicy } from "@/application/policies/transfer-eligibility";
 import type { FeeEntity } from "@/domain/entities/fee.entity";
-import { DI_TOKENS } from "@/shared/tokens/di.tokens";
+import { DI_TOKENS } from "@/shared/di.tokens";
 
 import type { EstimateFeeInput } from "./fees.service.types";
 

@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 
 import { AppCheckPolicy } from "@/application/policies/app-check";
-import { DI_TOKENS } from "@/shared/tokens/di.tokens";
+import { DI_TOKENS } from "@/shared/di.tokens";
 
 @Injectable()
 export class AppCheckGuard implements CanActivate {

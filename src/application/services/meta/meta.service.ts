@@ -12,7 +12,7 @@ import type {
   ContractsMetaEntity,
   MetaSummaryEntity
 } from "@/domain/entities/meta.entity";
-import { DI_TOKENS } from "@/shared/tokens/di.tokens";
+import { DI_TOKENS } from "@/shared/di.tokens";
 
 import type { Address } from "viem";
 

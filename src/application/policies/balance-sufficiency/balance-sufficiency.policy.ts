@@ -3,7 +3,7 @@ import { Injectable, Inject } from "@nestjs/common";
 import { ApplicationError } from "@/application/errors";
 import type { Erc20Adapter } from "@/application/ports/adapters/erc20.adapter.port";
 import type { TokenDeploymentRepository } from "@/application/ports/repositories/token-deployment.repository.port";
-import { DI_TOKENS } from "@/shared/tokens/di.tokens";
+import { DI_TOKENS } from "@/shared/di.tokens";
 
 import { BalanceSufficiencyPolicy, type EnsureSufficientBalanceInput } from "./balance-sufficiency.policy.types";
 

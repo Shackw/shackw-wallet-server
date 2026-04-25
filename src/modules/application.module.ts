@@ -10,7 +10,7 @@ import { QuotesService } from "@/application/services/quotes";
 import { TokensService } from "@/application/services/tokens";
 import { TransactionsService } from "@/application/services/transactions";
 import { ENV } from "@/config/env.config";
-import { DI_TOKENS } from "@/shared/tokens/di.tokens";
+import { DI_TOKENS } from "@/shared/di.tokens";
 
 import { InfrastructureModule } from "./infrastructure.module";
 

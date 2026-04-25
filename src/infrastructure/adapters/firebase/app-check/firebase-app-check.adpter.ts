@@ -2,7 +2,7 @@ import { Inject } from "@nestjs/common";
 
 import type { AppCheckAdapter, AppCheckVerifyTokenQuery } from "@/application/ports/adapters/app-check.adapter.port";
 import { CustomLogger } from "@/shared/custom-logger";
-import { DI_TOKENS } from "@/shared/tokens/di.tokens";
+import { DI_TOKENS } from "@/shared/di.tokens";
 
 import type { AppCheck } from "firebase-admin/app-check";
 

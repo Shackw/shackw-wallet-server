@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 
 import { ApplicationError } from "@/application/errors";
 import type { AppCheckAdapter } from "@/application/ports/adapters/app-check.adapter.port";
-import { DI_TOKENS } from "@/shared/tokens/di.tokens";
+import { DI_TOKENS } from "@/shared/di.tokens";
 
 import { AppCheckPolicy, type VerifyAppCheckTokenInput } from "./app-check.policy.type";
 

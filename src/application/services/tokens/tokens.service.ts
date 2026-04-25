@@ -9,7 +9,7 @@ import type { TokenDeploymentRepository } from "@/application/ports/repositories
 import { buildExcutionIntent } from "@/application/protocols/execution-intent";
 import { decodeQuoteToken } from "@/application/protocols/quote-token";
 import type { TransferTokenEntity } from "@/domain/entities/token.entity";
-import { DI_TOKENS } from "@/shared/tokens/di.tokens";
+import { DI_TOKENS } from "@/shared/di.tokens";
 
 import type { TransferTokenInput } from "./tokens.service.types";
 import type { Hex } from "viem";

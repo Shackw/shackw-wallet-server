@@ -14,7 +14,7 @@ import { ViemPublicClientFactory } from "@/infrastructure/adapters/viem/viem-pub
 import { ViemSponsorWalletClientFactory } from "@/infrastructure/adapters/viem/viem-sponsor-client.factory";
 import { HttpMoralisGateway } from "@/infrastructure/gateways/http/moralis";
 import { StaticTokenDeploymentRepository } from "@/infrastructure/repositories/static/token-deployment";
-import { DI_TOKENS } from "@/shared/tokens/di.tokens";
+import { DI_TOKENS } from "@/shared/di.tokens";
 
 @Module({
   providers: [

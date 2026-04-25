@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 
 import { ApplicationError } from "@/application/errors";
 import type { TokenDeploymentRepository } from "@/application/ports/repositories/token-deployment.repository.port";
-import { DI_TOKENS } from "@/shared/tokens/di.tokens";
+import { DI_TOKENS } from "@/shared/di.tokens";
 
 import {
   ChainToTokenSupportPolicy,
