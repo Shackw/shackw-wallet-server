@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "Shackw Wallet API — transaction relay server for fixed-fee stablecoin transfers via EIP-7702 authorization.",
   "author": "Shackw",
-  "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "build": "nest build",
     "build:local": "yarn format && yarn lint && nest build",
